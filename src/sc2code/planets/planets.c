@@ -26,9 +26,10 @@
 #include "resinst.h"
 #include "nameref.h"
 
+void uninit_coarse_scan (void);
+extern FRAME coarse_scan;
 
 extern int rotate_planet_task (void *data);
-
 
 void
 DrawScannedObjects (BOOLEAN Reversed)
@@ -229,6 +230,7 @@ FreePlanet (void)
 
 //    FreeLanderData ();
 
+	uninit_coarse_scan ();
 	DestroyStringTable (ReleaseStringTable (pSolarSysState->XlatRef));
 	pSolarSysState->XlatRef = 0;
 	DestroyDrawable (ReleaseDrawable (pSolarSysState->TopoFrame));

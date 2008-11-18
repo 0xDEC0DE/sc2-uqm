@@ -36,10 +36,10 @@
 #include "libs/inplib.h"
 #include "libs/log.h"
 
-
 //#define DEBUG_SOLARSYS
 
-
+void init_coarse_scan (void);
+extern FRAME coarse_scan;
 SOLARSYS_STATE *pSolarSysState;
 FRAME SISIPFrame, SunFrame, OrbitalFrame, SpaceJunkFrame;
 COLORMAP OrbitalCMap;
@@ -1391,6 +1391,7 @@ StartGroups:
 
 		GetPlanetInfo ();
 		(*pSolarSysState->GenFunc) (GENERATE_ORBITAL);
+		init_coarse_scan ();
 		LastActivity &= ~(CHECK_LOAD | CHECK_RESTART);
 		if ((GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD |
 				START_ENCOUNTER)) || GLOBAL_SIS (CrewEnlisted) == (COUNT)~0

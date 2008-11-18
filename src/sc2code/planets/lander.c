@@ -705,14 +705,14 @@ CheckObjectCollision (COUNT index)
 						UnlockElement (hElement);
 						break;
 					}
-					else if (scan == BIOLOGICAL_SCAN
-							&& (value = LONIBBLE (CreatureData[
-							ElementPtr->mass_points
-							& ~CREATURE_AWARE
-							].ValueAndHitPoints)))
+					else if (scan == BIOLOGICAL_SCAN)
 					{
+						value = LONIBBLE (CreatureData[
+								ElementPtr->mass_points
+								& ~CREATURE_AWARE
+								].ValueAndHitPoints);
 						/* Collision of a stun bolt with a viable creature */
-						if (ElementPtr->hit_points)
+						if (value && ElementPtr->hit_points)
 						{
 							if (--ElementPtr->hit_points == 0)
 							{
@@ -749,8 +749,49 @@ CheckObjectCollision (COUNT index)
 									NotPositional (), NULL,
 									GAME_SOUND_PRIORITY);
 						}
-						UnlockElement (hElement);
-						break;
+						/* Corner case: collision of a stun bolt with a
+						 * moon bulldozer.  Blow 'em up!  Uses the same
+						 * frames as the lander explosion */
+						else if (! value && ElementPtr->hit_points)
+						{
+							HELEMENT hExplosionElement;
+
+							hExplosionElement = AllocElement ();
+							if (hExplosionElement)
+							{
+								ELEMENT *ExplosionElementPtr;
+
+								LockElement (hExplosionElement, &ExplosionElementPtr);
+
+								ExplosionElementPtr->mass_points = DEATH_EXPLOSION;
+								ExplosionElementPtr->state_flags = FINITE_LIFE | GOOD_GUY;
+								ExplosionElementPtr->next.location =
+										ElementPtr->next.location;
+								ExplosionElementPtr->preprocess_func = object_animation;
+								ExplosionElementPtr->turn_wait = MAKE_BYTE (1, 1);
+								ExplosionElementPtr->life_span =
+										EXPLOSION_LIFE
+										* (LONIBBLE (ExplosionElementPtr->turn_wait) + 1);
+
+								SetPrimType (&DisplayArray[ExplosionElementPtr->PrimIndex], STAMP_PRIM);
+								DisplayArray[ExplosionElementPtr->PrimIndex].Object.Stamp.frame =
+										SetAbsFrameIndex (
+										LanderFrame[0], 46
+										);
+
+								UnlockElement (hExplosionElement);
+								InsertElement (hExplosionElement, GetHeadElement ());
+
+								PlaySound (SetAbsSoundIndex (
+										LanderSounds, LANDER_HITS
+										), NotPositional (), NULL, GAME_SOUND_PRIORITY + 1);
+							}
+						}
+						if (value)
+						{
+							UnlockElement (hElement);
+							break;
+						}
 					}
 
 					NumRetrieved = 0;

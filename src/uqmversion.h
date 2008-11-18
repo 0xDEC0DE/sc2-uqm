@@ -23,7 +23,7 @@
 #define UQM_MINOR_VERSION_S  "6"
 #define UQM_PATCH_VERSION     4
 #define UQM_PATCH_VERSION_S  "4"
-#define UQM_EXTRA_VERSION    ""
+#define UQM_EXTRA_VERSION    "-ee"
 /* The final version is interpreted as:
  * printf ("%d.%d.%d%s", UQM_MAJOR_VERSION, UQM_MINOR_VERSION,
  * 		UQM_PATCH_VERSION, UQM_EXTRA_VERSION);

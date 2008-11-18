@@ -61,12 +61,6 @@ useGccBuildTools() {
 	BUILDTOOL_LINK_DEPEND='gcc'
 }
 case "$HOST_SYSTEM" in
-	Darwin)
-		EXTRA_PLATFORM_GCC_FLAGS_COMPILE_C='-arch ppc -arch i386'
-		EXTRA_PLATFORM_GCC_FLAGS_COMPILE_OBJC='-arch ppc -arch i386'
-		EXTRA_PLATFORM_GCC_FLAGS_LINK='-arch ppc -arch i386'
-		useGccBuildTools
-		;;
 	WINSCW)
 		EXTRA_WINSCW_FLAGS_COMPILE="-msgstyle gcc -gccinc -dialect c99 -relax_pointers -wchar_t off -align 4 -warnings on -w nohidevirtual,nounusedexpr -enum int -str pool -exc ms -trigraphs on -nostdinc -d _UNICODE -d __SYMBIAN32__ -d __SERIES60_30__ -d __SERIES60_3X__ -d __CW32__ -d __WINS__ -d __WINSCW__ -d __EXE__ -d __SUPPORT_CPP_EXCEPTIONS__ -I$BUILD_EPOCROOT/epoc32/include -I$BUILD_EPOCROOT/epoc32/include/stdapis -I$BUILD_EPOCROOT/epoc32/include/variant"
 		EXTRA_WINSCW_FLAGS_LINK='-library -msgstyle gcc -stdlib -noimplib -search'
@@ -147,11 +141,6 @@ case "$HOST_SYSTEM" in
 		;;
 esac	
 case "$HOST_SYSTEM" in
-	Darwin)
-		BUILDTOOL_REZ_NAME="MacOS X resource compiler (Rez)"
-		BUILDTOOL_REZ_COMMAND='$PROG_Rez_FILE'
-		BUILDTOOL_REZ_DEPEND='Rez'
-		;;
 	MINGW32*|CYGWIN*|cegcc)
 		BUILDTOOL_WINDRES_NAME="Windows resource linker (windres)"
 		BUILDTOOL_WINDRES_COMMAND='$PROG_windres_FILE'

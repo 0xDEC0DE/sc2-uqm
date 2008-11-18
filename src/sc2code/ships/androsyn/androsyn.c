@@ -404,6 +404,9 @@ androsynth_preprocess (ELEMENT *ElementPtr)
 	else
 	{
 		cur_status_flags &= ~(THRUST | WEAPON | SPECIAL);
+		/* keep the special "on" for the duration of blazer mode, a la SC1 */
+		StarShipPtr->RaceDescPtr->ship_data.captain_control.special =
+				SetRelFrameIndex (StarShipPtr->RaceDescPtr->ship_data.captain_control.special, 2);
 
 					/* protection against vux */
 		if (StarShipPtr->RaceDescPtr->characteristics.turn_wait > BLAZER_TURN_WAIT)
@@ -416,9 +419,13 @@ androsynth_preprocess (ELEMENT *ElementPtr)
 
 		if (StarShipPtr->RaceDescPtr->ship_info.energy_level == 0)
 		{
+			/* turn special off */
+			StarShipPtr->RaceDescPtr->ship_data.captain_control.special =
+					SetRelFrameIndex (StarShipPtr->RaceDescPtr->ship_data.captain_control.special, -2);
 			ZeroVelocityComponents (&ElementPtr->velocity);
 			cur_status_flags &= ~(LEFT | RIGHT
 					| SHIP_AT_MAX_SPEED | SHIP_BEYOND_MAX_SPEED);
+			DrawCaptainsWindow(StarShipPtr);
 
 			StarShipPtr->RaceDescPtr->characteristics.turn_wait =
 					StarShipPtr->RaceDescPtr->characteristics.special_wait;

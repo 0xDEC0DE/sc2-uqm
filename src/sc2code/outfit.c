@@ -545,11 +545,21 @@ InitFlash:
 static void
 ChangeFuelQuantity (void)
 {
+	int loop;
+	int incr = 0;
+
+	if (PulsedInputState.menu[KEY_MENU_UP]) incr = 1;
+	if (PulsedInputState.menu[KEY_MENU_DOWN]) incr = -1;
+	if (PulsedInputState.menu[KEY_MENU_PAGE_DOWN]) incr = -10;
+	if (PulsedInputState.menu[KEY_MENU_PAGE_UP]) incr = 10;
+
+	for (loop = 0; loop < abs(incr); loop++)
+	{
 	RECT r;
 	
 	r.extent.height = 1;
 	
-	if (PulsedInputState.menu[KEY_MENU_UP])
+	if (incr > 0)
 	{
 		LockMutex (GraphicsLock);
 		SetContext (SpaceContext);
@@ -575,11 +585,16 @@ ChangeFuelQuantity (void)
 		}
 		else
 		{	// no more room for fuel or not enough RUs
+			if (loop)
+			{
+				UnlockMutex (GraphicsLock);
+				break;
+			}
 			PlayMenuSound (MENU_SOUND_FAILURE);
 		}
 		UnlockMutex (GraphicsLock);
 	}
-	else if (PulsedInputState.menu[KEY_MENU_DOWN])
+	else if (incr < 0)
 	{
 		LockMutex (GraphicsLock);
 		SetContext (SpaceContext);
@@ -599,12 +614,21 @@ ChangeFuelQuantity (void)
 		}
 		else
 		{	// no fuel left to drain
+			if (loop)
+			{
+				SetContext (StatusContext);
+				GetGaugeRect (&r, FALSE);
+				SetFlashRect (&r, (FRAME)0);
+				UnlockMutex (GraphicsLock);
+				break;
+			}
 			PlayMenuSound (MENU_SOUND_FAILURE);
 		}
 		SetContext (StatusContext);
 		GetGaugeRect (&r, FALSE);
 		SetFlashRect (&r, (FRAME)0);
 		UnlockMutex (GraphicsLock);
+	}
 	}
 }
 
@@ -793,7 +817,7 @@ ExitOutfit:
 		switch (pMS->CurState)
 		{
 			case OUTFIT_DOFUEL:
-				SetMenuSounds (MENU_SOUND_UP | MENU_SOUND_DOWN, MENU_SOUND_SELECT | MENU_SOUND_CANCEL);
+				SetMenuSounds (MENU_SOUND_UP | MENU_SOUND_DOWN | MENU_SOUND_PAGEUP | MENU_SOUND_PAGEDOWN, MENU_SOUND_SELECT | MENU_SOUND_CANCEL);
 				break;
 			default:
 				SetMenuSounds (MENU_SOUND_ARROWS, MENU_SOUND_SELECT);

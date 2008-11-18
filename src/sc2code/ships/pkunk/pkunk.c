@@ -19,6 +19,7 @@
 #include "ships/ship.h"
 #include "ships/pkunk/resinst.h"
 
+#include "settings.h"
 #include "globdata.h"
 #include "libs/mathlib.h"
 
@@ -469,9 +470,14 @@ pkunk_preprocess (ELEMENT *ElementPtr)
 		{
 			COUNT angle, facing;
 
-			ProcessSound (SetAbsSoundIndex (
+			// kill any music that might be playing.
+			// The only possible candidate for this is
+			// the shofixti victory ditty -- if you are
+			// here, then the scout didn't really win
+			StopMusic ();
+			PlaySound (SetAbsSoundIndex (
 					StarShipPtr->RaceDescPtr->ship_data.ship_sounds, 1
-					), ElementPtr);
+					), NotPositional (), NULL, GAME_SOUND_PRIORITY);
 
 			ElementPtr->life_span = PHOENIX_LIFE;
 			SetPrimType (&(GLOBAL (DisplayArray))[ElementPtr->PrimIndex],

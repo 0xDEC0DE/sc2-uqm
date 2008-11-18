@@ -1595,6 +1595,12 @@ DoStarMap (void)
 	transition_pending = TRUE;
 	if (GET_GAME_STATE (ARILOU_SPACE_SIDE) <= 1)
 		UpdateMap ();
+	else
+	{
+		if (GLOBAL_SIS (log_x) == UNIVERSE_TO_LOGX (QUASI_SPACE_X) &&
+				GLOBAL_SIS (log_y) == UNIVERSE_TO_LOGY (QUASI_SPACE_Y))
+			MenuState.delta_item = 2;
+	}
 
 	LockMutex (GraphicsLock);
 	

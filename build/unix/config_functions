@@ -978,6 +978,11 @@ EOF
 # Define the build system type.
 set_build_system() {
 	BUILD_SYSTEM=`uname -s`
+
+	if [ "$BUILD_SYSTEM" = 'Darwin' ] ; then
+		build_message "Error: please use the Xcode project under build/macosx to build this software"
+		exit
+	fi
 }
 
 # Define the host system type.
@@ -1007,8 +1012,6 @@ set_host_system() {
 				HOST_SYSTEM="MINGW32" ;;
 			[Cc][Yy][Gg][Ww][Ii][Nn]*)
 				HOST_SYSTEM="CYGWIN" ;;
-			[Dd][Aa][Rr][Ww][Ii][Nn])
-				HOST_SYSTEM="Darwin" ;;
 			[Ss][Uu][Nn][Oo][Ss])
 				HOST_SYSTEM="SunOS" ;;
 			[Qq][Nn][Xx])
