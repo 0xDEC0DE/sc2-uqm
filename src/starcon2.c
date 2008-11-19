@@ -104,6 +104,7 @@ static int parseIntOption (const char *str, int *result,
 static int parseFloatOption (const char *str, float *f,
 		const char *optName);
 static int parseVolume (const char *str, float *vol, const char *optName);
+static int parseGamma (const char *str, float *gamma, const char *optName);
 static int InvalidArgument (const char *supplied, const char *opt_name);
 static int Check_PC_3DO_opt (const char *value, DWORD mask, const char *opt,
 		int *result);
@@ -391,6 +392,11 @@ main (int argc, char *argv[])
 		parseVolume (res_GetString ("config.speechvol"), 
 				&options.speechVolumeScale, "speech volume");
 	}		
+	if (res_HasKey ("config.gamma"))
+	{
+		parseGamma (res_GetString ("config.gamma"), 
+				&options.gamma, "gamma correction");
+	}		
 
 	{	/* remove old control template names */
 		int i;
@@ -437,6 +443,7 @@ main (int argc, char *argv[])
 	musicVolumeScale = options.musicVolumeScale;
 	sfxVolumeScale = options.sfxVolumeScale;
 	speechVolumeScale = options.speechVolumeScale;
+	gammaCorrection = (options.gammaSet) ? options.gamma : 1.0f;
 	optAddons = options.addons;
 
 	prepareContentDir (options.contentDir, options.addonDir, argv[0]);
@@ -936,6 +943,41 @@ parseVolume (const char *str, float *vol, const char *optName)
 	}
 
 	*vol = intVol / 100.0f;
+	return 0;
+}
+
+static int
+parseGamma (const char *str, float *gamma, const char *optName)
+{
+	char *endPtr;
+	int intGamma;
+
+	if (str[0] == '\0')
+	{
+		log_add (log_Error, "Error: Invalid value for '%s'.", optName);
+		return -1;
+	}
+	intGamma = (int) strtol (str, &endPtr, 10);
+	if (*endPtr != '\0')
+	{
+		log_add (log_Error, "Error: Junk characters in gamma specified "
+				"for '%s'.", optName);
+		return -1;
+	}
+
+	if (intGamma <= 0)
+	{
+		*gamma = 0.05f;
+		return 0;
+	}
+
+	if (intGamma > 100)
+	{
+		*gamma = 2.0f;
+		return 0;
+	}
+
+	*gamma = intGamma / 50.0f;
 	return 0;
 }
 

@@ -49,6 +49,7 @@ int optWhichIntro;
 int optWhichShield;
 int optSmoothScroll;
 int optMeleeScale;
+float gammaCorrection = 1.0f;
 const char **optAddons;
 
 BOOLEAN opt3doMusic;

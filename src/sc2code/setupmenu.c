@@ -72,7 +72,7 @@ static void clear_control (WIDGET_CONTROLENTRY *widget);
 
 #define MENU_COUNT          8
 #define CHOICE_COUNT       22
-#define SLIDER_COUNT        3
+#define SLIDER_COUNT        4
 #define BUTTON_COUNT       10
 #define LABEL_COUNT         4
 #define TEXTENTRY_COUNT     1
@@ -102,7 +102,7 @@ static HANDLER button_handlers[BUTTON_COUNT] = {
 	do_keyconfig };
 
 static int menu_sizes[MENU_COUNT] = {
-	7, 5, 7, 9, 2, 5,
+	7, 6, 7, 9, 2, 5,
 #ifdef HAVE_OPENGL
 	5,
 #else
@@ -127,6 +127,7 @@ static WIDGET *main_widgets[] = {
 static WIDGET *graphics_widgets[] = {
 	(WIDGET *)(&choices[0]),
 	(WIDGET *)(&choices[10]),
+	(WIDGET *)(&sliders[3]),
 	(WIDGET *)(&choices[2]),
 	(WIDGET *)(&choices[3]),
 	(WIDGET *)(&buttons[1]) };
@@ -388,6 +389,7 @@ SetDefaults (void)
 	sliders[0].value = opts.musicvol;
 	sliders[1].value = opts.sfxvol;
 	sliders[2].value = opts.speechvol;
+	sliders[3].value = opts.gamma;
 }
 
 static void
@@ -419,6 +421,7 @@ PropagateResults (void)
 	opts.musicvol = sliders[0].value;
 	opts.sfxvol = sliders[1].value;
 	opts.speechvol = sliders[2].value;
+	opts.gamma = sliders[3].value;
 	SetGlobalOptions (&opts);
 }
 
@@ -1194,6 +1197,7 @@ GetGlobalOptions (GLOBALOPTS *opts)
 	opts->musicvol = (((int)(musicVolumeScale * 100.0f) + 2) / 5) * 5;
 	opts->sfxvol = (((int)(sfxVolumeScale * 100.0f) + 2) / 5) * 5;
 	opts->speechvol = (((int)(speechVolumeScale * 100.0f) + 2) / 5) * 5;
+	opts->gamma = (((int)(gammaCorrection * 50.0f) + 2) / 5) * 5;
 	
 }
 
@@ -1357,12 +1361,21 @@ SetGlobalOptions (GLOBALOPTS *opts)
 	res_PutInteger ("config.musicvol", opts->musicvol);
 	res_PutInteger ("config.sfxvol", opts->sfxvol);
 	res_PutInteger ("config.speechvol", opts->speechvol);
+	res_PutInteger ("config.gamma", opts->gamma);
 	musicVolumeScale = opts->musicvol / 100.0f;
 	sfxVolumeScale = opts->sfxvol / 100.0f;
 	speechVolumeScale = opts->speechvol / 100.0f;
+	gammaCorrection = opts->gamma / 50.0f;
 	// update actual volumes
 	SetMusicVolume (musicVolume);
 	SetSpeechVolume (speechVolumeScale);
+
+	// A gamma of 0.0 turns the screen completely black (on my
+	// hardware, at least) which is unfortunate.  Place a lower
+	// limit on the value that is barely bright enough to see
+	// anything
+	log_add (log_Debug, "DEBUG: setting gamma to %1.4f", gammaCorrection);
+	TFB_SetGamma (gammaCorrection ? gammaCorrection : 0.05f);
 
 	res_PutString ("keys.1.name", input_templates[0].name);
 	res_PutString ("keys.2.name", input_templates[1].name);

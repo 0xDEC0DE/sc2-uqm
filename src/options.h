@@ -37,6 +37,7 @@ extern int optWhichIntro;
 extern int optWhichShield;
 extern int optSmoothScroll;
 extern int optMeleeScale;
+extern float gammaCorrection;
 
 extern BOOLEAN opt3doMusic;
 extern BOOLEAN optPrecursorsMusic;
