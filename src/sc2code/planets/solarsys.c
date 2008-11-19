@@ -152,13 +152,13 @@ GenerateMoons (void)
 			pMoonDesc->temp_color = pCurDesc->temp_color;
 
 			data_index = pMoonDesc->data_index;
-			if (data_index == (BYTE)~0)
+			if (data_index == HIERARCHY_STARBASE)
 			{
 				/* Starbase */
 				pMoonDesc->image.frame =
 						SetAbsFrameIndex (SpaceJunkFrame, 16);
 			}
-			else if (data_index == (BYTE)(~0 - 1))
+			else if (data_index == SA_MATRA)
 			{
 				/* Sa-Matra */
 				pMoonDesc->image.frame =
@@ -1391,7 +1391,8 @@ StartGroups:
 
 		GetPlanetInfo ();
 		(*pSolarSysState->GenFunc) (GENERATE_ORBITAL);
-		init_coarse_scan ();
+		if (pSolarSysState->pOrbitalDesc->data_index < NUMBER_OF_PLANET_TYPES)
+			init_coarse_scan ();
 		LastActivity &= ~(CHECK_LOAD | CHECK_RESTART);
 		if ((GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD |
 				START_ENCOUNTER)) || GLOBAL_SIS (CrewEnlisted) == (COUNT)~0

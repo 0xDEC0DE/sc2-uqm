@@ -991,11 +991,11 @@ dumpMoon (FILE *out, const PLANET_DESC *moon)
 {
 	const char *typeStr;
 	
-	if (moon->data_index == (BYTE) ~0)
+	if (moon->data_index == HIERARCHY_STARBASE)
 	{
 		typeStr = "StarBase";
 	}
-	else if (moon->data_index == (BYTE) (~0 - 1))
+	else if (moon->data_index == SA_MATRA)
 	{
 		typeStr = "Sa-Matra";
 	}
@@ -1014,12 +1014,12 @@ dumpWorld (FILE *out, const PLANET_DESC *world)
 {
 	PLANET_INFO *info;
 	
-	if (world->data_index == (BYTE) ~0) {
+	if (world->data_index == HIERARCHY_STARBASE) {
 		// StarBase
 		return;
 	}
 	
-	if (world->data_index == (BYTE)(~0 - 1)) {
+	if (world->data_index == SA_MATRA) {
 		// Sa-Matra
 		return;
 	}
@@ -1240,12 +1240,12 @@ tallyMoonCallback (const PLANET_DESC *moon, void *arg)
 static void
 tallyResourcesWorld (TallyResourcesArg *arg, const PLANET_DESC *world)
 {
-	if (world->data_index == (BYTE) ~0) {
+	if (world->data_index == HIERARCHY_STARBASE) {
 		// StarBase
 		return;
 	}
 	
-	if (world->data_index == (BYTE)(~0 - 1)) {
+	if (world->data_index == SA_MATRA) {
 		// Sa-Matra
 		return;
 	}
