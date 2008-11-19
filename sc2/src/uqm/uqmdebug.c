@@ -1335,7 +1335,7 @@ planetTypeString (int typeIndex)
 	{
 		// "Gas Giant"
 		snprintf(typeStr, sizeof typeStr, "%s",
-				GAME_STRING (SCAN_STRING_BASE + 4 + 51));
+		GAME_STRING (SCAN_STRING_BASE + 4 + 51));
 	}
 	else
 	{

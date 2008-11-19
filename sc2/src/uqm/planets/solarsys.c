@@ -171,20 +171,22 @@ GenerateMoons (void)
 			;
 		else
 		{
-			BYTE data_index;
-
 			pMoonDesc->temp_color = pCurDesc->temp_color;
 
-			data_index = pMoonDesc->data_index;
-			if (data_index == HIERARCHY_STARBASE)
+			switch (pMoonDesc->data_index)
 			{
-				pMoonDesc->image.frame =
-						SetAbsFrameIndex (SpaceJunkFrame, 16);
-			}
-			else if (data_index == SA_MATRA)
-			{
-				pMoonDesc->image.frame =
-						SetAbsFrameIndex (SpaceJunkFrame, 19);
+				case HIERARCHY_STARBASE:
+					pMoonDesc->image.frame =
+							SetAbsFrameIndex (SpaceJunkFrame, 16);
+					break;
+				case SA_MATRA:
+					pMoonDesc->image.frame =
+							SetAbsFrameIndex (SpaceJunkFrame, 19);
+					break;
+				case DESTROYED_STARBASE:
+					pMoonDesc->image.frame =
+							SetAbsFrameIndex (SpaceJunkFrame, 22);
+					break;
 			}
 		}
 	}
@@ -230,7 +232,7 @@ LoadIPData (void)
 		SpaceMusic = LoadMusic (IP_MUSIC);
 	}
 }
-	
+
 
 static void
 sortPlanetPositions (void)
@@ -380,7 +382,7 @@ LoadSolarSys (void)
 	if (i == 0)
 	{
 		pSolarSysState->pBaseDesc = pSolarSysState->PlanetDesc;
-		pSolarSysState->pOrbitalDesc = pSolarSysState->PlanetDesc;
+				pSolarSysState->pOrbitalDesc = pSolarSysState->PlanetDesc;
 	}
 	else
 	{
@@ -748,7 +750,7 @@ FindRadius (void)
 				pSolarSysState->SunDesc[0].radius);
 
 		XFormIPLoc (&GLOBAL (ip_location), &GLOBAL (ShipStamp.origin), TRUE);
-	
+
 		delta_x = GLOBAL (ShipStamp.origin.x) -
 				pSolarSysState->MenuState.flash_rect0.corner.x;
 		delta_y = GLOBAL (ShipStamp.origin.y) -
@@ -963,24 +965,24 @@ UndrawShip (void)
 				&& !LeavingInnerSystem)
 			return;
 		
-		old_radius = 0;
-		if (LeavingInnerSystem)
-			SetGraphicGrabOther (1);
-		DrawSystem (pSolarSysState->SunDesc[0].radius, FALSE);
-		if (LeavingInnerSystem)
-		{
-			COUNT OldWI;
-
-			SetGraphicGrabOther (0);
-			OldWI = pSolarSysState->WaitIntersect;
-			CheckIntersect (TRUE);
-			if (pSolarSysState->WaitIntersect != OldWI)
+			old_radius = 0;
+			if (LeavingInnerSystem)
+				SetGraphicGrabOther (1);
+			DrawSystem (pSolarSysState->SunDesc[0].radius, FALSE);
+			if (LeavingInnerSystem)
 			{
-				pSolarSysState->WaitIntersect = (COUNT)~0;
-				return;
+				COUNT OldWI;
+
+				SetGraphicGrabOther (0);
+				OldWI = pSolarSysState->WaitIntersect;
+				CheckIntersect (TRUE);
+				if (pSolarSysState->WaitIntersect != OldWI)
+				{
+					pSolarSysState->WaitIntersect = (COUNT)~0;
+					return;
+				}
 			}
 		}
-	}
 
 	if (GLOBAL (autopilot.x) == ~0 && GLOBAL (autopilot.y) == ~0)
 		CheckIntersect (FALSE);
@@ -1564,8 +1566,8 @@ InitSolarSys (void)
 
 static void
 endInterPlanetary (void)
-{
-	GLOBAL (CurrentActivity) &= ~END_INTERPLANETARY;
+	{
+		GLOBAL (CurrentActivity) &= ~END_INTERPLANETARY;
 	
 	if (!(GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD)))
 	{
