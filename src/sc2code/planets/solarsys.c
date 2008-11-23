@@ -1391,8 +1391,9 @@ StartGroups:
 
 		GetPlanetInfo ();
 		(*pSolarSysState->GenFunc) (GENERATE_ORBITAL);
-		if ((pSolarSysState->pOrbitalDesc->data_index & ~PLANET_SHIELDED)
-				< NUMBER_OF_PLANET_TYPES)
+		// if the GenFunc left us with usable planet data,
+		// initialize the coarse scan frame
+		if (pSolarSysState->SysInfo.PlanetInfo.PlanDataPtr)
 			init_coarse_scan ();
 		LastActivity &= ~(CHECK_LOAD | CHECK_RESTART);
 		if ((GLOBAL (CurrentActivity) & (CHECK_ABORT | CHECK_LOAD |
