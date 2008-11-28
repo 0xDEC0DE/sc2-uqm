@@ -99,7 +99,7 @@ THIS IS PROBE 2418-B.
 #(THIS_IS_PROBE_41)	slyla030.ogg
 COORDINATES ARE: 
 
-#(THIS_IS_PROBE_42)
+#(THIS_IS_PROBE_42) slyla065.ogg
 .
 
 #(why_attack_1)
@@ -177,3 +177,105 @@ ENGAGING SELF-DESTRUCTION CIRCUITRY.
 
 #(destruct_code)
 Transmit destruct sequence!
+
+#(ENUMERATE_AND)	slyla031.ogg
+and
+
+#(ENUMERATE_BY)	slyla032.ogg
+:
+
+#(ENUMERATE_EIGHT)	slyla033.ogg
+eight
+
+#(ENUMERATE_EIGHTEEN)	slyla034.ogg
+eighteen
+
+#(ENUMERATE_EIGHTY)	slyla035.ogg
+eighty
+
+#(ENUMERATE_ELEVEN)	slyla036.ogg
+eleven
+
+#(ENUMERATE_FIFTEEN)	slyla037.ogg
+fifteen
+
+#(ENUMERATE_FIFTY)	slyla038.ogg
+fifty
+
+#(ENUMERATE_FIVE)	slyla039.ogg
+five
+
+#(ENUMERATE_FORTY)	slyla040.ogg
+forty
+
+#(ENUMERATE_FOUR)	slyla041.ogg
+four
+
+#(ENUMERATE_FOURTEEN)	slyla042.ogg
+fourteen
+
+#(ENUMERATE_HUNDRED)	slyla043.ogg
+hundred
+
+#(ENUMERATE_MINUS)	slyla063.ogg
+-
+
+#(ENUMERATE_NINE)	slyla044.ogg
+nine
+
+#(ENUMERATE_NINETEEN)	slyla045.ogg
+nineteen
+
+#(ENUMERATE_NINETY)	slyla046.ogg
+ninety
+
+#(ENUMERATE_ONE)	slyla047.ogg
+one
+
+#(ENUMERATE_PLUS)	slyla064.ogg
++
+
+#(ENUMERATE_POINT)	slyla048.ogg
+.
+
+#(ENUMERATE_SEVEN)	slyla049.ogg
+seven
+
+#(ENUMERATE_SEVENTEEN)	slyla050.ogg
+seventeen
+
+#(ENUMERATE_SEVENTY)	slyla051.ogg
+seventy
+
+#(ENUMERATE_SIX)	slyla052.ogg
+six
+
+#(ENUMERATE_SIXTEEN)	slyla053.ogg
+sixteen
+
+#(ENUMERATE_SIXTY)	slyla054.ogg
+sixty
+
+#(ENUMERATE_TEN)	slyla055.ogg
+ten
+
+#(ENUMERATE_THIRTEEN)	slyla056.ogg
+thirteen
+
+#(ENUMERATE_THIRTY)	slyla057.ogg
+thirty
+
+#(ENUMERATE_THREE)	slyla058.ogg
+three
+
+#(ENUMERATE_TWELVE)	slyla059.ogg
+twelve
+
+#(ENUMERATE_TWENTY)	slyla060.ogg
+twenty
+
+#(ENUMERATE_TWO)	slyla061.ogg
+two
+
+#(ENUMERATE_ZERO)	slyla062.ogg
+zero

@@ -24,6 +24,7 @@
 #include "battle.h"
 #include "setup.h"
 
+static NUMBER_SPEECH_DESC probe_numbers_english;
 
 static LOCDATA slylandro_desc =
 {
@@ -110,11 +111,104 @@ static LOCDATA slylandro_desc =
 		0, 0, /* RestartRate */
 		0, /* BlockMask */
 	},
-	NULL, /* AlienNumberSpeech - none */
+	&probe_numbers_english, /* AlienNumberSpeech - default */
 	/* Filler for loaded resources */
 	NULL, NULL, NULL,
 	NULL,
 	NULL,
+};
+
+static COUNT probe_digit_names[] =
+{
+	ENUMERATE_ZERO,
+	ENUMERATE_ONE,
+	ENUMERATE_TWO,
+	ENUMERATE_THREE,
+	ENUMERATE_FOUR,
+	ENUMERATE_FIVE,
+	ENUMERATE_SIX,
+	ENUMERATE_SEVEN,
+	ENUMERATE_EIGHT,
+	ENUMERATE_NINE
+};
+
+static COUNT probe_teen_names[] =
+{
+	ENUMERATE_TEN,
+	ENUMERATE_ELEVEN,
+	ENUMERATE_TWELVE,
+	ENUMERATE_THIRTEEN,
+	ENUMERATE_FOURTEEN,
+	ENUMERATE_FIFTEEN,
+	ENUMERATE_SIXTEEN,
+	ENUMERATE_SEVENTEEN,
+	ENUMERATE_EIGHTEEN,
+	ENUMERATE_NINETEEN
+};
+
+static COUNT probe_tens_names[] =
+{
+	0, /* invalid */
+	0, /* skip digit */
+	ENUMERATE_TWENTY,
+	ENUMERATE_THIRTY,
+	ENUMERATE_FORTY,
+	ENUMERATE_FIFTY,
+	ENUMERATE_SIXTY,
+	ENUMERATE_SEVENTY,
+	ENUMERATE_EIGHTY,
+	ENUMERATE_NINETY
+};
+
+static COUNT probe_extras_names[] =
+{
+	ENUMERATE_AND,
+	ENUMERATE_BY,
+	ENUMERATE_MINUS,
+	ENUMERATE_PLUS,
+	ENUMERATE_POINT
+};
+
+static NUMBER_SPEECH_DESC probe_numbers_english =
+{
+	4, /* NumDigits, note the length is 1 short */
+	{
+		{ /* 100-999 */
+			100, /* Divider */
+			0, /* Subtrahend */
+			probe_digit_names, /* StrDigits */
+			NULL, /* Names - not used */
+			ENUMERATE_HUNDRED /* CommonIndex */
+		},
+		{ /* 20-99 */
+			10, /* Divider */
+			0, /* Subtrahend */
+			probe_tens_names, /* StrDigits */
+			NULL, /* Names - not used */
+			0 /* CommonIndex - not used */
+		},
+		{ /* 10-19 */
+			1, /* Divider */
+			10, /* Subtrahend */
+			probe_teen_names, /* StrDigits */
+			NULL, /* Names - not used */
+			0 /* CommonIndex - not used */
+		},
+		{ /* 0-9 */
+			1, /* Divider */
+			0, /* Subtrahend */
+			probe_digit_names, /* StrDigits */
+			NULL, /* Names - not used */
+			0 /* CommonIndex - not used */
+		},
+		{ /* odds and ends, not automatically walked */
+			1, /* Divider */
+			0, /* Subtrahend */
+			probe_extras_names, /* StrDigits */
+			NULL, /* Names - not used */
+			0 /* CommonIndex - not used */
+		}
+	}
 };
 
 static RESPONSE_REF threat,
@@ -122,6 +216,51 @@ static RESPONSE_REF threat,
 			we_are_us,
 			why_attack,
 			bye;
+
+/* This callback function allows the probes to say their coordinates
+ * in their coordinate system.  Since in their coordinate system,
+ * position(0,0) is in the middle of the game starmap, this means
+ * positive and negative values must be allowed.
+ */
+static void
+speak_coords_cb (void)
+{
+	SIZE dx, dy;
+	COUNT adx, ady;
+
+	/* Generate coordinates */
+	dx = LOGX_TO_UNIVERSE (GLOBAL_SIS (log_x)) - 333;
+	adx = dx >= 0 ? dx : -dx;
+	dy = 9812 - LOGY_TO_UNIVERSE (GLOBAL_SIS (log_y));
+	ady = dy >= 0 ? dy : -dy;
+
+	/* + or - */
+	NPCPhrase (dy == ady ? ENUMERATE_PLUS : ENUMERATE_MINUS);
+
+	/* whole portion of y-coord */
+	NPCNumberPhrase ((SIZE)(dy / 10), NULL);
+
+	/* decimal point */
+	NPCPhrase (ENUMERATE_POINT);
+
+	/* fractional portion of y-coord */
+	NPCNumberPhrase ((COUNT)(ady % 10), NULL);
+
+	/* separator */
+	NPCPhrase (ENUMERATE_BY);
+
+	/* again, again! + or - */
+	NPCPhrase (dx == adx ? ENUMERATE_PLUS : ENUMERATE_MINUS);
+
+	/* whole portion of x-coord */
+	NPCNumberPhrase ((SIZE)(dx / 10), NULL);
+
+	/* decimal point */
+	NPCPhrase (ENUMERATE_POINT);
+
+	/* fractional portion of x-coord */
+	NPCNumberPhrase ((COUNT)(adx % 10), NULL);
+}
 
 static void
 CombatIsInevitable (RESPONSE_REF R)
@@ -266,13 +405,6 @@ CombatIsInevitable (RESPONSE_REF R)
 		else if (PLAYER_SAID (R, we_are_us))
 		{
 			NumVisits = GET_GAME_STATE (SLYLANDRO_PROBE_ID);
-			if (NumVisits == 3 && !optSubtitles)
-			{
-				/* If playing without subtitles, don't use the
-				 * last item in the conversation tree, which mentions
-				 * coordinates which can't be spoken. */
-				NumVisits--;
-			}
 			switch (NumVisits++)
 			{
 				case 0:
@@ -288,7 +420,7 @@ CombatIsInevitable (RESPONSE_REF R)
 				{
 					NPCPhrase (THIS_IS_PROBE_40);
 					NPCPhrase (THIS_IS_PROBE_41);
-					NPCPhrase (GLOBAL_PLAYER_LOCATION);
+					NPCPhrase_cb (GLOBAL_PLAYER_LOCATION, &speak_coords_cb);
 					NPCPhrase (THIS_IS_PROBE_42);
 
 					--NumVisits;

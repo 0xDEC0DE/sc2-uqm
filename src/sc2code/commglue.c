@@ -47,21 +47,16 @@ NPCPhrase_cb (int index,  TFB_TrackCB cb)
 			pTimeStamp = 0;
 			break;
 		case GLOBAL_PLAYER_LOCATION:
+		/* This is currently only used by the Slylandro Probes.
+		 * It runs a callback to generate/speak the coordinates
+		 * of the probe relative to their point of origin.
+		 */
 		{
-			SIZE dx, dy;
-			COUNT adx, ady;
-
-			dx = LOGX_TO_UNIVERSE (GLOBAL_SIS (log_x)) - 333;
-			adx = dx >= 0 ? dx : -dx;
-			dy = 9812 - LOGY_TO_UNIVERSE (GLOBAL_SIS (log_y));
-			ady = dy >= 0 ? dy : -dy;
-			sprintf (numbuf,
-					"%+04d.%01u,%+04d.%01u",
-					(SIZE)(dy / 10), (COUNT)(ady % 10),
-					(SIZE)(dx / 10), (COUNT)(adx % 10));
-			pStr = numbuf;
+			(*cb) ();
+			pStr = NULL;
 			pClip = 0;
 			pTimeStamp = 0;
+			cb = NULL;
 			break;
 		}
 		case 0:
