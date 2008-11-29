@@ -52,7 +52,8 @@ NPCPhrase_cb (int index,  TFB_TrackCB cb)
 		 * of the probe relative to their point of origin.
 		 */
 		{
-			(*cb) ();
+			if (cb)
+				(*cb) ();
 			pStr = NULL;
 			pClip = 0;
 			pTimeStamp = 0;
