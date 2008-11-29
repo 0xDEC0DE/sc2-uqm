@@ -1,3 +1,5 @@
+// Copyright 2008 Michael Martin
+
 /*
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -11,24 +13,17 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _FMV_H
-#define _FMV_H
+#ifndef VIDINTERN_H_
+#define VIDINTERN_H_
 
-#include "libs/compiler.h"
-#include "libs/sndlib.h"
-#include "libs/gfxlib.h"
-#define WANT_SHIP_SPINS
+#include "libs/vidlib.h"
 
-extern void Logo (void);
-extern void SplashScreen (void (* DoProcessing)(DWORD TimeOut));
-extern void Introduction (void);
-extern void Victory (void);
-extern void DoShipSpin (COUNT index, MUSIC_REF hMusic);
+typedef struct legacy_video_desc {
+	char *video, *audio, *speech;
+	DWORD loop;
+} LEGACY_VIDEO_DESC;
 
-extern BOOLEAN ShowPresentation (RESOURCE presentation);
-
-#endif  /* _FMV_H */
-
+#endif

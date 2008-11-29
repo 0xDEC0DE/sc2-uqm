@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		046F1B640EE1CEFE0029E43F /* legacyplayer.c in Sources */ = {isa = PBXBuildFile; fileRef = 046F1B610EE1CEFE0029E43F /* legacyplayer.c */; };
+		046F1B650EE1CEFE0029E43F /* vresins.c in Sources */ = {isa = PBXBuildFile; fileRef = 046F1B630EE1CEFE0029E43F /* vresins.c */; };
 		04F100250E8FC358007E8452 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04F1F9410E8FC155007E8452 /* Cocoa.framework */; };
 		04F100260E8FC358007E8452 /* Ogg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04F1F9350E8FC13A007E8452 /* Ogg.framework */; };
 		04F100270E8FC358007E8452 /* SDL_image.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04F1F9360E8FC13A007E8452 /* SDL_image.framework */; };
@@ -378,6 +380,9 @@
 /* End PBXBuildStyle section */
 
 /* Begin PBXFileReference section */
+		046F1B610EE1CEFE0029E43F /* legacyplayer.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = legacyplayer.c; path = ../../src/sc2code/libs/video/legacyplayer.c; sourceTree = SOURCE_ROOT; };
+		046F1B620EE1CEFE0029E43F /* vidintrn.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = vidintrn.h; path = ../../src/sc2code/libs/video/vidintrn.h; sourceTree = SOURCE_ROOT; };
+		046F1B630EE1CEFE0029E43F /* vresins.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = vresins.c; path = ../../src/sc2code/libs/video/vresins.c; sourceTree = SOURCE_ROOT; };
 		04F1670C0E8FCF4A007E8452 /* config_unix.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = config_unix.h; sourceTree = SOURCE_ROOT; };
 		04F1674F0E8FDB6F007E8452 /* The Ur-Quan Masters.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = "The Ur-Quan Masters.icns"; sourceTree = "<group>"; };
 		04F1F91E0E8FC0E8007E8452 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
@@ -1605,6 +1610,9 @@
 		04F1F9220E8FC10A007E8452 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				046F1B610EE1CEFE0029E43F /* legacyplayer.c */,
+				046F1B620EE1CEFE0029E43F /* vidintrn.h */,
+				046F1B630EE1CEFE0029E43F /* vresins.c */,
 				04F1670C0E8FCF4A007E8452 /* config_unix.h */,
 				04F1F9450E8FC17D007E8452 /* src */,
 			);
@@ -4068,6 +4076,8 @@
 				04F1FFEF0E8FC332007E8452 /* genchmmr.c in Sources */,
 				04F1FFF00E8FC332007E8452 /* virtch2.c in Sources */,
 				04F1FFF10E8FC332007E8452 /* SDLMain.m in Sources */,
+				046F1B640EE1CEFE0029E43F /* legacyplayer.c in Sources */,
+				046F1B650EE1CEFE0029E43F /* vresins.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -33,6 +33,7 @@
 
 #include <ctype.h>
 
+static BOOLEAN ShowSlidePresentation (STRING PresStr);
 
 typedef struct
 {
@@ -85,42 +86,6 @@ typedef struct {
 } SPINANIM_INPUT_STATE;
 
 static BOOLEAN DoPresentation (void *pIS);
-static BOOLEAN DoSpinAnim (void *pIS);
-
-BOOLEAN
-DoFMVEx (const char *name, const char *audname, const char *speechname,
-		DWORD loopframe)
-{
-	VIDEO_REF VidRef;
-	MUSIC_REF AudRef = 0;
-	MUSIC_REF SpeechRef = 0;
-
-	VidRef = LoadVideoFile (name);
-	if (!VidRef)
-		return FALSE;
-	if (audname)
-		AudRef = LoadMusicFile (audname);
-	if (speechname)
-		SpeechRef = LoadMusicFile (speechname);
-
-	VidPlayEx (VidRef, AudRef, SpeechRef, loopframe);
-	VidDoInput ();
-	VidStop ();
-	
-	DestroyVideo (VidRef);
-	if (SpeechRef)
-		DestroyMusic (SpeechRef);
-	if (AudRef)
-		DestroyMusic (AudRef);
-
-	return TRUE;
-}
-
-BOOLEAN
-DoFMV (const char *name)
-{
-	return DoFMVEx (name, NULL, NULL, VID_NO_LOOP);
-}
 
 static BOOLEAN
 ParseColorString (const char *Src, COLOR* pColor)
@@ -313,7 +278,7 @@ Present_DrawMovieFrame (PRESENTATION_INPUT_STATE* pPIS)
 BOOLEAN
 ShowPresentationFile (const char *name)
 {
-	return ShowPresentation (CaptureStringTable (
+	return ShowSlidePresentation (CaptureStringTable (
 			LoadStringTableFile (contentDir, name)));
 }
 
@@ -788,8 +753,8 @@ DoPresentation (void *pIS)
 	return FALSE;
 }
 
-BOOLEAN
-ShowPresentation (STRING PresStr)
+static BOOLEAN
+ShowSlidePresentation (STRING PresStr)
 {
 	CONTEXT OldContext;
 	FONT OldFont;
@@ -839,4 +804,29 @@ ShowPresentation (STRING PresStr)
 	UnlockMutex (GraphicsLock);
 
 	return TRUE;
+}
+
+BOOLEAN
+ShowPresentation (RESOURCE res)
+{
+	const char *resType = res_GetResourceType (res);
+	if (!resType)
+	{
+		return FALSE;
+	}
+	if (!strcmp (resType, "STRTAB"))
+	{
+		return ShowSlidePresentation (CaptureStringTable (
+			LoadStringTable (res)));
+	}
+	else if (!strcmp (resType, "3DOVID"))
+	{
+		LEGACY_VIDEO vid = LoadLegacyVideoInstance (res);
+		BOOLEAN result = PlayLegacyVideo (vid);
+		DestroyLegacyVideo (vid);
+		return result;
+	}
+	
+	log_add (log_Warning, "Tried to present '%s', of non-presentable type '%s'", res, resType);
+	return FALSE;
 }
