@@ -125,6 +125,33 @@ NPCNumberPhrase (int number, UNICODE **ptrack)
 	if (!speech)
 		return 0;
 
+	/* if the function is fed a negative number, go directly
+	 * to that (inverse) offset and add the subtitle + speech to
+	 * the chain.  This allows the function to be able to handle
+	 * decimal points, cooridnate systems, etc.  albeit in a
+	 * "piecemeal" fashion
+	 */
+	if (number < 0)
+	{
+		SPEECH_DIGIT *dig = speech->Digits + speech->NumDigits;
+		number = (-number) - 1;
+
+		if (!ptrack)
+		{
+			toplevel = 1;
+			ptrack = TrackNames;
+			strcpy (numbuf, (UNICODE *)GetStringAddress (
+					SetAbsStringTableIndex (
+							CommData.ConversationPhrases, number)));
+		}
+
+		*ptrack++ = GetStringSoundClip (SetAbsStringTableIndex (
+				CommData.ConversationPhrases, number));
+		queued++;
+	}
+	/* "normal" (i.e., positive integer) number handling proceeds here */
+	else
+	{
 	if (!ptrack)
 	{
 		toplevel = 1;
@@ -195,6 +222,7 @@ NPCNumberPhrase (int number, UNICODE **ptrack)
 		}
 
 		number %= dig->Divider;
+	}
 	}
 
 	if (toplevel)

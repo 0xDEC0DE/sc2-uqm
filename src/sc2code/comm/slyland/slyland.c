@@ -171,7 +171,7 @@ static COUNT probe_extras_names[] =
 
 static NUMBER_SPEECH_DESC probe_numbers_english =
 {
-	4, /* NumDigits, note the length is 1 short */
+	4, /* NumDigits, note that we lie here and short the length by 1 */
 	{
 		{ /* 100-999 */
 			100, /* Divider */
@@ -201,7 +201,11 @@ static NUMBER_SPEECH_DESC probe_numbers_english =
 			NULL, /* Names - not used */
 			0 /* CommonIndex - not used */
 		},
-		{ /* odds and ends, not automatically walked */
+		{	/* symbols and punctuation, not automatically
+			 * walked by NPCNumberPhrase() due to the lie
+			 * above.  We'll dig into this by hand in
+			 * the callback function below.
+			 */
 			1, /* Divider */
 			0, /* Subtrahend */
 			probe_extras_names, /* StrDigits */
@@ -220,7 +224,10 @@ static RESPONSE_REF threat,
 /* This callback function allows the probes to say their coordinates
  * in their coordinate system.  Since in their coordinate system,
  * position(0,0) is in the middle of the game starmap, this means
- * positive and negative values must be allowed.
+ * positive and negative values must be allowed.  Since NPCNumberPhrase()
+ * is only cognisant of how to pronounce positive integers, some
+ * subtle abuse is warranted here.  Feeding him negative numbers will
+ * cause him to speak the appropriate odds and ends.
  */
 static void
 speak_coords_cb (void)
@@ -235,28 +242,28 @@ speak_coords_cb (void)
 	ady = dy >= 0 ? dy : -dy;
 
 	/* + or - */
-	NPCPhrase (dy == ady ? ENUMERATE_PLUS : ENUMERATE_MINUS);
+	NPCNumberPhrase (dy == ady ? -ENUMERATE_PLUS : -ENUMERATE_MINUS, NULL);
 
 	/* whole portion of y-coord */
 	NPCNumberPhrase ((SIZE)(dy / 10), NULL);
 
 	/* decimal point */
-	NPCPhrase (ENUMERATE_POINT);
+	NPCNumberPhrase (-ENUMERATE_POINT, NULL);
 
 	/* fractional portion of y-coord */
 	NPCNumberPhrase ((COUNT)(ady % 10), NULL);
 
 	/* separator */
-	NPCPhrase (ENUMERATE_BY);
+	NPCNumberPhrase (-ENUMERATE_BY, NULL);
 
 	/* again, again! + or - */
-	NPCPhrase (dx == adx ? ENUMERATE_PLUS : ENUMERATE_MINUS);
+	NPCNumberPhrase (dx == adx ? -ENUMERATE_PLUS : -ENUMERATE_MINUS, NULL);
 
 	/* whole portion of x-coord */
 	NPCNumberPhrase ((SIZE)(dx / 10), NULL);
 
 	/* decimal point */
-	NPCPhrase (ENUMERATE_POINT);
+	NPCNumberPhrase (-ENUMERATE_POINT, NULL);
 
 	/* fractional portion of x-coord */
 	NPCNumberPhrase ((COUNT)(adx % 10), NULL);
