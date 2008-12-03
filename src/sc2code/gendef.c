@@ -120,6 +120,9 @@ GenerateIP (BYTE Index)
 		case ILWRATH_DEFINED:
 			GenFunc = GenerateIlwrath;
 			break;
+		case NEGLECTED_STARBASE_DEFINED:
+			GenFunc = GenerateNeglectedStarbase;
+			break;
 		default:
 			GenFunc = GenerateRandomIP;
 			break;

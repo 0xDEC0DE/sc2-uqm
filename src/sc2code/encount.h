@@ -119,7 +119,8 @@ enum
 	RAINBOW_DEFINED,
 	ILWRATH_DEFINED,
 	ANDROSYNTH_DEFINED,
-	MYCON_TRAP_DEFINED
+	MYCON_TRAP_DEFINED,
+	NEGLECTED_STARBASE_DEFINED
 };
 
 #define UMGAH_DEFINED TALKING_PET_DEFINED
@@ -177,6 +178,7 @@ extern void GeneratePkunk (BYTE control);
 extern void GenerateSupox (BYTE control);
 extern void GenerateRainbow (BYTE control);
 extern void GenerateIlwrath (BYTE control);
+extern void GenerateNeglectedStarbase (BYTE control);
 
 extern SIZE EncounterRace;
 extern BYTE EncounterGroup;

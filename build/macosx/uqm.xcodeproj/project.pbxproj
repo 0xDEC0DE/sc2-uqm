@@ -360,6 +360,7 @@
 		04F1FFEF0E8FC332007E8452 /* genchmmr.c in Sources */ = {isa = PBXBuildFile; fileRef = 04F1FCC80E8FC17F007E8452 /* genchmmr.c */; };
 		04F1FFF00E8FC332007E8452 /* virtch2.c in Sources */ = {isa = PBXBuildFile; fileRef = 04F1FBAA0E8FC17F007E8452 /* virtch2.c */; };
 		04F1FFF10E8FC332007E8452 /* SDLMain.m in Sources */ = {isa = PBXBuildFile; fileRef = 04F1F9510E8FC17D007E8452 /* SDLMain.m */; };
+		04FA543C0EE45BA500308524 /* gennegl.c in Sources */ = {isa = PBXBuildFile; fileRef = 04FA543B0EE45BA500308524 /* gennegl.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildStyle section */
@@ -380,9 +381,9 @@
 /* End PBXBuildStyle section */
 
 /* Begin PBXFileReference section */
-		046F1B610EE1CEFE0029E43F /* legacyplayer.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = legacyplayer.c; path = ../../src/sc2code/libs/video/legacyplayer.c; sourceTree = SOURCE_ROOT; };
-		046F1B620EE1CEFE0029E43F /* vidintrn.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = vidintrn.h; path = ../../src/sc2code/libs/video/vidintrn.h; sourceTree = SOURCE_ROOT; };
-		046F1B630EE1CEFE0029E43F /* vresins.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = vresins.c; path = ../../src/sc2code/libs/video/vresins.c; sourceTree = SOURCE_ROOT; };
+		046F1B610EE1CEFE0029E43F /* legacyplayer.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = legacyplayer.c; sourceTree = "<group>"; };
+		046F1B620EE1CEFE0029E43F /* vidintrn.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = vidintrn.h; sourceTree = "<group>"; };
+		046F1B630EE1CEFE0029E43F /* vresins.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = vresins.c; sourceTree = "<group>"; };
 		04F1670C0E8FCF4A007E8452 /* config_unix.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = config_unix.h; sourceTree = SOURCE_ROOT; };
 		04F1674F0E8FDB6F007E8452 /* The Ur-Quan Masters.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = "The Ur-Quan Masters.icns"; sourceTree = "<group>"; };
 		04F1F91E0E8FC0E8007E8452 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
@@ -1564,6 +1565,7 @@
 		04F1FE7E0E8FC180007E8452 /* uqmversion.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = uqmversion.h; sourceTree = "<group>"; };
 		04F1FE830E8FC1AB007E8452 /* The Ur-Quan Masters.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "The Ur-Quan Masters.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		04F1FE860E8FC1AB007E8452 /* The Ur-Quan Masters-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "The Ur-Quan Masters-Info.plist"; sourceTree = "<group>"; };
+		04FA543B0EE45BA500308524 /* gennegl.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = gennegl.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1610,9 +1612,6 @@
 		04F1F9220E8FC10A007E8452 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				046F1B610EE1CEFE0029E43F /* legacyplayer.c */,
-				046F1B620EE1CEFE0029E43F /* vidintrn.h */,
-				046F1B630EE1CEFE0029E43F /* vresins.c */,
 				04F1670C0E8FCF4A007E8452 /* config_unix.h */,
 				04F1F9450E8FC17D007E8452 /* src */,
 			);
@@ -2941,14 +2940,17 @@
 			children = (
 				04F1FC730E8FC17F007E8452 /* dukvid.c */,
 				04F1FC740E8FC17F007E8452 /* dukvid.h */,
+				046F1B610EE1CEFE0029E43F /* legacyplayer.c */,
 				04F1FC750E8FC17F007E8452 /* Makeinfo */,
 				04F1FC760E8FC17F007E8452 /* vfileins.c */,
 				04F1FC770E8FC17F007E8452 /* video.c */,
 				04F1FC780E8FC17F007E8452 /* video.h */,
 				04F1FC790E8FC17F007E8452 /* videodec.c */,
 				04F1FC7A0E8FC17F007E8452 /* videodec.h */,
+				046F1B620EE1CEFE0029E43F /* vidintrn.h */,
 				04F1FC7B0E8FC17F007E8452 /* vidplayer.c */,
 				04F1FC7C0E8FC17F007E8452 /* vidplayer.h */,
+				046F1B630EE1CEFE0029E43F /* vresins.c */,
 			);
 			path = video;
 			sourceTree = "<group>";
@@ -3014,6 +3016,7 @@
 		04F1FCC10E8FC17F007E8452 /* planets */ = {
 			isa = PBXGroup;
 			children = (
+				04FA543B0EE45BA500308524 /* gennegl.c */,
 				04F1FCC20E8FC17F007E8452 /* calc.c */,
 				04F1FCC30E8FC17F007E8452 /* cargo.c */,
 				04F1FCC40E8FC17F007E8452 /* devices.c */,
@@ -4078,6 +4081,7 @@
 				04F1FFF10E8FC332007E8452 /* SDLMain.m in Sources */,
 				046F1B640EE1CEFE0029E43F /* legacyplayer.c in Sources */,
 				046F1B650EE1CEFE0029E43F /* vresins.c in Sources */,
+				04FA543C0EE45BA500308524 /* gennegl.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
