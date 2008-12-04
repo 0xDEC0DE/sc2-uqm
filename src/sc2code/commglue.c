@@ -134,15 +134,20 @@ NPCNumberPhrase (int number, UNICODE **ptrack)
 	if (number < 0)
 	{
 		SPEECH_DIGIT *dig = speech->Digits + speech->NumDigits;
+		if (dig == NULL)
+			return 0;
+
 		number = (-number) - 1;
 
 		if (!ptrack)
 		{
 			toplevel = 1;
 			ptrack = TrackNames;
-			strcpy (numbuf, (UNICODE *)GetStringAddress (
+			strncpy (numbuf, (UNICODE *)GetStringAddress (
 					SetAbsStringTableIndex (
-							CommData.ConversationPhrases, number)));
+							CommData.ConversationPhrases, number)),
+					sizeof (numbuf) - 1);
+			numbuf[sizeof (numbuf) - 1] = (UNICODE)'\0';
 		}
 
 		*ptrack++ = GetStringSoundClip (SetAbsStringTableIndex (
