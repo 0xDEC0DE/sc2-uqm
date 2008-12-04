@@ -245,7 +245,7 @@ speak_coords_cb (void)
 	NPCNumberPhrase (dy == ady ? -ENUMERATE_PLUS : -ENUMERATE_MINUS, NULL);
 
 	/* whole portion of y-coord */
-	NPCNumberPhrase ((SIZE)(dy / 10), NULL);
+	NPCNumberPhrase ((SIZE)(ady / 10), NULL);
 
 	/* decimal point */
 	NPCNumberPhrase (-ENUMERATE_POINT, NULL);
@@ -260,7 +260,7 @@ speak_coords_cb (void)
 	NPCNumberPhrase (dx == adx ? -ENUMERATE_PLUS : -ENUMERATE_MINUS, NULL);
 
 	/* whole portion of x-coord */
-	NPCNumberPhrase ((SIZE)(dx / 10), NULL);
+	NPCNumberPhrase ((SIZE)(adx / 10), NULL);
 
 	/* decimal point */
 	NPCNumberPhrase (-ENUMERATE_POINT, NULL);

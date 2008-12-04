@@ -133,10 +133,6 @@ NPCNumberPhrase (int number, UNICODE **ptrack)
 	 */
 	if (number < 0)
 	{
-		SPEECH_DIGIT *dig = speech->Digits + speech->NumDigits;
-		if (dig == NULL)
-			return 0;
-
 		number = (-number) - 1;
 
 		if (!ptrack)
@@ -236,9 +232,7 @@ NPCNumberPhrase (int number, UNICODE **ptrack)
 		{	// nothing queued, say "zero"
 			*ptrack++ = GetStringSoundClip (SetAbsStringTableIndex (
 					CommData.ConversationPhrases,
-					speech->Digits[speech->NumDigits - 1].StrDigits[0]
-					));
-			
+					speech->Digits[speech->NumDigits - 1].StrDigits[0] - 1));
 		}
 		*ptrack++ = NULL; // term
 		
