@@ -99,7 +99,7 @@ THIS IS PROBE 2418-B.
 #(THIS_IS_PROBE_41)	slyla030.ogg
 COORDINATES ARE: 
 
-#(THIS_IS_PROBE_42) slyla065.ogg
+#(THIS_IS_PROBE_42) slyla031.ogg
 .
 
 #(why_attack_1)
@@ -177,9 +177,6 @@ ENGAGING SELF-DESTRUCTION CIRCUITRY.
 
 #(destruct_code)
 Transmit destruct sequence!
-
-#(ENUMERATE_AND)	slyla031.ogg
-and
 
 #(ENUMERATE_BY)	slyla032.ogg
 :

@@ -162,7 +162,6 @@ static COUNT probe_tens_names[] =
 
 static COUNT probe_extras_names[] =
 {
-	ENUMERATE_AND,
 	ENUMERATE_BY,
 	ENUMERATE_MINUS,
 	ENUMERATE_PLUS,
