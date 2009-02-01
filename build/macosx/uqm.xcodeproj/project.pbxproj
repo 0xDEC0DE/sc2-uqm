@@ -363,23 +363,6 @@
 		04FA543C0EE45BA500308524 /* gennegl.c in Sources */ = {isa = PBXBuildFile; fileRef = 04FA543B0EE45BA500308524 /* gennegl.c */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXBuildStyle section */
-		046CD9BC0E90227D005E0FFD /* Development */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-			};
-			name = Development;
-		};
-		046CD9BD0E90227D005E0FFD /* Deployment */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-			};
-			name = Deployment;
-		};
-/* End PBXBuildStyle section */
-
 /* Begin PBXFileReference section */
 		046F1B610EE1CEFE0029E43F /* legacyplayer.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = legacyplayer.c; sourceTree = "<group>"; };
 		046F1B620EE1CEFE0029E43F /* vidintrn.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = vidintrn.h; sourceTree = "<group>"; };
@@ -1563,7 +1546,7 @@
 		04F1FE700E8FC180007E8452 /* starcon2.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = starcon2.c; sourceTree = "<group>"; };
 		04F1FE7D0E8FC180007E8452 /* types.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = types.h; sourceTree = "<group>"; };
 		04F1FE7E0E8FC180007E8452 /* uqmversion.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = uqmversion.h; sourceTree = "<group>"; };
-		04F1FE830E8FC1AB007E8452 /* The Ur-Quan Masters.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "The Ur-Quan Masters.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		04F1FE830E8FC1AB007E8452 /* The Ur-Quan Masters.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = "The Ur-Quan Masters.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		04F1FE860E8FC1AB007E8452 /* The Ur-Quan Masters-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "The Ur-Quan Masters-Info.plist"; sourceTree = "<group>"; };
 		04FA543B0EE45BA500308524 /* gennegl.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = gennegl.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -3631,54 +3614,11 @@
 			);
 			buildRules = (
 			);
-			buildSettings = {
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
-				INFOPLIST_FILE = "The Ur-Quan Masters-Info.plist";
-				INSTALL_PATH = "$(HOME)/Applications";
-				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
-					"-framework",
-					AppKit,
-				);
-				PREBINDING = NO;
-				PRODUCT_NAME = "The Ur-Quan Masters";
-				WRAPPER_EXTENSION = app;
-				ZERO_LINK = YES;
-			};
 			dependencies = (
 			);
 			name = "The Ur-Quan Masters";
 			productName = "The Ur-Quan Masters";
 			productReference = 04F1FE830E8FC1AB007E8452 /* The Ur-Quan Masters.app */;
-			productSettingsXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
-<!DOCTYPE plist PUBLIC \"-//Apple Computer//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
-<plist version=\"1.0\">
-<dict>
-	<key>CFBundleDevelopmentRegion</key>
-	<string>English</string>
-	<key>CFBundleExecutable</key>
-	<string>${EXECUTABLE_NAME}</string>
-	<key>CFBundleIdentifier</key>
-	<string>com.yourcompany.The Ur-Quan Masters</string>
-	<key>CFBundleInfoDictionaryVersion</key>
-	<string>6.0</string>
-	<key>CFBundlePackageType</key>
-	<string>APPL</string>
-	<key>CFBundleSignature</key>
-	<string>????</string>
-	<key>CFBundleVersion</key>
-	<string>1.0</string>
-	<key>NSMainNibFile</key>
-	<string>MainMenu</string>
-	<key>NSPrincipalClass</key>
-	<string>NSApplication</string>
-</dict>
-</plist>
-";
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -3687,12 +3627,6 @@
 		04F1F9130E8FC0C5007E8452 /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 04F1F9140E8FC0C5007E8452 /* Build configuration list for PBXProject "uqm" */;
-			buildSettings = {
-			};
-			buildStyles = (
-				046CD9BC0E90227D005E0FFD /* Development */,
-				046CD9BD0E90227D005E0FFD /* Deployment */,
-			);
 			hasScannedForEncodings = 0;
 			mainGroup = 04F1F9110E8FC0C5007E8452;
 			productRefGroup = 04F1FE840E8FC1AB007E8452 /* Products */;
