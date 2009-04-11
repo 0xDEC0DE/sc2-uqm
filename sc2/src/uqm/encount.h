@@ -120,7 +120,8 @@ enum
 	ILWRATH_DEFINED,
 	ANDROSYNTH_DEFINED,
 	MYCON_TRAP_DEFINED,
-	NEGLECTED_STARBASE_DEFINED
+	NEGLECTED_STARBASE_DEFINED,
+	MOTHER_ARK_DEFINED
 };
 
 #define UMGAH_DEFINED TALKING_PET_DEFINED
@@ -179,6 +180,7 @@ extern void GenerateSupox (BYTE control);
 extern void GenerateRainbow (BYTE control);
 extern void GenerateIlwrath (BYTE control);
 extern void GenerateNeglectedStarbase (BYTE control);
+extern void GenerateMotherArk (BYTE control);
 
 // Last race the player battled with, or -1 if no battle took place.
 // Set to -1 by some funcs to inhibit IP groups from intercepting

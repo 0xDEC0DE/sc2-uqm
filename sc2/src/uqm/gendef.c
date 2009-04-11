@@ -123,6 +123,9 @@ GenerateIP (BYTE Index)
 		case NEGLECTED_STARBASE_DEFINED:
 			GenFunc = GenerateNeglectedStarbase;
 			break;
+		case MOTHER_ARK_DEFINED:
+			GenFunc = GenerateMotherArk;
+			break;
 		default:
 			GenFunc = GenerateRandomIP;
 			break;
