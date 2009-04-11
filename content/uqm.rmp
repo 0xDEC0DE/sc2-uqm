@@ -950,6 +950,7 @@ text.maidens = STRTAB:base/lander/energy/maidens.txt
 text.moonbase = STRTAB:base/lander/energy/moonbase.txt
 text.motherark = STRTAB:base/lander/energy/motherark.txt
 text.neglectedbase = STRTAB:base/lander/energy/neglectedbase.txt
+text.precursorbase = STRTAB:base/lander/energy/precursorbase.txt
 text.ruins = STRTAB:base/lander/energy/ruins.txt
 text.setupmenu = STRTAB:base/ui/setupmenu.txt
 text.spapluto = STRTAB:base/lander/energy/fwiffo.txt

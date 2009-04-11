@@ -37,8 +37,10 @@ GenerateIP (BYTE Index)
 		case SPATHI_DEFINED:
 			GenFunc = GenerateSpathi;
 			break;
-		case MELNORME0_DEFINED:
 		case MELNORME1_DEFINED:
+			GenFunc = GeneratePrecursorStarbase;
+			break;
+		case MELNORME0_DEFINED:
 		case MELNORME2_DEFINED:
 		case MELNORME3_DEFINED:
 		case MELNORME4_DEFINED:

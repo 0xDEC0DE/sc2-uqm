@@ -167,6 +167,11 @@ GenerateMoons (void)
 				pMoonDesc->image.frame =
 						SetAbsFrameIndex (SpaceJunkFrame, 22);
 			}
+			else if (data_index == PRECURSOR_STARBASE)
+			{
+				pMoonDesc->image.frame =
+						SetAbsFrameIndex (SpaceJunkFrame, 23);
+			}
 		}
 	}
 

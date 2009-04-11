@@ -10,6 +10,7 @@
 		043407C80F91108200FA1242 /* genmothark.c in Sources */ = {isa = PBXBuildFile; fileRef = 043407C70F91108200FA1242 /* genmothark.c */; };
 		046F1B640EE1CEFE0029E43F /* legacyplayer.c in Sources */ = {isa = PBXBuildFile; fileRef = 046F1B610EE1CEFE0029E43F /* legacyplayer.c */; };
 		046F1B650EE1CEFE0029E43F /* vresins.c in Sources */ = {isa = PBXBuildFile; fileRef = 046F1B630EE1CEFE0029E43F /* vresins.c */; };
+		048F5D730F915BC700F768A8 /* genprecrsr.c in Sources */ = {isa = PBXBuildFile; fileRef = 048F5D720F915BC700F768A8 /* genprecrsr.c */; };
 		04F100250E8FC358007E8452 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04F1F9410E8FC155007E8452 /* Cocoa.framework */; };
 		04F100260E8FC358007E8452 /* Ogg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04F1F9350E8FC13A007E8452 /* Ogg.framework */; };
 		04F100270E8FC358007E8452 /* SDL_image.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04F1F9360E8FC13A007E8452 /* SDL_image.framework */; };
@@ -369,6 +370,7 @@
 		046F1B610EE1CEFE0029E43F /* legacyplayer.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = legacyplayer.c; sourceTree = "<group>"; };
 		046F1B620EE1CEFE0029E43F /* vidintrn.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = vidintrn.h; sourceTree = "<group>"; };
 		046F1B630EE1CEFE0029E43F /* vresins.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = vresins.c; sourceTree = "<group>"; };
+		048F5D720F915BC700F768A8 /* genprecrsr.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = genprecrsr.c; sourceTree = "<group>"; };
 		04F1670C0E8FCF4A007E8452 /* config_unix.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = config_unix.h; sourceTree = SOURCE_ROOT; };
 		04F1674F0E8FDB6F007E8452 /* The Ur-Quan Masters.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = "The Ur-Quan Masters.icns"; sourceTree = "<group>"; };
 		04F1F91E0E8FC0E8007E8452 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
@@ -3001,6 +3003,7 @@
 		04F1FCC10E8FC17F007E8452 /* planets */ = {
 			isa = PBXGroup;
 			children = (
+				048F5D720F915BC700F768A8 /* genprecrsr.c */,
 				043407C70F91108200FA1242 /* genmothark.c */,
 				04FA543B0EE45BA500308524 /* gennegl.c */,
 				04F1FCC20E8FC17F007E8452 /* calc.c */,
@@ -4020,6 +4023,7 @@
 				046F1B650EE1CEFE0029E43F /* vresins.c in Sources */,
 				04FA543C0EE45BA500308524 /* gennegl.c in Sources */,
 				043407C80F91108200FA1242 /* genmothark.c in Sources */,
+				048F5D730F915BC700F768A8 /* genprecrsr.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

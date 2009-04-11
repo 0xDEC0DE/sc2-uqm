@@ -181,6 +181,7 @@ extern void GenerateRainbow (BYTE control);
 extern void GenerateIlwrath (BYTE control);
 extern void GenerateNeglectedStarbase (BYTE control);
 extern void GenerateMotherArk (BYTE control);
+extern void GeneratePrecursorStarbase (BYTE control);
 
 extern SIZE EncounterRace;
 extern BYTE EncounterGroup;
