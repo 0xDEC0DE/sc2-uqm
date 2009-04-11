@@ -77,6 +77,7 @@
 #define METAL_COLOR_TAB "planet.metal.colortable"
 #define METAL_XLAT_TAB "planet.metal.translatetable"
 #define MOONBASE_STRTAB "text.moonbase"
+#define MOTHER_ARK_STRTAB "text.motherark"
 #define NEGLECTED_BASE_STRTAB "text.neglectedbase"
 #define NOBLE_COLOR_TAB "planet.noble.colortable"
 #define NOBLE_XLAT_TAB "planet.noble.translatetable"

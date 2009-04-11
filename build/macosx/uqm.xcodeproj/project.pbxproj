@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		043407C80F91108200FA1242 /* genmothark.c in Sources */ = {isa = PBXBuildFile; fileRef = 043407C70F91108200FA1242 /* genmothark.c */; };
 		046F1B640EE1CEFE0029E43F /* legacyplayer.c in Sources */ = {isa = PBXBuildFile; fileRef = 046F1B610EE1CEFE0029E43F /* legacyplayer.c */; };
 		046F1B650EE1CEFE0029E43F /* vresins.c in Sources */ = {isa = PBXBuildFile; fileRef = 046F1B630EE1CEFE0029E43F /* vresins.c */; };
 		04F100250E8FC358007E8452 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04F1F9410E8FC155007E8452 /* Cocoa.framework */; };
@@ -364,6 +365,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		043407C70F91108200FA1242 /* genmothark.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = genmothark.c; sourceTree = "<group>"; };
 		046F1B610EE1CEFE0029E43F /* legacyplayer.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = legacyplayer.c; sourceTree = "<group>"; };
 		046F1B620EE1CEFE0029E43F /* vidintrn.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = vidintrn.h; sourceTree = "<group>"; };
 		046F1B630EE1CEFE0029E43F /* vresins.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = vresins.c; sourceTree = "<group>"; };
@@ -1546,7 +1548,7 @@
 		04F1FE700E8FC180007E8452 /* starcon2.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = starcon2.c; sourceTree = "<group>"; };
 		04F1FE7D0E8FC180007E8452 /* types.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = types.h; sourceTree = "<group>"; };
 		04F1FE7E0E8FC180007E8452 /* uqmversion.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = uqmversion.h; sourceTree = "<group>"; };
-		04F1FE830E8FC1AB007E8452 /* The Ur-Quan Masters.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = "The Ur-Quan Masters.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		04F1FE830E8FC1AB007E8452 /* The Ur-Quan Masters.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "The Ur-Quan Masters.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		04F1FE860E8FC1AB007E8452 /* The Ur-Quan Masters-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "The Ur-Quan Masters-Info.plist"; sourceTree = "<group>"; };
 		04FA543B0EE45BA500308524 /* gennegl.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = gennegl.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -2999,6 +3001,7 @@
 		04F1FCC10E8FC17F007E8452 /* planets */ = {
 			isa = PBXGroup;
 			children = (
+				043407C70F91108200FA1242 /* genmothark.c */,
 				04FA543B0EE45BA500308524 /* gennegl.c */,
 				04F1FCC20E8FC17F007E8452 /* calc.c */,
 				04F1FCC30E8FC17F007E8452 /* cargo.c */,
@@ -4016,6 +4019,7 @@
 				046F1B640EE1CEFE0029E43F /* legacyplayer.c in Sources */,
 				046F1B650EE1CEFE0029E43F /* vresins.c in Sources */,
 				04FA543C0EE45BA500308524 /* gennegl.c in Sources */,
+				043407C80F91108200FA1242 /* genmothark.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

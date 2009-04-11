@@ -65,6 +65,7 @@
 #define MISCDATA_MASK_PMAP_ANIM "graphics.miscdata"
 #define MODULES_PMAP_ANIM "graphics.modules"
 #define MOONBASE_MASK_PMAP_ANIM "graphics.moonbase"
+#define MOTHER_ARK_MASK_PMAP_ANIM "graphics.motherark"
 #define ORBENTER_PMAP_ANIM "graphics.orbenter"
 #define ORBIT_VIEW_ANIM "graphics.orbview"
 #define ORBPLAN_MASK_PMAP_ANIM "graphics.orbplan"
