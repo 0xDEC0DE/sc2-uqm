@@ -63,14 +63,14 @@ GenerateNeglectedStarbase (BYTE control)
 			pSolarSysState->PlanetDesc[0].NumPlanets = 1;
 			break;
 		case GENERATE_ORBITAL:
-            if (pSolarSysState->pOrbitalDesc == &pSolarSysState->PlanetDesc[0])
-            {
-                DoPlanetaryAnalysis (
-                        &pSolarSysState->SysInfo, pSolarSysState->pOrbitalDesc
-                        );
+			if (pSolarSysState->pOrbitalDesc == &pSolarSysState->PlanetDesc[0])
+			{
+				DoPlanetaryAnalysis (
+						&pSolarSysState->SysInfo, pSolarSysState->pOrbitalDesc
+						);
 
-                LoadPlanet (NULL);
-                break;
+				LoadPlanet (NULL);
+				break;
 			}
 				/* Starbase */
 			if (pSolarSysState->pOrbitalDesc->pPrevDesc == &pSolarSysState->PlanetDesc[0]
