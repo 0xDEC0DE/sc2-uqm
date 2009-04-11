@@ -95,6 +95,7 @@
 #define PKUNK_RUINS_STRTAB "text.spindle"
 #define PLUTONIC_COLOR_TAB "planet.plutonic.colortable"
 #define PLUTONIC_XLAT_TAB "planet.plutonic.translatetable"
+#define PRECURSOR_BASE_STRTAB "text.precursorbase"
 #define PRIMORDIAL_COLOR_TAB "planet.primordial.colortable"
 #define PRIMORDIAL_XLAT_TAB "planet.primordial.translatetable"
 #define PURPLE_COLOR_TAB "planet.purple.colortable"

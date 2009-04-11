@@ -181,6 +181,7 @@ extern void GenerateRainbow (BYTE control);
 extern void GenerateIlwrath (BYTE control);
 extern void GenerateNeglectedStarbase (BYTE control);
 extern void GenerateMotherArk (BYTE control);
+extern void GeneratePrecursorStarbase (BYTE control);
 
 // Last race the player battled with, or -1 if no battle took place.
 // Set to -1 by some funcs to inhibit IP groups from intercepting
