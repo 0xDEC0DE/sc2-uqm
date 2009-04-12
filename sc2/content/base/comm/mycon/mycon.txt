@@ -336,8 +336,9 @@ These are the homes of the Deep Children.
 #(HELLO_SUN_DEVICE_WORLD_1)	mycon-056.ogg
 This is a special place
 filled with Juffo-Wup.
-We must not allow it to be soiled by the Non.
-You must go. Now.
+But it is not the source.
+Juffo-Wup springs forth from 629.1, 220.8.
+We must not allow this place to be soiled by the Non.
 
 #(HELLO_SUN_DEVICE_WORLD_2)	mycon-057.ogg
 You have returned to our special place.
@@ -414,5 +415,6 @@ then you would truly understand Juffo-Wup... become part of Juffo-Wup.
 You WOULD be happier and more fulfilled.  Consider our offer.
 
 #(WONT_FALL_FOR_TRICK)	mycon-066.ogg
-This is a special place.
-You must go. Now.
+We do not interpret the will of Juffo-Wup.
+Only the source is so empowered.
+Until instructed otherwise, Juffo-Wup requires that we remain here.
