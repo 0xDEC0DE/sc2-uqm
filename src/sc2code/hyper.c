@@ -718,7 +718,7 @@ hyper_transition (ELEMENT *ElementPtr)
 				frame_index = NORMALIZE_FACING (frame_index);
 
 			GetElementStarShip (ElementPtr, &StarShipPtr);
-			if (frame_index == StarShipPtr->ShipFacing)
+			if (frame_index == NORMALIZE_FACING (StarShipPtr->ShipFacing))
 			{
 				ElementPtr->preprocess_func = ship_preprocess;
 				ElementPtr->postprocess_func = ship_postprocess;
