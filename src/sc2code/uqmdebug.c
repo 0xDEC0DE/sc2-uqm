@@ -489,6 +489,18 @@ doInstantMove (void)
 		}
 	}
 
+	// If entering HyperSpace directly from an orbital view,
+	// GLOBAL (ShipStamp.frame) will contain actual frame data,
+	// and not a DWORD indicating ship position.  Shocking.  Reset it
+	// if it's obviously out-of-bounds, and normalize it just-in-case.
+	// If this is not done, the ship will spin endlessly upon entry
+	// into HyperSpace from a coarse scan
+	if (LOWORD (GLOBAL (ShipStamp.frame)) > FULL_CIRCLE)
+		GLOBAL (ShipStamp.frame) = 0;
+	else
+		GLOBAL (ShipStamp.frame) = NORMALIZE_FACING (
+				GLOBAL (ShipStamp.frame));
+
 	// Turn off the autopilot:
 	(GLOBAL (autopilot)).x = ~0;
 	(GLOBAL (autopilot)).y = ~0;
