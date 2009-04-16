@@ -755,6 +755,28 @@ CheckObjectCollision (COUNT index)
 						UnlockElement (hElement);
 						break;
 					}
+					else if (scan == BIOLOGICAL_SCAN)
+					{
+						/* Corner case: collision of a stun bolt with a moon
+						 * bulldozer.  Blow 'em up!  Uses the same frames as
+						 * the lander explosion */
+
+						ElementPtr->state_flags |= FINITE_LIFE;
+						ElementPtr->turn_wait = MAKE_BYTE (2, 2);
+						ElementPtr->life_span = EXPLOSION_LIFE *
+								(LONIBBLE (ElementPtr->turn_wait));
+						ZeroVelocityComponents (&ElementPtr->velocity);
+
+						DisplayArray[ElementPtr->PrimIndex].Object.Stamp.frame =
+								 SetAbsFrameIndex (LanderFrame[0], 46);
+
+						PlaySound (SetAbsSoundIndex (
+								LanderSounds, LANDER_HITS), NotPositional (),
+								NULL, GAME_SOUND_PRIORITY + 1); 
+
+						UnlockElement (hElement);
+						break;
+					}
 
 					NumRetrieved = 0;
 				}
