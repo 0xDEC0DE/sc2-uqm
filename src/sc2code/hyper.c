@@ -41,7 +41,6 @@ static FRAME hyperstars[3];
 static COLORMAP hypercmaps[2];
 static BYTE fuel_ticks;
 static COUNT hyper_dx, hyper_dy, hyper_extra;
-static FRAME vortex_ships[NUM_AVAILABLE_RACES];
 
 /*
  * draws the melee icon for the battle group inside the black holes,
@@ -52,6 +51,7 @@ decorate_vortex (ELEMENT * ElementPtr)
 {
 	HENCOUNTER hEncounter, hNextEncounter;
 	FRAME f = NULL;
+	static FRAME vortex_ships[NUM_AVAILABLE_RACES];
 
 	// The element is still spawning, nothing to do yet
 	if (ElementPtr->death_func)
