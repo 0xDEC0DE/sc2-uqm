@@ -716,6 +716,12 @@ CheckObjectCollision (COUNT index)
 						{
 							if (--ElementPtr->hit_points == 0)
 							{
+								// stash the type of creature in the
+								// thrust_wait field.  It seems to be unused
+								// by the game for anything at this point
+								ElementPtr->thrust_wait =
+										ElementPtr->mass_points &
+										~CREATURE_AWARE;
 								ElementPtr->mass_points = value;
 								DisplayArray[
 										ElementPtr->PrimIndex
@@ -780,63 +786,79 @@ CheckObjectCollision (COUNT index)
 
 				if (NumRetrieved)
 				{
+					BYTE EType;
+					COUNT *amount, max, offset;
+					UNICODE ch, *pStr;
+
 					switch (scan)
 					{
 						case ENERGY_SCAN:
 							break;
 						case MINERAL_SCAN:
-							if (pPSD->ElementLevel < pPSD->MaxElementLevel)
+						case BIOLOGICAL_SCAN:
+							/* code path here is mostly the same, but there
+							 * are a few differences.
+							 */
+							if (scan == MINERAL_SCAN)
 							{
-								if (pPSD->ElementLevel
-										+ NumRetrieved > pPSD->MaxElementLevel)
-									NumRetrieved = (COUNT)(pPSD->MaxElementLevel
-											- pPSD->ElementLevel);
+								amount = &pPSD->ElementLevel;
+								max = pPSD->MaxElementLevel;
+								EType = ElementPtr->turn_wait;
+								offset = ELEMENTS_STRING_BASE;
+							}
+							else if (scan == BIOLOGICAL_SCAN)
+							{
+								amount = &pPSD->BiologicalLevel;
+								max = MAX_SCROUNGED;
+								EType = ElementPtr->thrust_wait;
+								offset = BIOLOGICAL_STRING_BASE;
+							}
+							if (*amount < max)
+							{
+								if (*amount + NumRetrieved > max)
+									NumRetrieved = (COUNT)(max - *amount);
 								FillLanderHold (pPSD, scan, NumRetrieved);
-								if (scan == MINERAL_SCAN)
-								{
-									BYTE EType;
-									UNICODE ch, *pStr;
 
-									EType = ElementPtr->turn_wait;
+								if (scan == MINERAL_SCAN)
 									pPSD->ElementAmounts[
 											ElementCategory (EType)
 											] += NumRetrieved;
 
-									pPSD->NumFrames = NUM_TEXT_FRAMES;
-									sprintf (pPSD->AmountBuf, "%u", NumRetrieved);
-									pStr = GAME_STRING (EType + ELEMENTS_STRING_BASE);
+								pPSD->NumFrames = NUM_TEXT_FRAMES;
+								sprintf (pPSD->AmountBuf, "%u", NumRetrieved);
+								pStr = GAME_STRING (EType + offset);
 
-									pPSD->MineralText[0].baseline.x =
-											(SURFACE_WIDTH >> 1)
-											+ (ElementControl.EndPoint.x
-											- LanderControl.EndPoint.x);
-									pPSD->MineralText[0].baseline.y =
-											(SURFACE_HEIGHT >> 1)
-											+ (ElementControl.EndPoint.y
-											- LanderControl.EndPoint.y);
-									pPSD->MineralText[0].CharCount =
+								/* XXX: this struct field should be renamed */
+								pPSD->MineralText[0].baseline.x =
+										(SURFACE_WIDTH >> 1)
+										+ (ElementControl.EndPoint.x
+										- LanderControl.EndPoint.x);
+								pPSD->MineralText[0].baseline.y =
+										(SURFACE_HEIGHT >> 1)
+										+ (ElementControl.EndPoint.y
+										- LanderControl.EndPoint.y);
+								pPSD->MineralText[0].CharCount =
+										(COUNT)~0;
+								pPSD->MineralText[1].pStr = pStr;
+								while ((ch = *pStr++) && ch != ' ')
+									;
+								if (ch == '\0')
+								{
+									pPSD->MineralText[1].CharCount =
 											(COUNT)~0;
-									pPSD->MineralText[1].pStr = pStr;
-									while ((ch = *pStr++) && ch != ' ')
-										;
-									if (ch == '\0')
-									{
-										pPSD->MineralText[1].CharCount =
-												(COUNT)~0;
-										pPSD->MineralText[2].CharCount = 0;
-									}
-									else  /* ch == ' ' */
-									{
-										// Name contains a space. Print over
-										// two lines.
-										pPSD->MineralText[1].CharCount =
-												utf8StringCountN(
-												pPSD->MineralText[1].pStr,
-												pStr - 1);
-										pPSD->MineralText[2].pStr = pStr;
-										pPSD->MineralText[2].CharCount =
-												(COUNT)~0;
-									}
+									pPSD->MineralText[2].CharCount = 0;
+								}
+								else  /* ch == ' ' */
+								{
+									// Name contains a space. Print over
+									// two lines.
+									pPSD->MineralText[1].CharCount =
+											utf8StringCountN(
+											pPSD->MineralText[1].pStr,
+											pStr - 1);
+									pPSD->MineralText[2].pStr = pStr;
+									pPSD->MineralText[2].CharCount =
+											(COUNT)~0;
 								}
 								break;
 							}
@@ -844,22 +866,6 @@ CheckObjectCollision (COUNT index)
 									LanderSounds, LANDER_FULL),
 									NotPositional (), NULL,
 									GAME_SOUND_PRIORITY);
-							continue;
-						case BIOLOGICAL_SCAN:
-							if (pPSD->BiologicalLevel < MAX_SCROUNGED)
-							{
-								if (pPSD->BiologicalLevel
-										+ NumRetrieved > MAX_SCROUNGED)
-									NumRetrieved = (COUNT)(
-											MAX_SCROUNGED
-											- pPSD->BiologicalLevel
-											);
-								FillLanderHold (pPSD, scan, NumRetrieved);
-								break;
-							}
-							PlaySound (SetAbsSoundIndex (
-									LanderSounds, LANDER_FULL
-									), NotPositional (), NULL, GAME_SOUND_PRIORITY);
 							continue;
 					}
 				}

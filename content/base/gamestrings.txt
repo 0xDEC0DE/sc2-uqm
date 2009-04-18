@@ -2384,3 +2384,107 @@ Only one side at a time can be network controlled.
 #(Netplay with a computer-controlled side is currently not possible.)
 Netplay with a computer-controlled side is currently not possible.
 
+
+#(Roto-Dendron)
+Roto-Dendron
+
+
+#(Macrocillia)
+Macrocillia
+
+
+#(Splort Wort)
+Splort Wort
+
+
+#(Whackin' Bush)
+Whackin' Bush
+
+
+#(Slot Machine Tree)
+Slot Machine Tree
+
+
+#(Neon Worm)
+Neon Worm
+
+
+#(Stiletto Urchin)
+Stiletto Urchin
+
+
+#(Deluxe Blob)
+Deluxe Blob
+
+
+#(Glowing Medusa)
+Glowing Medusa
+
+
+#(Carousel Beast)
+Carousel Beast
+
+
+#(Mysterious Bees)
+Mysterious Bees
+
+
+#(Hopping Blobby)
+Hopping Blobby
+
+
+#(Blood Monkey)
+Blood Monkey
+
+
+#(Yompin Yiminy)
+Yompin Yiminy
+
+
+#(Amorphous Trandicula)
+Amorphous Trandicula
+
+
+#(Crazy Weasel)
+Crazy Weasel
+
+
+#(Merry Whumpet)
+Merry Whumpet
+
+
+#(Fungal Squid)
+Fungal Squid
+
+
+#(Penguin Cyclops)
+Penguin Cyclops
+
+
+#(Chicken)
+Chicken
+
+
+#(Bubble Vine)
+Bubble Vine
+
+
+#(Bug-Eyed Bait)
+Bug-Eyed Bait
+
+
+#(Goo Burger)
+Goo Burger
+
+
+#(Evil One)
+Evil One
+
+
+#(Brainbox Bulldozers)
+Brainbox Bulldozers
+
+
+#(Zex's Beauty)
+Zex's Beauty
+
