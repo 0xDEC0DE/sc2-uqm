@@ -828,36 +828,35 @@ CheckObjectCollision (COUNT index)
 								sprintf (pPSD->AmountBuf, "%u", NumRetrieved);
 								pStr = GAME_STRING (EType + offset);
 
-								/* XXX: this struct field should be renamed */
-								pPSD->MineralText[0].baseline.x =
+								pPSD->ElementText[0].baseline.x =
 										(SURFACE_WIDTH >> 1)
 										+ (ElementControl.EndPoint.x
 										- LanderControl.EndPoint.x);
-								pPSD->MineralText[0].baseline.y =
+								pPSD->ElementText[0].baseline.y =
 										(SURFACE_HEIGHT >> 1)
 										+ (ElementControl.EndPoint.y
 										- LanderControl.EndPoint.y);
-								pPSD->MineralText[0].CharCount =
+								pPSD->ElementText[0].CharCount =
 										(COUNT)~0;
-								pPSD->MineralText[1].pStr = pStr;
+								pPSD->ElementText[1].pStr = pStr;
 								while ((ch = *pStr++) && ch != ' ')
 									;
 								if (ch == '\0')
 								{
-									pPSD->MineralText[1].CharCount =
+									pPSD->ElementText[1].CharCount =
 											(COUNT)~0;
-									pPSD->MineralText[2].CharCount = 0;
+									pPSD->ElementText[2].CharCount = 0;
 								}
 								else  /* ch == ' ' */
 								{
 									// Name contains a space. Print over
 									// two lines.
-									pPSD->MineralText[1].CharCount =
+									pPSD->ElementText[1].CharCount =
 											utf8StringCountN(
-											pPSD->MineralText[1].pStr,
+											pPSD->ElementText[1].pStr,
 											pStr - 1);
-									pPSD->MineralText[2].pStr = pStr;
-									pPSD->MineralText[2].CharCount =
+									pPSD->ElementText[2].pStr = pStr;
+									pPSD->ElementText[2].CharCount =
 											(COUNT)~0;
 								}
 								break;
@@ -1397,15 +1396,15 @@ ScrollPlanetSide (SIZE dx, SIZE dy, SIZE CountDown)
 			--pPSD->NumFrames;
 			SetContextForeGroundColor (pPSD->ColorCycle[pPSD->NumFrames >> 1]);
 
-			pPSD->MineralText[0].baseline.x -= dx;
-			pPSD->MineralText[0].baseline.y -= dy;
-			font_DrawText (&pPSD->MineralText[0]);
-			pPSD->MineralText[1].baseline.x = pPSD->MineralText[0].baseline.x;
-			pPSD->MineralText[1].baseline.y = pPSD->MineralText[0].baseline.y + 7;
-			font_DrawText (&pPSD->MineralText[1]);
-			pPSD->MineralText[2].baseline.x = pPSD->MineralText[1].baseline.x;
-			pPSD->MineralText[2].baseline.y = pPSD->MineralText[1].baseline.y + 7;
-			font_DrawText (&pPSD->MineralText[2]);
+			pPSD->ElementText[0].baseline.x -= dx;
+			pPSD->ElementText[0].baseline.y -= dy;
+			font_DrawText (&pPSD->ElementText[0]);
+			pPSD->ElementText[1].baseline.x = pPSD->ElementText[0].baseline.x;
+			pPSD->ElementText[1].baseline.y = pPSD->ElementText[0].baseline.y + 7;
+			font_DrawText (&pPSD->ElementText[1]);
+			pPSD->ElementText[2].baseline.x = pPSD->ElementText[1].baseline.x;
+			pPSD->ElementText[2].baseline.y = pPSD->ElementText[1].baseline.y + 7;
+			font_DrawText (&pPSD->ElementText[2]);
 		}
 	}
 
@@ -1991,10 +1990,10 @@ PlanetSide (MENU_STATE *pMS)
 		PSD.MaxElementLevel = PSD.ElementLevel;
 	PSD.ElementLevel = 0;
 
-	PSD.MineralText[0].align = ALIGN_CENTER;
-	PSD.MineralText[0].pStr = PSD.AmountBuf;
-	PSD.MineralText[1] = PSD.MineralText[0];
-	PSD.MineralText[2] = PSD.MineralText[1];
+	PSD.ElementText[0].align = ALIGN_CENTER;
+	PSD.ElementText[0].pStr = PSD.AmountBuf;
+	PSD.ElementText[1] = PSD.ElementText[0];
+	PSD.ElementText[2] = PSD.ElementText[1];
 
 	PSD.ColorCycle[0] = BUILD_COLOR (MAKE_RGB15 (0x1F, 0x03, 0x00), 0x7F);
 	PSD.ColorCycle[1] = BUILD_COLOR (MAKE_RGB15 (0x1F, 0x0A, 0x00), 0x7D);
