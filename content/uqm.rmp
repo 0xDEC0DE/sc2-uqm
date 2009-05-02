@@ -964,3 +964,4 @@ text.umgtrans = STRTAB:base/lander/energy/umgahcaster.txt
 text.urqwreck = STRTAB:base/lander/energy/urquanwreck.txt
 text.utwbomb = STRTAB:base/lander/energy/utwigbomb.txt
 text.vuxbeast = STRTAB:base/lander/bio/vuxbeast.txt
+text.zfpcolony = STRTAB:base/lander/energy/zfpcolony.txt
