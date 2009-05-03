@@ -81,6 +81,36 @@ GenerateScout (BYTE control)
 }
 
 static void
+generate_energy_signatures (void)
+{
+	COUNT i, which_node;
+	DWORD rand_val, old_rand;
+
+	old_rand = TFB_SeedRandom (
+			pSolarSysState->SysInfo.PlanetInfo.ScanSeed[ENERGY_SCAN]);
+
+	which_node = i = 0;
+	do
+	{
+		rand_val = TFB_Random ();
+		pSolarSysState->SysInfo.PlanetInfo.CurPt.x =
+				(LOBYTE (LOWORD (rand_val)) % (MAP_WIDTH - (8 << 1))) + 8;
+		pSolarSysState->SysInfo.PlanetInfo.CurPt.y =
+				(HIBYTE (LOWORD (rand_val)) % (MAP_HEIGHT - (8 << 1))) + 8;
+		pSolarSysState->SysInfo.PlanetInfo.CurType = 1;
+		pSolarSysState->SysInfo.PlanetInfo.CurDensity = 0;
+		if (which_node >= pSolarSysState->CurNode
+				&& !(pSolarSysState->SysInfo.PlanetInfo.ScanRetrieveMask[ENERGY_SCAN]
+				& (1L << i)))
+			break;
+		++which_node;
+	} while (++i < 16);
+	pSolarSysState->CurNode = which_node;
+
+	TFB_SeedRandom (old_rand);
+}
+
+static void
 GenerateZoqFotPikColonies (BYTE control)
 {
 	switch (control)
@@ -91,32 +121,7 @@ GenerateZoqFotPikColonies (BYTE control)
 					|| (pSolarSysState->pOrbitalDesc->pPrevDesc == &pSolarSysState->PlanetDesc[0]
 					&& pSolarSysState->pOrbitalDesc == &pSolarSysState->MoonDesc[1])) 
 			{
-				COUNT i, which_node;
-				DWORD rand_val, old_rand;
-
-				old_rand = TFB_SeedRandom (
-						pSolarSysState->SysInfo.PlanetInfo.ScanSeed[ENERGY_SCAN]
-						);
-
-				which_node = i = 0;
-				do
-				{
-					rand_val = TFB_Random ();
-					pSolarSysState->SysInfo.PlanetInfo.CurPt.x =
-							(LOBYTE (LOWORD (rand_val)) % (MAP_WIDTH - (8 << 1))) + 8;
-					pSolarSysState->SysInfo.PlanetInfo.CurPt.y =
-							(HIBYTE (LOWORD (rand_val)) % (MAP_HEIGHT - (8 << 1))) + 8;
-					pSolarSysState->SysInfo.PlanetInfo.CurType = 1;
-					pSolarSysState->SysInfo.PlanetInfo.CurDensity = 0;
-					if (which_node >= pSolarSysState->CurNode
-							&& !(pSolarSysState->SysInfo.PlanetInfo.ScanRetrieveMask[ENERGY_SCAN]
-							& (1L << i)))
-						break;
-					++which_node;
-				} while (++i < 16);
-				pSolarSysState->CurNode = which_node;
-
-				TFB_SeedRandom (old_rand);
+				generate_energy_signatures ();
 				break;
 			}
 		case GENERATE_ORBITAL:
@@ -161,32 +166,7 @@ GenerateZoqFotPik (BYTE control)
 		case GENERATE_ENERGY:
 			if (pSolarSysState->pOrbitalDesc == &pSolarSysState->PlanetDesc[0])
 			{
-				COUNT i, which_node;
-				DWORD rand_val, old_rand;
-
-				old_rand = TFB_SeedRandom (
-						pSolarSysState->SysInfo.PlanetInfo.ScanSeed[ENERGY_SCAN]
-						);
-
-				which_node = i = 0;
-				do
-				{
-					rand_val = TFB_Random ();
-					pSolarSysState->SysInfo.PlanetInfo.CurPt.x =
-							(LOBYTE (LOWORD (rand_val)) % (MAP_WIDTH - (8 << 1))) + 8;
-					pSolarSysState->SysInfo.PlanetInfo.CurPt.y =
-							(HIBYTE (LOWORD (rand_val)) % (MAP_HEIGHT - (8 << 1))) + 8;
-					pSolarSysState->SysInfo.PlanetInfo.CurType = 1;
-					pSolarSysState->SysInfo.PlanetInfo.CurDensity = 0;
-					if (which_node >= pSolarSysState->CurNode
-							&& !(pSolarSysState->SysInfo.PlanetInfo.ScanRetrieveMask[ENERGY_SCAN]
-							& (1L << i)))
-						break;
-					++which_node;
-				} while (++i < 16);
-				pSolarSysState->CurNode = which_node;
-
-				TFB_SeedRandom (old_rand);
+				generate_energy_signatures ();
 				break;
 			}
 			pSolarSysState->CurNode = 0;
