@@ -98,17 +98,17 @@ GenerateVUX (BYTE control)
 			pSolarSysState->CurNode = 0;
 			break;
 		case GENERATE_MOONS:
-			GenerateRandomIP (GENERATE_MOONS);
 			if (CurStarDescPtr->Index == VUX_DEFINED)
 			{
-				// Shift all the moons out by one.  Cute.
+				// Insert a starbase as the first moon
+				pSolarSysState->PlanetDesc[0].NumPlanets = 1;
+				GenerateRandomIP (GENERATE_MOONS);
 				memmove (&pSolarSysState->MoonDesc[1],
 						&pSolarSysState->MoonDesc[0],
 						sizeof (pSolarSysState->MoonDesc[0])
 						* pSolarSysState->PlanetDesc[0].NumPlanets);
-				++pSolarSysState->PlanetDesc[0].NumPlanets;
+				pSolarSysState->PlanetDesc[0].NumPlanets = 2;
 
-				// Insert a starbase as the first moon
 				pSolarSysState->MoonDesc[0].data_index =
 						(ActivateStarShip (VUX_SHIP, SPHERE_TRACKING)) ?
 						HIERARCHY_STARBASE : DESTROYED_STARBASE;
@@ -119,7 +119,9 @@ GenerateVUX (BYTE control)
 				pSolarSysState->MoonDesc[0].location.y =
 						SINE (HALF_CIRCLE - OCTANT,
 						pSolarSysState->MoonDesc[0].radius);
+				break;
 			}
+			GenerateRandomIP (GENERATE_MOONS);
 			break;
 		case GENERATE_PLANETS:
 		{
@@ -186,10 +188,8 @@ GenerateVUX (BYTE control)
 				{
 					pSolarSysState->pOrbitalDesc =
 							&pSolarSysState->PlanetDesc[0];
-					GLOBAL (ShipStamp.origin.x) =
-							pSolarSysState->SunDesc[0].image.origin.x;
-					GLOBAL (ShipStamp.origin.y) =
-							pSolarSysState->SunDesc[0].image.origin.y;
+					GLOBAL (ShipStamp.origin.x) = SIS_SCREEN_WIDTH >> 1;
+					GLOBAL (ShipStamp.origin.y) = SIS_SCREEN_HEIGHT >> 1;
 				}
 				// ...unless the Kohr-Ah have been through here
 				else
