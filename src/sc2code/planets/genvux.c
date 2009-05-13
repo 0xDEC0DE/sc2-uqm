@@ -97,6 +97,30 @@ GenerateVUX (BYTE control)
 			}
 			pSolarSysState->CurNode = 0;
 			break;
+		case GENERATE_MOONS:
+			GenerateRandomIP (GENERATE_MOONS);
+			if (CurStarDescPtr->Index == VUX_DEFINED)
+			{
+				// Shift all the moons out by one.  Cute.
+				memmove (&pSolarSysState->MoonDesc[1],
+						&pSolarSysState->MoonDesc[0],
+						sizeof (pSolarSysState->MoonDesc[0])
+						* pSolarSysState->PlanetDesc[0].NumPlanets);
+				++pSolarSysState->PlanetDesc[0].NumPlanets;
+
+				// Insert a starbase as the first moon
+				pSolarSysState->MoonDesc[0].data_index =
+						(ActivateStarShip (VUX_SHIP, SPHERE_TRACKING)) ?
+						HIERARCHY_STARBASE : DESTROYED_STARBASE;
+				pSolarSysState->MoonDesc[0].radius = MIN_MOON_RADIUS;
+				pSolarSysState->MoonDesc[0].location.x =
+						COSINE (HALF_CIRCLE - OCTANT,
+						pSolarSysState->MoonDesc[0].radius);
+				pSolarSysState->MoonDesc[0].location.y =
+						SINE (HALF_CIRCLE - OCTANT,
+						pSolarSysState->MoonDesc[0].radius);
+			}
+			break;
 		case GENERATE_PLANETS:
 		{
 			COUNT angle;
@@ -152,6 +176,58 @@ GenerateVUX (BYTE control)
 		}
 		case GENERATE_ORBITAL:
 		{
+			if ((CurStarDescPtr->Index == VUX_DEFINED) && 
+					(pSolarSysState->pOrbitalDesc == &pSolarSysState->MoonDesc[0]) &&
+					(pSolarSysState->pOrbitalDesc->pPrevDesc == &pSolarSysState->PlanetDesc[0]))
+			{
+				// If you go to the starbase, move the ship to
+				// the planet instead
+				if (ActivateStarShip (VUX_SHIP, SPHERE_TRACKING))
+				{
+					pSolarSysState->pOrbitalDesc =
+							&pSolarSysState->PlanetDesc[0];
+					GLOBAL (ShipStamp.origin.x) =
+							pSolarSysState->SunDesc[0].image.origin.x;
+					GLOBAL (ShipStamp.origin.y) =
+							pSolarSysState->SunDesc[0].image.origin.y;
+				}
+				// ...unless the Kohr-Ah have been through here
+				else
+				{
+					RECT r;
+					LockMutex (GraphicsLock);
+					
+					LoadStdLanderFont (&pSolarSysState->SysInfo.PlanetInfo);
+					pSolarSysState->SysInfo.PlanetInfo.DiscoveryString =
+							CaptureStringTable (
+									LoadStringTable (RUINS_STRTAB));
+
+					ScanContext = CreateContext ();
+					SetContext (ScanContext);
+					SetContextFGFrame (Screen);
+					r.corner.x = (SIS_ORG_X + SIS_SCREEN_WIDTH) - MAP_WIDTH;
+					r.corner.y = (SIS_ORG_Y + SIS_SCREEN_HEIGHT) - MAP_HEIGHT;
+					r.extent.width = MAP_WIDTH;
+					r.extent.height = MAP_HEIGHT;
+					SetContextClipRect (&r);
+
+					DoDiscoveryReport (MenuSounds);
+
+					SetContext (SpaceContext);
+					DestroyContext (ScanContext);
+					ScanContext = 0;
+
+					DestroyStringTable (ReleaseStringTable (
+							pSolarSysState->SysInfo.PlanetInfo.DiscoveryString
+							));
+					pSolarSysState->SysInfo.PlanetInfo.DiscoveryString = 0;
+					FreeLanderFont (&pSolarSysState->SysInfo.PlanetInfo);
+
+					UnlockMutex (GraphicsLock);
+					break; 
+				}
+			}
+
 			if ((pSolarSysState->pOrbitalDesc == &pSolarSysState->PlanetDesc[0]
 					&& (CurStarDescPtr->Index == VUX_DEFINED
 					|| (CurStarDescPtr->Index == MAIDENS_DEFINED

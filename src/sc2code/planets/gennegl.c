@@ -40,7 +40,7 @@ GenerateNeglectedStarbase (BYTE control)
 			GenerateRandomIP (GENERATE_MOONS);
 			if (pSolarSysState->pBaseDesc == &pSolarSysState->PlanetDesc[0])
 			{
-				pSolarSysState->MoonDesc[0].data_index = NEGLECTED_STARBASE;
+				pSolarSysState->MoonDesc[0].data_index = DESTROYED_STARBASE;
 				pSolarSysState->MoonDesc[0].radius = MIN_MOON_RADIUS;
 				angle = ARCTAN (pSolarSysState->MoonDesc[0].location.x,
 						pSolarSysState->MoonDesc[0].location.y);

@@ -162,7 +162,7 @@ GenerateMoons (void)
 				pMoonDesc->image.frame =
 						SetAbsFrameIndex (SpaceJunkFrame, 19);
 			}
-			else if (data_index == NEGLECTED_STARBASE)
+			else if (data_index == DESTROYED_STARBASE)
 			{
 				pMoonDesc->image.frame =
 						SetAbsFrameIndex (SpaceJunkFrame, 22);
