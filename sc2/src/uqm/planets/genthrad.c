@@ -100,6 +100,23 @@ GenerateThradd (BYTE control)
 			}
 			pSolarSysState->CurNode = 0;
 			break;
+		case GENERATE_MOONS:
+			GenerateRandomIP (GENERATE_MOONS);
+			if (CurStarDescPtr->Index == THRADD_DEFINED &&
+					pSolarSysState->pBaseDesc == &pSolarSysState->PlanetDesc[0])
+			{
+				pSolarSysState->MoonDesc[0].data_index =
+						(ActivateStarShip (THRADDASH_SHIP, SPHERE_TRACKING)) ?
+						HIERARCHY_STARBASE : DESTROYED_STARBASE;
+				pSolarSysState->MoonDesc[0].radius = MIN_MOON_RADIUS;
+				pSolarSysState->MoonDesc[0].location.x =
+						COSINE (HALF_CIRCLE + OCTANT,
+						pSolarSysState->MoonDesc[0].radius);
+				pSolarSysState->MoonDesc[0].location.y =
+						SINE (HALF_CIRCLE + OCTANT,
+						pSolarSysState->MoonDesc[0].radius);
+			}
+			break;
 		case GENERATE_PLANETS:
 		{
 			COUNT angle;
@@ -121,7 +138,7 @@ GenerateThradd (BYTE control)
 			else
 			{
 				pSolarSysState->PlanetDesc[0].data_index = WATER_WORLD;
-				pSolarSysState->PlanetDesc[0].NumPlanets = 0;
+				pSolarSysState->PlanetDesc[0].NumPlanets = 1;
 				pSolarSysState->PlanetDesc[0].radius = EARTH_RADIUS * 98L / 100;
 				angle = ARCTAN (
 						pSolarSysState->PlanetDesc[0].location.x,
@@ -135,6 +152,12 @@ GenerateThradd (BYTE control)
 			break;
 		}
 		case GENERATE_ORBITAL:
+			if ((CurStarDescPtr->Index == THRADD_DEFINED) &&
+					(pSolarSysState->pOrbitalDesc == &pSolarSysState->MoonDesc[0]) &&
+					(pSolarSysState->pOrbitalDesc->pPrevDesc == &pSolarSysState->PlanetDesc[0]))
+				if (VisitHomeWorldStarBase (ActivateStarShip (THRADDASH_SHIP, SPHERE_TRACKING)))
+					break;
+
 			if (pSolarSysState->pOrbitalDesc == &pSolarSysState->PlanetDesc[0])
 			{
 				if (ActivateStarShip (THRADDASH_SHIP, SPHERE_TRACKING)
