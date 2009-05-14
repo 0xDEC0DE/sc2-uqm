@@ -62,6 +62,21 @@ GenerateIlwrath (BYTE control)
 			}
 			pSolarSysState->CurNode = 0;
 			break;
+		case GENERATE_MOONS:
+			GenerateRandomIP (GENERATE_MOONS);
+			if (CurStarDescPtr->Index == ILWRATH_DEFINED &&
+					pSolarSysState->pBaseDesc == &pSolarSysState->PlanetDesc[0])
+			{
+				pSolarSysState->MoonDesc[0].data_index =
+						(ActivateStarShip (ILWRATH_SHIP, SPHERE_TRACKING)) ?
+						HIERARCHY_STARBASE : DESTROYED_STARBASE;
+				pSolarSysState->MoonDesc[0].radius = MIN_MOON_RADIUS;
+				pSolarSysState->MoonDesc[0].location.x =
+						COSINE (OCTANT, pSolarSysState->MoonDesc[0].radius);
+				pSolarSysState->MoonDesc[0].location.y =
+						SINE (OCTANT, pSolarSysState->MoonDesc[0].radius);
+			}
+			break;
 		case GENERATE_PLANETS:
 		{
 			COUNT angle;
@@ -77,9 +92,16 @@ GenerateIlwrath (BYTE control)
 					COSINE (angle, pSolarSysState->PlanetDesc[0].radius);
 			pSolarSysState->PlanetDesc[0].location.y =
 					SINE (angle, pSolarSysState->PlanetDesc[0].radius);
+			pSolarSysState->PlanetDesc[0].NumPlanets = 1;
 			break;
 		}
 		case GENERATE_ORBITAL:
+			if ((CurStarDescPtr->Index == ILWRATH_DEFINED) &&
+					(pSolarSysState->pOrbitalDesc == &pSolarSysState->MoonDesc[0]) &&
+					(pSolarSysState->pOrbitalDesc->pPrevDesc == &pSolarSysState->PlanetDesc[0]))
+				if (VisitHomeWorldStarBase (ActivateStarShip (ILWRATH_SHIP, SPHERE_TRACKING)))
+					break;
+
 			if (pSolarSysState->pOrbitalDesc == &pSolarSysState->PlanetDesc[0])
 			{
 				if (ActivateStarShip (ILWRATH_SHIP, SPHERE_TRACKING))
