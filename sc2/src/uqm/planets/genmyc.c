@@ -101,6 +101,46 @@ GenerateMycon (BYTE control)
 				break;
 			}
 			pSolarSysState->CurNode = 0;
+			break; 
+		case GENERATE_MOONS:
+			if (CurStarDescPtr->Index == MYCON_DEFINED &&
+					pSolarSysState->pBaseDesc == &pSolarSysState->PlanetDesc[0])
+			{
+				COUNT angle;
+
+				// Setup moons, then add a starbase as the last moon
+				pSolarSysState->PlanetDesc[0].NumPlanets = 2;
+				GenerateRandomIP (GENERATE_MOONS);
+				pSolarSysState->PlanetDesc[0].NumPlanets = 3;
+
+				pSolarSysState->MoonDesc[2].data_index =
+						(ActivateStarShip (MYCON_SHIP, SPHERE_TRACKING)) ?
+						HIERARCHY_STARBASE : DESTROYED_STARBASE;
+				angle = FULL_CIRCLE - OCTANT;
+				pSolarSysState->MoonDesc[2].radius = MIN_MOON_RADIUS;
+				pSolarSysState->MoonDesc[2].location.x =
+						COSINE (angle, pSolarSysState->MoonDesc[0].radius);
+				pSolarSysState->MoonDesc[2].location.y =
+						SINE (angle, pSolarSysState->MoonDesc[0].radius);
+
+				// adjust the positions of the other moons outward
+				pSolarSysState->MoonDesc[0].radius += MOON_DELTA;
+				angle = ARCTAN (pSolarSysState->MoonDesc[0].location.x,
+						pSolarSysState->MoonDesc[0].location.y);
+				pSolarSysState->MoonDesc[0].location.x =
+						COSINE (angle, pSolarSysState->MoonDesc[0].radius);
+				pSolarSysState->MoonDesc[0].location.y =
+						SINE (angle, pSolarSysState->MoonDesc[0].radius);
+				pSolarSysState->MoonDesc[1].radius += MOON_DELTA;
+				angle = ARCTAN (pSolarSysState->MoonDesc[1].location.x,
+						pSolarSysState->MoonDesc[1].location.y);
+				pSolarSysState->MoonDesc[1].location.x =
+						COSINE (angle, pSolarSysState->MoonDesc[1].radius);
+				pSolarSysState->MoonDesc[1].location.y =
+						SINE (angle, pSolarSysState->MoonDesc[1].radius);
+				break;
+			}
+			GenerateRandomIP (GENERATE_MOONS);
 			break;
 		case GENERATE_PLANETS:
 		{
@@ -122,6 +162,12 @@ GenerateMycon (BYTE control)
 			break;
 		}
 		case GENERATE_ORBITAL:
+			if ((CurStarDescPtr->Index == MYCON_DEFINED) &&
+					(pSolarSysState->pOrbitalDesc == &pSolarSysState->MoonDesc[2]) &&
+					(pSolarSysState->pOrbitalDesc->pPrevDesc == &pSolarSysState->PlanetDesc[0]))
+				if (VisitHomeWorldStarBase (ActivateStarShip (MYCON_SHIP, SPHERE_TRACKING)))
+					break;
+
 			if (pSolarSysState->pOrbitalDesc == &pSolarSysState->PlanetDesc[0])
 			{
 				if ((CurStarDescPtr->Index == MYCON_DEFINED
