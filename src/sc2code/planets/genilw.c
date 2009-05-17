@@ -73,11 +73,9 @@ GenerateIlwrath (BYTE control)
 					HIERARCHY_STARBASE : DESTROYED_STARBASE;
 			pSolarSysState->MoonDesc[0].radius = MIN_MOON_RADIUS;
 			pSolarSysState->MoonDesc[0].location.x =
-					COSINE (QUADRANT - OCTANT,
-					pSolarSysState->MoonDesc[0].radius);
+					COSINE (OCTANT, pSolarSysState->MoonDesc[0].radius);
 			pSolarSysState->MoonDesc[0].location.y =
-					SINE (QUADRANT - OCTANT,
-					pSolarSysState->MoonDesc[0].radius);
+					SINE (OCTANT, pSolarSysState->MoonDesc[0].radius);
 			break;
 		case GENERATE_PLANETS:
 		{

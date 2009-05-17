@@ -22,6 +22,8 @@
 #include "lander.h"
 #include "nameref.h"
 #include "resinst.h"
+#include "setup.h"
+#include "sounds.h"
 #include "state.h"
 #include "planets/genall.h"
 #include "libs/mathlib.h"
@@ -82,6 +84,30 @@ GeneratePkunk (BYTE control)
 			}
 			pSolarSysState->CurNode = 0;
 			break;
+		case GENERATE_MOONS:
+			if (CurStarDescPtr->Index == PKUNK_DEFINED)
+			{
+				// Insert a starbase as the first moon
+				pSolarSysState->PlanetDesc[0].NumPlanets = 1;
+				GenerateRandomIP (GENERATE_MOONS);
+				memmove (&pSolarSysState->MoonDesc[1],
+						&pSolarSysState->MoonDesc[0],
+						sizeof (pSolarSysState->MoonDesc[0])
+						* pSolarSysState->PlanetDesc[0].NumPlanets);
+				pSolarSysState->PlanetDesc[0].NumPlanets = 2;
+
+				pSolarSysState->MoonDesc[0].data_index =
+						(ActivateStarShip (PKUNK_SHIP, SPHERE_TRACKING)) ?
+						PKUNK_STARBASE : DESTROYED_STARBASE;
+				pSolarSysState->MoonDesc[0].radius = MIN_MOON_RADIUS;
+				pSolarSysState->MoonDesc[0].location.x =
+						COSINE (QUADRANT, pSolarSysState->MoonDesc[0].radius);
+				pSolarSysState->MoonDesc[0].location.y =
+						SINE (QUADRANT, pSolarSysState->MoonDesc[0].radius);
+				break;
+			}
+			GenerateRandomIP (GENERATE_MOONS);
+			break;
 		case GENERATE_PLANETS:
 		{
 			COUNT angle;
@@ -101,6 +127,56 @@ GeneratePkunk (BYTE control)
 			break;
 		}
 		case GENERATE_ORBITAL:
+			if ((pSolarSysState->pOrbitalDesc == &pSolarSysState->MoonDesc[0]) &&
+					(pSolarSysState->pOrbitalDesc->pPrevDesc == &pSolarSysState->PlanetDesc[0]))
+			{
+				// If you go to the starbase, move the ship to
+				// the planet instead
+				if (ActivateStarShip (PKUNK_SHIP, SPHERE_TRACKING))
+				{
+					pSolarSysState->pOrbitalDesc =
+							&pSolarSysState->PlanetDesc[0];
+					GLOBAL (ShipStamp.origin.x) = SIS_SCREEN_WIDTH >> 1;
+					GLOBAL (ShipStamp.origin.y) = SIS_SCREEN_HEIGHT >> 1;
+				}
+				// ...unless they're all dead
+				else
+				{
+					RECT r;
+					LockMutex (GraphicsLock);
+					
+					LoadStdLanderFont (&pSolarSysState->SysInfo.PlanetInfo);
+					pSolarSysState->SysInfo.PlanetInfo.DiscoveryString =
+							SetRelStringTableIndex (
+									CaptureStringTable (
+											LoadStringTable (RUINS_STRTAB)), 1);
+
+					ScanContext = CreateContext ();
+					SetContext (ScanContext);
+					SetContextFGFrame (Screen);
+					r.corner.x = (SIS_ORG_X + SIS_SCREEN_WIDTH) - MAP_WIDTH;
+					r.corner.y = (SIS_ORG_Y + SIS_SCREEN_HEIGHT) - MAP_HEIGHT;
+					r.extent.width = MAP_WIDTH;
+					r.extent.height = MAP_HEIGHT;
+					SetContextClipRect (&r);
+
+					DoDiscoveryReport (MenuSounds);
+
+					SetContext (SpaceContext);
+					DestroyContext (ScanContext);
+					ScanContext = 0;
+
+					DestroyStringTable (ReleaseStringTable (
+							pSolarSysState->SysInfo.PlanetInfo.DiscoveryString
+							));
+					pSolarSysState->SysInfo.PlanetInfo.DiscoveryString = 0;
+					FreeLanderFont (&pSolarSysState->SysInfo.PlanetInfo);
+
+					UnlockMutex (GraphicsLock);
+					break; 
+				}
+			}
+
 			if (pSolarSysState->pOrbitalDesc == &pSolarSysState->PlanetDesc[0])
 			{
 				if (ActivateStarShip (PKUNK_SHIP, SPHERE_TRACKING))
