@@ -191,6 +191,10 @@ GenerateMoons (void)
 					pMoonDesc->image.frame =
 							SetAbsFrameIndex (SpaceJunkFrame, 23);
 					break;
+				case ZOQFOTPIK_STARBASE:
+					pMoonDesc->image.frame =
+							SetAbsFrameIndex (SpaceJunkFrame, 24);
+					break;
 			}
 		}
 	}

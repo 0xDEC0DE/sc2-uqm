@@ -28,7 +28,7 @@ static void
 check_scout (void)
 {
 	HIPGROUP hGroup;
-	IP_GROUP *GroupPtr;
+		IP_GROUP *GroupPtr;
 
 	if (!GLOBAL (BattleGroupRef))
 		return; // nothing to check
@@ -37,17 +37,17 @@ check_scout (void)
 	if (!hGroup)
 		return; // still nothing to check
 
-	GroupPtr = LockIpGroup (&GLOBAL (ip_group_q), hGroup);
+		GroupPtr = LockIpGroup (&GLOBAL (ip_group_q), hGroup);
 	// REFORM_GROUP was set in ipdisp.c:ip_group_collision()
 	// during a collision with the flagship.
 	if (GroupPtr->race_id == ZOQFOTPIK_SHIP
 			&& (GroupPtr->task & REFORM_GROUP))
-	{
-		GroupPtr->task = FLEE | IGNORE_FLAGSHIP | REFORM_GROUP;
-		GroupPtr->dest_loc = 0;
+		{
+			GroupPtr->task = FLEE | IGNORE_FLAGSHIP | REFORM_GROUP;
+			GroupPtr->dest_loc = 0;
+		}
+		UnlockIpGroup (&GLOBAL (ip_group_q), hGroup);
 	}
-	UnlockIpGroup (&GLOBAL (ip_group_q), hGroup);
-}
 
 static void
 GenerateScout (BYTE control)
@@ -171,6 +171,29 @@ GenerateZoqFotPik (BYTE control)
 			}
 			pSolarSysState->CurNode = 0;
 			break;
+		case GENERATE_MOONS:
+			if (CurStarDescPtr->Index == ZOQFOT_DEFINED &&
+					pSolarSysState->pBaseDesc == &pSolarSysState->PlanetDesc[0])
+			{
+				// Setup moons, then add a starbase as the last moon
+				pSolarSysState->PlanetDesc[0].NumPlanets = 1;
+				GenerateRandomIP (GENERATE_MOONS);
+				pSolarSysState->PlanetDesc[0].NumPlanets = 2;
+
+				pSolarSysState->MoonDesc[1].data_index =
+						(ActivateStarShip (ZOQFOTPIK_SHIP, SPHERE_TRACKING)) ?
+						ZOQFOTPIK_STARBASE : DESTROYED_STARBASE;
+				pSolarSysState->MoonDesc[1].radius = MIN_MOON_RADIUS;
+				pSolarSysState->MoonDesc[1].location.x =
+						COSINE (HALF_CIRCLE + QUADRANT,
+								pSolarSysState->MoonDesc[1].radius);
+				pSolarSysState->MoonDesc[1].location.y =
+						SINE (HALF_CIRCLE + QUADRANT,
+								pSolarSysState->MoonDesc[1].radius);
+				break;
+			}
+			GenerateRandomIP (GENERATE_MOONS);
+			break;
 		case GENERATE_PLANETS:
 		{
 			COUNT angle;
@@ -190,6 +213,11 @@ GenerateZoqFotPik (BYTE control)
 			break;
 		}
 		case GENERATE_ORBITAL:
+			if ((pSolarSysState->pOrbitalDesc == &pSolarSysState->MoonDesc[1]) &&
+					(pSolarSysState->pOrbitalDesc->pPrevDesc == &pSolarSysState->PlanetDesc[0]))
+				if (VisitHomeWorldStarBase (ActivateStarShip (ZOQFOTPIK_SHIP, SPHERE_TRACKING)))
+					break;
+
 			if (pSolarSysState->pOrbitalDesc == &pSolarSysState->PlanetDesc[0])
 			{
 				if (ActivateStarShip (ZOQFOTPIK_SHIP, SPHERE_TRACKING))
