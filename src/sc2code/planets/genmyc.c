@@ -190,8 +190,9 @@ GenerateMycon (BYTE control)
 					
 					LoadStdLanderFont (&pSolarSysState->SysInfo.PlanetInfo);
 					pSolarSysState->SysInfo.PlanetInfo.DiscoveryString =
-							CaptureStringTable (
-									LoadStringTable (RUINS_STRTAB));
+							SetRelStringTableIndex (
+									CaptureStringTable (
+											LoadStringTable (RUINS_STRTAB)), 1);
 
 					ScanContext = CreateContext ();
 					SetContext (ScanContext);
