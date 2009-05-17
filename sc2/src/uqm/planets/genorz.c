@@ -253,6 +253,21 @@ GenerateOrz (BYTE control)
 			pSolarSysState->CurNode = 0;
 			break;
 		}
+		case GENERATE_MOONS:
+			GenerateRandomIP (GENERATE_MOONS);
+			if (CurStarDescPtr->Index == ORZ_DEFINED &&
+					pSolarSysState->pBaseDesc == &pSolarSysState->PlanetDesc[0])
+			{
+				pSolarSysState->MoonDesc[0].data_index =
+						(ActivateStarShip (ORZ_SHIP, SPHERE_TRACKING)) ?
+						ORZ_STARBASE : DESTROYED_STARBASE;
+				pSolarSysState->MoonDesc[0].radius = MIN_MOON_RADIUS;
+				pSolarSysState->MoonDesc[0].location.x =
+						COSINE (FULL_CIRCLE, pSolarSysState->MoonDesc[0].radius);
+				pSolarSysState->MoonDesc[0].location.y =
+						SINE (FULL_CIRCLE, pSolarSysState->MoonDesc[0].radius);
+			}
+			break;
 		case GENERATE_PLANETS:
 		{
 			COUNT angle;
@@ -262,7 +277,7 @@ GenerateOrz (BYTE control)
 			{
 				pSolarSysState->PlanetDesc[0].data_index = WATER_WORLD;
 				pSolarSysState->PlanetDesc[0].radius = EARTH_RADIUS * 156L / 100;
-				pSolarSysState->PlanetDesc[0].NumPlanets = 0;
+				pSolarSysState->PlanetDesc[0].NumPlanets = 1;
 				angle = ARCTAN (
 						pSolarSysState->PlanetDesc[0].location.x,
 						pSolarSysState->PlanetDesc[0].location.y
@@ -275,6 +290,12 @@ GenerateOrz (BYTE control)
 			break;
 		}
 		case GENERATE_ORBITAL:
+			if ((CurStarDescPtr->Index == ORZ_DEFINED) &&
+					(pSolarSysState->pOrbitalDesc == &pSolarSysState->MoonDesc[0]) &&
+					(pSolarSysState->pOrbitalDesc->pPrevDesc == &pSolarSysState->PlanetDesc[0]))
+				if (VisitHomeWorldStarBase (ActivateStarShip (ORZ_SHIP, SPHERE_TRACKING)))
+					break;
+
 			if ((CurStarDescPtr->Index == ORZ_DEFINED
 					&& pSolarSysState->pOrbitalDesc == &pSolarSysState->PlanetDesc[0])
 					|| (CurStarDescPtr->Index == TAALO_PROTECTOR_DEFINED
