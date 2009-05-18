@@ -147,30 +147,26 @@ GenerateMoons (void)
 			;
 		else
 		{
-			BYTE data_index;
-
 			pMoonDesc->temp_color = pCurDesc->temp_color;
 
-			data_index = pMoonDesc->data_index;
-			if (data_index == HIERARCHY_STARBASE)
+			switch (pMoonDesc->data_index)
 			{
-				pMoonDesc->image.frame =
-						SetAbsFrameIndex (SpaceJunkFrame, 16);
-			}
-			else if (data_index == SA_MATRA)
-			{
-				pMoonDesc->image.frame =
-						SetAbsFrameIndex (SpaceJunkFrame, 19);
-			}
-			else if (data_index == DESTROYED_STARBASE)
-			{
-				pMoonDesc->image.frame =
-						SetAbsFrameIndex (SpaceJunkFrame, 22);
-			}
-			else if (data_index == PRECURSOR_STARBASE)
-			{
-				pMoonDesc->image.frame =
-						SetAbsFrameIndex (SpaceJunkFrame, 23);
+				case HIERARCHY_STARBASE:
+					pMoonDesc->image.frame =
+							SetAbsFrameIndex (SpaceJunkFrame, 16);
+					break;
+				case SA_MATRA:
+					pMoonDesc->image.frame =
+							SetAbsFrameIndex (SpaceJunkFrame, 19);
+					break;
+				case DESTROYED_STARBASE:
+					pMoonDesc->image.frame =
+							SetAbsFrameIndex (SpaceJunkFrame, 22);
+					break;
+				case PRECURSOR_STARBASE:
+					pMoonDesc->image.frame =
+							SetAbsFrameIndex (SpaceJunkFrame, 23);
+					break;
 			}
 		}
 	}
