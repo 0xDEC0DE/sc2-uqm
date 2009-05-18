@@ -85,14 +85,20 @@ GenerateDruuge (BYTE control)
 			pSolarSysState->CurNode = 0;
 			break;
 		case GENERATE_MOONS:
-			pSolarSysState->MoonDesc[0].data_index =
-					(ActivateStarShip (DRUUGE_SHIP, SPHERE_TRACKING)) ?
-					DRUUGE_STARBASE : DESTROYED_STARBASE;
-			pSolarSysState->MoonDesc[0].radius = MIN_MOON_RADIUS;
-			pSolarSysState->MoonDesc[0].location.x =
-					COSINE (HALF_CIRCLE, pSolarSysState->MoonDesc[0].radius);
-			pSolarSysState->MoonDesc[0].location.y =
-					SINE (HALF_CIRCLE, pSolarSysState->MoonDesc[0].radius);
+			GenerateRandomIP (GENERATE_MOONS);
+			if (CurStarDescPtr->Index == DRUUGE_DEFINED &&
+					pSolarSysState->pBaseDesc == &pSolarSysState->PlanetDesc[0])
+			{
+				GenerateRandomIP (GENERATE_MOONS);
+				pSolarSysState->MoonDesc[0].data_index =
+						(ActivateStarShip (DRUUGE_SHIP, SPHERE_TRACKING)) ?
+						DRUUGE_STARBASE : DESTROYED_STARBASE;
+				pSolarSysState->MoonDesc[0].radius = MIN_MOON_RADIUS;
+				pSolarSysState->MoonDesc[0].location.x =
+						COSINE (HALF_CIRCLE, pSolarSysState->MoonDesc[0].radius);
+				pSolarSysState->MoonDesc[0].location.y =
+						SINE (HALF_CIRCLE, pSolarSysState->MoonDesc[0].radius);
+			}
 			break;
 		case GENERATE_PLANETS:
 		{

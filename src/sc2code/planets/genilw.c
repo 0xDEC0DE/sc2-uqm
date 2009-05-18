@@ -68,14 +68,19 @@ GenerateIlwrath (BYTE control)
 			pSolarSysState->CurNode = 0;
 			break;
 		case GENERATE_MOONS:
-			pSolarSysState->MoonDesc[0].data_index =
-					(ActivateStarShip (ILWRATH_SHIP, SPHERE_TRACKING)) ?
-					HIERARCHY_STARBASE : DESTROYED_STARBASE;
-			pSolarSysState->MoonDesc[0].radius = MIN_MOON_RADIUS;
-			pSolarSysState->MoonDesc[0].location.x =
-					COSINE (OCTANT, pSolarSysState->MoonDesc[0].radius);
-			pSolarSysState->MoonDesc[0].location.y =
-					SINE (OCTANT, pSolarSysState->MoonDesc[0].radius);
+			GenerateRandomIP (GENERATE_MOONS);
+			if (CurStarDescPtr->Index == ILWRATH_DEFINED &&
+					pSolarSysState->pBaseDesc == &pSolarSysState->PlanetDesc[0])
+			{
+				pSolarSysState->MoonDesc[0].data_index =
+						(ActivateStarShip (ILWRATH_SHIP, SPHERE_TRACKING)) ?
+						HIERARCHY_STARBASE : DESTROYED_STARBASE;
+				pSolarSysState->MoonDesc[0].radius = MIN_MOON_RADIUS;
+				pSolarSysState->MoonDesc[0].location.x =
+						COSINE (OCTANT, pSolarSysState->MoonDesc[0].radius);
+				pSolarSysState->MoonDesc[0].location.y =
+						SINE (OCTANT, pSolarSysState->MoonDesc[0].radius);
+			}
 			break;
 		case GENERATE_PLANETS:
 		{

@@ -175,7 +175,8 @@ GenerateZoqFotPik (BYTE control)
 			pSolarSysState->CurNode = 0;
 			break;
 		case GENERATE_MOONS:
-			if (CurStarDescPtr->Index == ZOQFOT_DEFINED)
+			if (CurStarDescPtr->Index == ZOQFOT_DEFINED &&
+					pSolarSysState->pBaseDesc == &pSolarSysState->PlanetDesc[0])
 			{
 				// Insert a starbase as the first moon
 				pSolarSysState->PlanetDesc[0].NumPlanets = 1;

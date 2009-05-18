@@ -256,7 +256,9 @@ GenerateOrz (BYTE control)
 			break;
 		}
 		case GENERATE_MOONS:
-			if (CurStarDescPtr->Index == ORZ_DEFINED)
+			GenerateRandomIP (GENERATE_MOONS);
+			if (CurStarDescPtr->Index == ORZ_DEFINED &&
+					pSolarSysState->pBaseDesc == &pSolarSysState->PlanetDesc[0])
 			{
 				pSolarSysState->MoonDesc[0].data_index =
 						(ActivateStarShip (ORZ_SHIP, SPHERE_TRACKING)) ?
@@ -266,8 +268,8 @@ GenerateOrz (BYTE control)
 						COSINE (FULL_CIRCLE, pSolarSysState->MoonDesc[0].radius);
 				pSolarSysState->MoonDesc[0].location.y =
 						SINE (FULL_CIRCLE, pSolarSysState->MoonDesc[0].radius);
-				break;
 			}
+			break;
 		case GENERATE_PLANETS:
 		{
 			COUNT angle;

@@ -107,7 +107,8 @@ GenerateMycon (BYTE control)
 			pSolarSysState->CurNode = 0;
 			break; 
 		case GENERATE_MOONS:
-			if (CurStarDescPtr->Index == MYCON_DEFINED)
+			if (CurStarDescPtr->Index == MYCON_DEFINED &&
+					pSolarSysState->pBaseDesc == &pSolarSysState->PlanetDesc[0])
 			{
 				COUNT angle;
 
