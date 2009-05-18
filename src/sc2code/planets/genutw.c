@@ -19,9 +19,11 @@
 #include "build.h"
 #include "encount.h"
 #include "globdata.h"
+#include "lander.h"
 #include "nameref.h"
 #include "resinst.h"
 #include "setup.h"
+#include "sounds.h"
 #include "state.h"
 #include "planets/genall.h"
 #include "libs/mathlib.h"
@@ -43,7 +45,10 @@ GenerateUtwig (BYTE control)
 			break;
 		case GENERATE_MOONS:
 			if (CurStarDescPtr->Index == UTWIG_DEFINED &&
-					pSolarSysState->pBaseDesc == &pSolarSysState->PlanetDesc[0])            {
+					pSolarSysState->pBaseDesc == &pSolarSysState->PlanetDesc[0])
+			{
+				COUNT angle;
+
 				// Insert a starbase as the first moon
 				pSolarSysState->PlanetDesc[0].NumPlanets = 1;
 				GenerateRandomIP (GENERATE_MOONS);
@@ -56,13 +61,21 @@ GenerateUtwig (BYTE control)
 				pSolarSysState->MoonDesc[0].data_index =
 						(ActivateStarShip (UTWIG_SHIP, SPHERE_TRACKING)) ?
 						UTWIG_STARBASE : DESTROYED_STARBASE;
+				angle = HALF_CIRCLE - OCTANT;
 				pSolarSysState->MoonDesc[0].radius = MIN_MOON_RADIUS;
 				pSolarSysState->MoonDesc[0].location.x =
-						COSINE (HALF_CIRCLE - OCTANT,
-						pSolarSysState->MoonDesc[0].radius);
+						COSINE (angle, pSolarSysState->MoonDesc[0].radius);
 				pSolarSysState->MoonDesc[0].location.y =
-						SINE (HALF_CIRCLE - OCTANT,
-						pSolarSysState->MoonDesc[0].radius);
+						SINE (angle, pSolarSysState->MoonDesc[0].radius);
+
+				// adjust the position of the moon, too...
+				pSolarSysState->MoonDesc[1].radius += MOON_DELTA;
+				angle = ARCTAN (pSolarSysState->MoonDesc[1].location.x,
+						pSolarSysState->MoonDesc[1].location.y);
+				pSolarSysState->MoonDesc[1].location.x =
+						COSINE (angle, pSolarSysState->MoonDesc[1].radius);
+				pSolarSysState->MoonDesc[1].location.y =
+						SINE (angle, pSolarSysState->MoonDesc[1].radius);
 				break;
 			}
 			GenerateRandomIP (GENERATE_MOONS);
