@@ -22,6 +22,7 @@
 #include "lifeform.h"
 #include "nameref.h"
 #include "resinst.h"
+#include "setup.h"
 #include "state.h"
 #include "planets/genall.h"
 #include "libs/mathlib.h"
@@ -73,6 +74,7 @@ GenerateSpathi (BYTE control)
 			pSolarSysState->CurNode = 0;
 			break;
 		case GENERATE_MOONS:
+			pSolarSysState->PlanetDesc[0].NumPlanets = 1;
 			GenerateRandomIP (GENERATE_MOONS);
 			if (pSolarSysState->pBaseDesc == &pSolarSysState->PlanetDesc[0])
 			{
@@ -89,6 +91,23 @@ GenerateSpathi (BYTE control)
 						COSINE (angle, pSolarSysState->MoonDesc[0].radius);
 				pSolarSysState->MoonDesc[0].location.y =
 						SINE (angle, pSolarSysState->MoonDesc[0].radius);
+			}
+			/* "Ur-Quan slave law requires that we maintain an orbital
+			 *  space platform to assist Hierarchy vessels which are in
+			 *  need of repairs or fuel"
+			 */
+			if (!GET_GAME_STATE (SPATHI_SHIELDED_SELVES))
+			{
+				pSolarSysState->PlanetDesc[0].NumPlanets = 2;
+				pSolarSysState->MoonDesc[1].data_index = HIERARCHY_STARBASE;
+				pSolarSysState->MoonDesc[1].radius =
+						pSolarSysState->MoonDesc[0].radius;
+				pSolarSysState->MoonDesc[1].location.x =
+						COSINE (angle - (OCTANT >> 1),
+						pSolarSysState->MoonDesc[1].radius);
+				pSolarSysState->MoonDesc[1].location.y =
+						SINE (angle - (OCTANT >> 1),
+						pSolarSysState->MoonDesc[1].radius);
 			}
 			break;
 		case GENERATE_PLANETS:
@@ -152,6 +171,17 @@ GenerateSpathi (BYTE control)
 			pSolarSysState->CurNode = 0;
 			break;
 		case GENERATE_ORBITAL:
+			if (pSolarSysState->pOrbitalDesc->pPrevDesc == &pSolarSysState->PlanetDesc[0]
+					&& pSolarSysState->pOrbitalDesc == &pSolarSysState->MoonDesc[1])
+			{
+				// If you go to the starbase, move the ship to
+				// the moon instead
+				pSolarSysState->pOrbitalDesc = &pSolarSysState->MoonDesc[0];
+				GLOBAL (ShipStamp.origin.x) = (SIS_SCREEN_WIDTH >> 1) +
+						pSolarSysState->MoonDesc[0].location.x;
+				GLOBAL (ShipStamp.origin.y) = (SIS_SCREEN_HEIGHT >> 1) +
+						(pSolarSysState->MoonDesc[0].location.y >> 1);
+			}
 			if (pSolarSysState->pOrbitalDesc->pPrevDesc == &pSolarSysState->PlanetDesc[0]
 					&& pSolarSysState->pOrbitalDesc == &pSolarSysState->MoonDesc[0])
 			{
