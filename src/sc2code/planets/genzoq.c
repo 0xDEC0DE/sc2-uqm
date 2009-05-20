@@ -84,7 +84,7 @@ GenerateScout (BYTE control)
 }
 
 static void
-generate_energy_signatures (void)
+generate_energy_signatures (int num)
 {
 	COUNT i, which_node;
 	DWORD rand_val, old_rand;
@@ -107,7 +107,7 @@ generate_energy_signatures (void)
 				& (1L << i)))
 			break;
 		++which_node;
-	} while (++i < 16);
+	} while (++i < num);
 	pSolarSysState->CurNode = which_node;
 
 	TFB_SeedRandom (old_rand);
@@ -124,7 +124,7 @@ GenerateZoqFotPikColonies (BYTE control)
 					|| (pSolarSysState->pOrbitalDesc->pPrevDesc == &pSolarSysState->PlanetDesc[0]
 					&& pSolarSysState->pOrbitalDesc == &pSolarSysState->MoonDesc[1])) 
 			{
-				generate_energy_signatures ();
+				generate_energy_signatures (4);
 				break;
 			}
 		case GENERATE_ORBITAL:
@@ -169,7 +169,7 @@ GenerateZoqFotPik (BYTE control)
 		case GENERATE_ENERGY:
 			if (pSolarSysState->pOrbitalDesc == &pSolarSysState->PlanetDesc[0])
 			{
-				generate_energy_signatures ();
+				generate_energy_signatures (16);
 				break;
 			}
 			pSolarSysState->CurNode = 0;
