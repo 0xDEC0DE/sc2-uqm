@@ -1872,7 +1872,37 @@ DrawSystem (SIZE radius, BOOLEAN IsInnerSystem)
 	}
 
 	if (IsInnerSystem)
+	{
 		DrawSISTitle (GLOBAL_SIS (PlanetName));
+
+		/* UGLY HACK: scribble the orbital for the Spathi
+		 * starbase on the screen.  Can't do this in
+		 * GenerateSpathi() because it fires before the 
+		 * ExtraScreen has been setup.  Yuck.
+		 *
+		 * This is not my best work ever.  Apologies.  A
+		 * proper fix appears to involve more heavy lifting
+		 * than I'm amenable to right now...
+		 */
+		if (pSolarSysState->GenFunc == GenerateSpathi &&
+				!GET_GAME_STATE (SPATHI_SHIELDED_SELVES))
+		{
+			RECT r;
+			int i;
+
+			r.extent.width = 45;
+			r.extent.height = r.extent.width >> 1;
+			r.corner.x = (SIS_SCREEN_WIDTH >> 1) - (r.extent.width >> 1) +
+					pSolarSysState->MoonDesc[0].location.x;
+			r.corner.y = (SIS_SCREEN_HEIGHT >> 1) - (r.extent.height >> 1) +
+					(pSolarSysState->MoonDesc[0].location.y >> 1);
+			DrawOval (&r, 1);
+			for (i = 0; i < pSolarSysState->PlanetDesc[0].NumPlanets; i++)
+				DrawStamp (&pSolarSysState->MoonDesc[i].image);
+		}
+		/* END SHAMEFUL HACKERY */
+
+	}
 	else
 	{
 		SIZE index;
