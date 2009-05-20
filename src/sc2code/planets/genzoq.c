@@ -178,25 +178,21 @@ GenerateZoqFotPik (BYTE control)
 			if (CurStarDescPtr->Index == ZOQFOT_DEFINED &&
 					pSolarSysState->pBaseDesc == &pSolarSysState->PlanetDesc[0])
 			{
-				// Insert a starbase as the first moon
+				// Setup moons, then add a starbase as the last moon
 				pSolarSysState->PlanetDesc[0].NumPlanets = 1;
 				GenerateRandomIP (GENERATE_MOONS);
-				memmove (&pSolarSysState->MoonDesc[1],
-						&pSolarSysState->MoonDesc[0],
-						sizeof (pSolarSysState->MoonDesc[0])
-						* pSolarSysState->PlanetDesc[0].NumPlanets);
 				pSolarSysState->PlanetDesc[0].NumPlanets = 2;
 
-				pSolarSysState->MoonDesc[0].data_index =
+				pSolarSysState->MoonDesc[1].data_index =
 						(ActivateStarShip (ZOQFOTPIK_SHIP, SPHERE_TRACKING)) ?
 						ZOQFOTPIK_STARBASE : DESTROYED_STARBASE;
-				pSolarSysState->MoonDesc[0].radius = MIN_MOON_RADIUS;
-				pSolarSysState->MoonDesc[0].location.x =
+				pSolarSysState->MoonDesc[1].radius = MIN_MOON_RADIUS;
+				pSolarSysState->MoonDesc[1].location.x =
 						COSINE (HALF_CIRCLE + QUADRANT,
-								pSolarSysState->MoonDesc[0].radius);
-				pSolarSysState->MoonDesc[0].location.y =
+								pSolarSysState->MoonDesc[1].radius);
+				pSolarSysState->MoonDesc[1].location.y =
 						SINE (HALF_CIRCLE + QUADRANT,
-								pSolarSysState->MoonDesc[0].radius);
+								pSolarSysState->MoonDesc[1].radius);
 				break;
 			}
 			GenerateRandomIP (GENERATE_MOONS);
@@ -220,7 +216,7 @@ GenerateZoqFotPik (BYTE control)
 			break;
 		}
 		case GENERATE_ORBITAL:
-			if ((pSolarSysState->pOrbitalDesc == &pSolarSysState->MoonDesc[0]) &&
+			if ((pSolarSysState->pOrbitalDesc == &pSolarSysState->MoonDesc[1]) &&
 					(pSolarSysState->pOrbitalDesc->pPrevDesc == &pSolarSysState->PlanetDesc[0]))
 			{
 				// If you go to the starbase, move the ship to

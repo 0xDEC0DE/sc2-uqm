@@ -87,26 +87,29 @@ GenerateSupox (BYTE control)
 					pSolarSysState->pBaseDesc == &pSolarSysState->PlanetDesc[0])            {
 				COUNT angle;
 
-				// Insert a starbase as the first moon
+				// Setup moons, then add a starbase as the last moon
 				pSolarSysState->PlanetDesc[0].NumPlanets = 2;
 				GenerateRandomIP (GENERATE_MOONS);
-				memmove (&pSolarSysState->MoonDesc[1],
-						&pSolarSysState->MoonDesc[0],
-						sizeof (pSolarSysState->MoonDesc[0])
-						* pSolarSysState->PlanetDesc[0].NumPlanets);
 				pSolarSysState->PlanetDesc[0].NumPlanets = 3;
 
-				pSolarSysState->MoonDesc[0].data_index =
+				pSolarSysState->MoonDesc[2].data_index =
 						(ActivateStarShip (SUPOX_SHIP, SPHERE_TRACKING)) ?
 						SUPOX_STARBASE : DESTROYED_STARBASE;
 				angle = HALF_CIRCLE + OCTANT;
-				pSolarSysState->MoonDesc[0].radius = MIN_MOON_RADIUS;
+				pSolarSysState->MoonDesc[2].radius = MIN_MOON_RADIUS;
+				pSolarSysState->MoonDesc[2].location.x =
+						COSINE (angle, pSolarSysState->MoonDesc[2].radius);
+				pSolarSysState->MoonDesc[2].location.y =
+						SINE (angle, pSolarSysState->MoonDesc[2].radius);
+
+				// adjust the positions of the other moons outward
+				pSolarSysState->MoonDesc[0].radius += MOON_DELTA;
+				angle = ARCTAN (pSolarSysState->MoonDesc[0].location.x,
+						pSolarSysState->MoonDesc[0].location.y);
 				pSolarSysState->MoonDesc[0].location.x =
 						COSINE (angle, pSolarSysState->MoonDesc[0].radius);
 				pSolarSysState->MoonDesc[0].location.y =
 						SINE (angle, pSolarSysState->MoonDesc[0].radius);
-
-				// adjust the positions of the moons, too...
 				pSolarSysState->MoonDesc[1].radius += MOON_DELTA;
 				angle = ARCTAN (pSolarSysState->MoonDesc[1].location.x,
 						pSolarSysState->MoonDesc[1].location.y);
@@ -114,13 +117,6 @@ GenerateSupox (BYTE control)
 						COSINE (angle, pSolarSysState->MoonDesc[1].radius);
 				pSolarSysState->MoonDesc[1].location.y =
 						SINE (angle, pSolarSysState->MoonDesc[1].radius);
-				pSolarSysState->MoonDesc[2].radius += MOON_DELTA;
-				angle = ARCTAN (pSolarSysState->MoonDesc[2].location.x,
-						pSolarSysState->MoonDesc[2].location.y);
-				pSolarSysState->MoonDesc[2].location.x =
-						COSINE (angle, pSolarSysState->MoonDesc[2].radius);
-				pSolarSysState->MoonDesc[2].location.y =
-						SINE (angle, pSolarSysState->MoonDesc[2].radius);
 				break;
 			}
 			GenerateRandomIP (GENERATE_MOONS);
@@ -145,7 +141,7 @@ GenerateSupox (BYTE control)
 		}
 		case GENERATE_ORBITAL:
 			if ((CurStarDescPtr->Index == SUPOX_DEFINED) &&
-					(pSolarSysState->pOrbitalDesc == &pSolarSysState->MoonDesc[0]) &&
+					(pSolarSysState->pOrbitalDesc == &pSolarSysState->MoonDesc[2]) &&
 					(pSolarSysState->pOrbitalDesc->pPrevDesc == &pSolarSysState->PlanetDesc[0]))
 			{
 				// If you go to the starbase, move the ship to

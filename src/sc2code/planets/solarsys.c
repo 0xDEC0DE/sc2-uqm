@@ -1724,6 +1724,7 @@ DrawSystem (SIZE radius, BOOLEAN IsInnerSystem)
 				!GET_GAME_STATE (SPATHI_SHIELDED_SELVES))
 		{
 			RECT r;
+			int i;
 
 			r.extent.width = 45;
 			r.extent.height = r.extent.width >> 1;
@@ -1732,6 +1733,8 @@ DrawSystem (SIZE radius, BOOLEAN IsInnerSystem)
 			r.corner.y = (SIS_SCREEN_HEIGHT >> 1) - (r.extent.height >> 1) +
 					(pSolarSysState->MoonDesc[0].location.y >> 1);
 			DrawOval (&r, 1);
+			for (i = 0; i < pSolarSysState->PlanetDesc[0].NumPlanets; i++)
+				DrawStamp (&pSolarSysState->MoonDesc[i].image);
 		}
 		/* END SHAMEFUL HACKERY */
 
