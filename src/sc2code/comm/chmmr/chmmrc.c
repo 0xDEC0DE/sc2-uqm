@@ -574,6 +574,9 @@ Intro (void)
 		}
 		else
 		{
+			HFLEETINFO hChmmr;
+			FLEET_INFO *ChmmrPtr;
+
 			NPCPhrase (WE_ARE_FREE);
 
 			if (NumVisits)
@@ -598,6 +601,20 @@ Intro (void)
 			}
 
 			SET_GAME_STATE (CHMMR_UNLEASHED, 1);
+
+			// Setup a Chmmr sphere-of-influence, now that they're out
+			// of their shell.  EncounterPercent for the Chmmr is 0,
+			// so this is purely decorative.
+			hChmmr = GetStarShipFromIndex (&GLOBAL (avail_race_q), CHMMR_SHIP);
+			ChmmrPtr = LockFleetInfo (&GLOBAL (avail_race_q), hChmmr);
+			if (ChmmrPtr)
+			{
+				ChmmrPtr->actual_strength = 1800 / SPHERE_RADIUS_INCREMENT * 2;
+				ChmmrPtr->loc.x = 742;
+				ChmmrPtr->loc.y = 2268;
+				ActivateStarShip (CHMMR_SHIP, SPHERE_TRACKING);
+			}
+			UnlockFleetInfo (&GLOBAL (avail_race_q), hChmmr);
 		}
 		SET_GAME_STATE (CHMMR_HOME_VISITS, NumVisits);
 	}
