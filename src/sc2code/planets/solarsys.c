@@ -183,6 +183,10 @@ GenerateMoons (void)
 					pMoonDesc->image.frame =
 							SetAbsFrameIndex (SpaceJunkFrame, 27);
 					break;
+				case ORZ_STARBASE:
+					pMoonDesc->image.frame =
+							SetAbsFrameIndex (SpaceJunkFrame, 28);
+					break;
 			}
 		}
 	}
