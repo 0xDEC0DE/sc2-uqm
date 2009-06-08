@@ -22,7 +22,8 @@
 enum
 {
 	NULL_PHRASE,
-	INIT_HELLO,
+	INIT_HELLO_3DO,
+	INIT_HELLO_PC,
 	who_you,
 	WE_ARE_ORZ,
 	why_here,

@@ -648,7 +648,12 @@ Intro (void)
 	}
 
 	if (!GET_GAME_STATE (MET_ORZ_BEFORE))
-		NPCPhrase (INIT_HELLO);
+	{
+		if (optSubtitles)
+			NPCPhrase (INIT_HELLO_PC);
+		else
+			NPCPhrase (INIT_HELLO_3DO);
+	}
 
 	Manner = GET_GAME_STATE (ORZ_MANNER);
 	if (Manner == 2)
