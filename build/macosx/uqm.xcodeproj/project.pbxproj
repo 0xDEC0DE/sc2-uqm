@@ -12,6 +12,10 @@
 		046F1B640EE1CEFE0029E43F /* legacyplayer.c in Sources */ = {isa = PBXBuildFile; fileRef = 046F1B610EE1CEFE0029E43F /* legacyplayer.c */; };
 		046F1B650EE1CEFE0029E43F /* vresins.c in Sources */ = {isa = PBXBuildFile; fileRef = 046F1B630EE1CEFE0029E43F /* vresins.c */; };
 		048F5D730F915BC700F768A8 /* genprecrsr.c in Sources */ = {isa = PBXBuildFile; fileRef = 048F5D720F915BC700F768A8 /* genprecrsr.c */; };
+		04B8BD860FEED03200B55604 /* Vorbis.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 04F1F9380E8FC13A007E8452 /* Vorbis.framework */; };
+		04B8BD8B0FEED03B00B55604 /* Ogg.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 04F1F9350E8FC13A007E8452 /* Ogg.framework */; };
+		04B8BDB90FEED04D00B55604 /* SDL_image.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 04F1F9360E8FC13A007E8452 /* SDL_image.framework */; };
+		04B8BDBA0FEED04D00B55604 /* SDL.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 04F1F9370E8FC13A007E8452 /* SDL.framework */; };
 		04F100250E8FC358007E8452 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04F1F9410E8FC155007E8452 /* Cocoa.framework */; };
 		04F100260E8FC358007E8452 /* Ogg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04F1F9350E8FC13A007E8452 /* Ogg.framework */; };
 		04F100270E8FC358007E8452 /* SDL_image.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04F1F9360E8FC13A007E8452 /* SDL_image.framework */; };
@@ -365,6 +369,22 @@
 		04F1FFF10E8FC332007E8452 /* SDLMain.m in Sources */ = {isa = PBXBuildFile; fileRef = 04F1F9510E8FC17D007E8452 /* SDLMain.m */; };
 		04FA543C0EE45BA500308524 /* gennegl.c in Sources */ = {isa = PBXBuildFile; fileRef = 04FA543B0EE45BA500308524 /* gennegl.c */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		04B8BD840FEECFE800B55604 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 12;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				04B8BDB90FEED04D00B55604 /* SDL_image.framework in CopyFiles */,
+				04B8BDBA0FEED04D00B55604 /* SDL.framework in CopyFiles */,
+				04B8BD8B0FEED03B00B55604 /* Ogg.framework in CopyFiles */,
+				04B8BD860FEED03200B55604 /* Vorbis.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		043407C70F91108200FA1242 /* genmothark.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = genmothark.c; sourceTree = "<group>"; };
@@ -1552,7 +1572,7 @@
 		04F1FE700E8FC180007E8452 /* starcon2.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = starcon2.c; sourceTree = "<group>"; };
 		04F1FE7D0E8FC180007E8452 /* types.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = types.h; sourceTree = "<group>"; };
 		04F1FE7E0E8FC180007E8452 /* uqmversion.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = uqmversion.h; sourceTree = "<group>"; };
-		04F1FE830E8FC1AB007E8452 /* The Ur-Quan Masters.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "The Ur-Quan Masters.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		04F1FE830E8FC1AB007E8452 /* The Ur-Quan Masters.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = "The Ur-Quan Masters.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		04F1FE860E8FC1AB007E8452 /* The Ur-Quan Masters-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "The Ur-Quan Masters-Info.plist"; sourceTree = "<group>"; };
 		04FA543B0EE45BA500308524 /* gennegl.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = gennegl.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -3619,6 +3639,7 @@
 				04F1FE7F0E8FC1AB007E8452 /* Resources */,
 				04F1FE800E8FC1AB007E8452 /* Sources */,
 				04F1FE810E8FC1AB007E8452 /* Frameworks */,
+				04B8BD840FEECFE800B55604 /* CopyFiles */,
 				04F166EB0E8FCA6A007E8452 /* ShellScript */,
 			);
 			buildRules = (
@@ -4061,7 +4082,6 @@
 				);
 				GCC_WARN_ABOUT_POINTER_SIGNEDNESS = NO;
 				INFOPLIST_FILE = "The Ur-Quan Masters-Info.plist";
-				INSTALL_PATH = "$(HOME)/Applications";
 				OTHER_CFLAGS = (
 					"-W",
 					"-Wall",
@@ -4105,7 +4125,6 @@
 				);
 				GCC_WARN_ABOUT_POINTER_SIGNEDNESS = NO;
 				INFOPLIST_FILE = "The Ur-Quan Masters-Info.plist";
-				INSTALL_PATH = "$(HOME)/Applications";
 				OTHER_CFLAGS = (
 					"-W",
 					"-Wall",
@@ -4128,7 +4147,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = "0.6.4-nic";
+				CURRENT_PROJECT_VERSION = "0.6.4 - Extended Edition";
 			};
 			name = "Debug - symlink content";
 		};
@@ -4136,7 +4155,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = "0.6.4-nic";
+				CURRENT_PROJECT_VERSION = "0.6.4 - Extended Edition";
 			};
 			name = "Release - symlink content";
 		};
@@ -4144,7 +4163,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = "0.6.4-nic";
+				CURRENT_PROJECT_VERSION = "0.6.4 - Extended Edition";
 			};
 			name = "Debug - install content";
 		};
@@ -4152,7 +4171,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = "0.6.4-nic";
+				CURRENT_PROJECT_VERSION = "0.6.4 - Extended Edition";
 			};
 			name = "Release - install content";
 		};
@@ -4183,7 +4202,6 @@
 				);
 				GCC_WARN_ABOUT_POINTER_SIGNEDNESS = NO;
 				INFOPLIST_FILE = "The Ur-Quan Masters-Info.plist";
-				INSTALL_PATH = "$(HOME)/Applications";
 				OTHER_CFLAGS = (
 					"-W",
 					"-Wall",
@@ -4227,7 +4245,6 @@
 				);
 				GCC_WARN_ABOUT_POINTER_SIGNEDNESS = NO;
 				INFOPLIST_FILE = "The Ur-Quan Masters-Info.plist";
-				INSTALL_PATH = "$(HOME)/Applications";
 				OTHER_CFLAGS = (
 					"-W",
 					"-Wall",
