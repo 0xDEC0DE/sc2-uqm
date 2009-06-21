@@ -120,6 +120,8 @@ enum
 	ILWRATH_DEFINED,
 	ANDROSYNTH_DEFINED,
 	MYCON_TRAP_DEFINED,
+	URQUAN_DEFINED,
+	KOHRAH_DEFINED,
 	NEGLECTED_STARBASE_DEFINED,
 	MOTHER_ARK_DEFINED,
 	ZOQ_COLONY_DEFINED
@@ -183,6 +185,8 @@ extern void GenerateIlwrath (BYTE control);
 extern void GenerateNeglectedStarbase (BYTE control);
 extern void GenerateMotherArk (BYTE control);
 extern void GeneratePrecursorStarbase (BYTE control);
+extern void GenerateUrQuan (BYTE control);
+extern void GenerateKohrAh (BYTE control);
 
 // Last race the player battled with, or -1 if no battle took place.
 // Set to -1 by some funcs to inhibit IP groups from intercepting

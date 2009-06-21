@@ -140,6 +140,7 @@
 #define UMGAH_BCS_STRTAB "text.umgahcaster"
 #define UREA_COLOR_TAB "planet.urea.colortable"
 #define UREA_XLAT_TAB "planet.urea.translatetable"
+#define URQUAN_BASE_STRTAB "text.urquanbase"
 #define VAULT_STRTAB "text.syreenvault"
 #define VINYLOGOUS_COLOR_TAB "planet.vinylogous.colortable"
 #define VINYLOGOUS_XLAT_TAB "planet.vinylogous.translatetable"
