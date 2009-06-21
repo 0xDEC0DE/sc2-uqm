@@ -123,6 +123,12 @@ GenerateIP (BYTE Index)
 		case ILWRATH_DEFINED:
 			GenFunc = GenerateIlwrath;
 			break;
+		case URQUAN_DEFINED:
+			GenFunc = GenerateUrQuan;
+			break;
+		case KOHRAH_DEFINED:
+			GenFunc = GenerateKohrAh;
+			break;
 		case NEGLECTED_STARBASE_DEFINED:
 			GenFunc = GenerateNeglectedStarbase;
 			break;

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		043407C80F91108200FA1242 /* genmothark.c in Sources */ = {isa = PBXBuildFile; fileRef = 043407C70F91108200FA1242 /* genmothark.c */; };
+		04383B670FEDE87000BE9C3B /* genurq.c in Sources */ = {isa = PBXBuildFile; fileRef = 04383B660FEDE87000BE9C3B /* genurq.c */; };
 		046F1B640EE1CEFE0029E43F /* legacyplayer.c in Sources */ = {isa = PBXBuildFile; fileRef = 046F1B610EE1CEFE0029E43F /* legacyplayer.c */; };
 		046F1B650EE1CEFE0029E43F /* vresins.c in Sources */ = {isa = PBXBuildFile; fileRef = 046F1B630EE1CEFE0029E43F /* vresins.c */; };
 		048F5D730F915BC700F768A8 /* genprecrsr.c in Sources */ = {isa = PBXBuildFile; fileRef = 048F5D720F915BC700F768A8 /* genprecrsr.c */; };
@@ -367,6 +368,7 @@
 
 /* Begin PBXFileReference section */
 		043407C70F91108200FA1242 /* genmothark.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = genmothark.c; sourceTree = "<group>"; };
+		04383B660FEDE87000BE9C3B /* genurq.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = genurq.c; sourceTree = "<group>"; };
 		046F1B610EE1CEFE0029E43F /* legacyplayer.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = legacyplayer.c; sourceTree = "<group>"; };
 		046F1B620EE1CEFE0029E43F /* vidintrn.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = vidintrn.h; sourceTree = "<group>"; };
 		046F1B630EE1CEFE0029E43F /* vresins.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = vresins.c; sourceTree = "<group>"; };
@@ -3003,6 +3005,7 @@
 		04F1FCC10E8FC17F007E8452 /* planets */ = {
 			isa = PBXGroup;
 			children = (
+				04383B660FEDE87000BE9C3B /* genurq.c */,
 				048F5D720F915BC700F768A8 /* genprecrsr.c */,
 				043407C70F91108200FA1242 /* genmothark.c */,
 				04FA543B0EE45BA500308524 /* gennegl.c */,
@@ -4024,6 +4027,7 @@
 				04FA543C0EE45BA500308524 /* gennegl.c in Sources */,
 				043407C80F91108200FA1242 /* genmothark.c in Sources */,
 				048F5D730F915BC700F768A8 /* genprecrsr.c in Sources */,
+				04383B670FEDE87000BE9C3B /* genurq.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
