@@ -24,6 +24,8 @@
 #include "battle.h"
 #include "setup.h"
 
+extern int NPCNumberPhrase (int number, UNICODE **ptrack);
+
 static NUMBER_SPEECH_DESC probe_numbers_english;
 
 static LOCDATA slylandro_desc =
