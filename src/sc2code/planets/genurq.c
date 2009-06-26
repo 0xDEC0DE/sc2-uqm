@@ -118,11 +118,11 @@ generate_doctrinal_space_junk (BYTE control, int index)
 void
 GenerateUrQuan (BYTE control)
 {
-	return generate_doctrinal_space_junk (control, 0);
+	generate_doctrinal_space_junk (control, 0);
 }
 
 void
 GenerateKohrAh (BYTE control)
 {
-	return generate_doctrinal_space_junk (control, 1);
+	generate_doctrinal_space_junk (control, 1);
 }
