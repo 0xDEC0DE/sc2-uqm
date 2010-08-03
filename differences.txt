@@ -1,0 +1,79 @@
+- Some Gas Giant planets (e.g., Saturn but not Jupiter) have visible
+  rings in the coarse scan (Bugzilla Bug #602)
+
+- PageUp and PageDown controls in the Outfit / Shipyard / Roster
+  screens modify fuel / crew 10 at a time (Bugzilla Bug #617)
+
+- Add a setup menu option for gamma correction (Bugzilla Bug #977)
+
+- Androsynth captain activating the special weapon is consistent
+  with SC1 (Bugzilla Bug #444)
+
+- Shooting the tractors on the moon makes them explode.  They still
+  provide zero bio data, though (Bugzilla Bug #503)
+
+- Shofixti Glory Device vs. Pkunk resurrection plays the correct
+  sounds (Bugzilla Bug #666)
+
+- Ur-Quan fighters will attack/destroy incoming projectiles and
+  asteroids (just for fun, no bug attached)
+
+- QuasiSpace map automatically adjusts the zoomlevel when entering
+  through the portal (Bugzilla Bug #856)
+
+- MacOS X builds are now done via an Xcode project instead of the
+  custom *nix build scripts (Bugzilla Bug #1042)
+
+- MakeReport() handles pauses on punctuation slightly more intelligently
+  (Bugzilla Bug #1044)
+
+- "Flicker" effect in coarse scan screens repaired (Bugzilla Bug
+  #799)
+
+- No longer possible to encounter random Ur-Quan ships in the
+  Zoq-Fot-Pik home system, like their dialogs say (Bugzilla Bug
+  #759)
+
+- Add SC2-DOS style lightning fade effects (Bugzilla Bug #1002)
+
+- Spoken Probe coordinates (Bugzilla Bug #732)
+
+- Show the name and value of biologicals when picked up (Bugzilla Bug #857)
+
+- If the player ventures out into Hyperspace without rescuing the
+  starbase first, the Probes he encounters are much tougher
+
+- Add a "dead" slave-shielded world and starbase @ Beta Ophiuchi I
+  (047.9:887.5)
+
+- Show the melee icon for the battlegroup chasing you in the center
+  of the black holes in Hyperspace
+
+- Can explore a defunct Mother Ark the old Mrnmhrrm sphere of
+  influence (Eta Bootis III-A, 067.2:286.3)
+
+- Can discover a defunct Precursor starbase @ Alpha Centauri
+
+- Fixed up dialogue so that the Syreen / Mycon / Sun Device plotline
+  is discoverable in-game
+
+- Liberate Fwiffo!  When the Spathi bug out and hide under their
+  slave shield, they take all their ships in your escort fleet with
+  them
+
+- Destroyed Zoq-Fot-Pik colony worlds (Delta Cassiopeiae I, 387.5:514.5)
+                                      (Gamma Carinae I-B, 358.3:547.9)
+
+- Starbases around all homeworlds
+
+- Add a Syreen sphere-of-influence after rescuing their ships
+
+- Add a Chmmr sphere-of-influence after finishing "The Process"
+
+- Destroyed Ur-Quan(*) / Kohr-Ah(+) starbases
+  + Beta Reticuli (702.0 : 529.1)
+  * Metis (570.8 : 460.4)
+  * Gamma Cancri (500.6 : 501.1)
+  * Alpha Lentilis (462.5 : 600.0)
+  + Theta Chamaeleonis (514.5 : 695.8)
+  + Antares (647.9 : 754.1)
