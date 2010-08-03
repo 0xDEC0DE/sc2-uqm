@@ -77,3 +77,7 @@
   * Alpha Lentilis (462.5 : 600.0)
   + Theta Chamaeleonis (514.5 : 695.8)
   + Antares (647.9 : 754.1)
+
+- Play the "lander full" sound instead of the normal pickup sound
+  when picking up bios/minerals that fill the lander's hold to max.
+  capacity
