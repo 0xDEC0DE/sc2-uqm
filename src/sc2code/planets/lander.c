@@ -482,13 +482,13 @@ DeltaLanderCrew (SIZE crew_delta, COUNT which_disaster)
 }
 
 static void
-FillLanderHold (PLANETSIDE_DESC *pPSD, COUNT scan, COUNT NumRetrieved)
+FillLanderHold (PLANETSIDE_DESC *pPSD, COUNT scan, COUNT NumRetrieved, COUNT sound_index)
 {
 	COUNT start_count;
 	STAMP s;
 	CONTEXT OldContext;
 
-	PlaySound (SetAbsSoundIndex (LanderSounds, LANDER_PICKUP),
+	PlaySound (SetAbsSoundIndex (LanderSounds, sound_index),
 			NotPositional (), NULL, GAME_SOUND_PRIORITY);
 
 	if (scan == BIOLOGICAL_SCAN)
@@ -815,9 +815,13 @@ CheckObjectCollision (COUNT index)
 							}
 							if (*amount < max)
 							{
+								COUNT sound_index = LANDER_PICKUP;
 								if (*amount + NumRetrieved > max)
+								{
 									NumRetrieved = (COUNT)(max - *amount);
-								FillLanderHold (pPSD, scan, NumRetrieved);
+									sound_index = LANDER_FULL;
+								}
+								FillLanderHold (pPSD, scan, NumRetrieved, sound_index);
 
 								if (scan == MINERAL_SCAN)
 									pPSD->ElementAmounts[
