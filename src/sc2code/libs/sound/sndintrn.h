@@ -30,7 +30,7 @@ extern void *_GetSoundBankData (uio_Stream *fp, DWORD length);
 extern BOOLEAN _ReleaseSoundBankData (void *handle);
 
 #define AllocMusicData HMalloc
-#define FreeMusicData  HFree
+#define FreeMusicData  _ReleaseMusicData
 
 extern char* CheckMusicResName (char* filename);
 
