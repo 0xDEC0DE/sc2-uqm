@@ -1314,6 +1314,32 @@ zip_fillDirStructureProcessExtraFields(uio_FileBlock *fileBlock,
 				gPFileData->gid = (uid_t) makeUInt16(buf[12], buf[13]);
 				break;
 			}
+			case 0x7875: { // 'Unix3 any-size'
+				// The purpose of the first byte of this field is not
+				// documented, but is typically "1".  Skip it.
+				int pos = 1;
+				if (central)
+					break;
+
+#define SET_FILEDATA_ATTR(x) do { \
+				if (2 == buf[pos]) \
+					gPFileData->x = (uid_t) makeUInt16(buf[pos+1], \
+							buf[pos+2]); \
+				else if (4 == buf[pos]) \
+					gPFileData->x = (uid_t) makeUInt32(buf[pos+1], \
+							buf[pos+2], buf[pos+3], buf[pos+4]); \
+				else \
+					fprintf(stderr, "Warning: invalid " #x \
+							" length(%d) for file " \
+							"'%s' - ignored\n", buf[pos], fileName); \
+} while (0);
+
+				SET_FILEDATA_ATTR(uid);
+				pos += 1 + buf[pos];
+				SET_FILEDATA_ATTR(gid);
+
+				break;
+			}
 			default:
 #ifdef DEBUG
 				fprintf(stderr, "Debug: Extra field 0x%04x unsupported, "
