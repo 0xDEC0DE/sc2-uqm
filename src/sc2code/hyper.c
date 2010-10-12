@@ -134,6 +134,8 @@ decorate_vortex (ELEMENT * ElementPtr)
 						// cleanup
 						SetContext (old);
 						DestroyContext (tmp);
+						vortex_ships[EncounterPtr->SD.Type]->parent = 
+								ElementPtr->current.image.frame->parent;
 						ElementPtr->next.image.frame = vortex_ships[EncounterPtr->SD.Type];
 					}
 				}
