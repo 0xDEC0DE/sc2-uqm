@@ -153,7 +153,7 @@ GenerateTalkingPet (BYTE control)
 					pSolarSysState->pBaseDesc == &pSolarSysState->PlanetDesc[0])
 			{
 				pSolarSysState->MoonDesc[0].data_index =
-						(ActivateStarShip (ILWRATH_SHIP, SPHERE_TRACKING)) ?
+						(ActivateStarShip (UMGAH_SHIP, SPHERE_TRACKING)) ?
 						HIERARCHY_STARBASE : DESTROYED_STARBASE;
 				pSolarSysState->MoonDesc[0].radius = MIN_MOON_RADIUS;
 				pSolarSysState->MoonDesc[0].location.x =
