@@ -16,8 +16,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _UNITS_H
-#define _UNITS_H
+#ifndef UQM_UNITS_H_
+#define UQM_UNITS_H_
 
 #include "libs/gfxlib.h"
 
@@ -225,5 +225,5 @@ extern COUNT ARCTAN (SIZE delta_x, SIZE delta_y);
 }
 #endif
 
-#endif /* _UNITS_H */
+#endif /* UQM_UNITS_H_ */
 

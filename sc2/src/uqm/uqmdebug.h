@@ -14,8 +14,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#if !defined(_DEBUG_H) && (defined(DEBUG) || defined(USE_DEBUG_KEY))
-#define _DEBUG_H
+#if !defined(UQM_UQMDEBUG_H_) && (defined(DEBUG) || defined(USE_DEBUG_KEY))
+#define UQM_UQMDEBUG_H_
 
 #include "clock.h"
 #include "planets/planets.h"
@@ -196,5 +196,5 @@ void debugContexts (void);
 // To add some day:
 // - a function to fast forward the game clock to a specifiable time.
 
-#endif  /* _DEBUG_H */
+#endif  /* UQM_UQMDEBUG_H_ */
 
