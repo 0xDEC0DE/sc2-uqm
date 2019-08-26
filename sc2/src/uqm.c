@@ -233,7 +233,11 @@ main (int argc, char *argv[])
 		/* .addons = */             NULL,
 		/* .numAddons = */          0,
 
+#ifdef __APPLE__
+		INIT_CONFIG_OPTION(  opengl,            true ),
+#else
 		INIT_CONFIG_OPTION(  opengl,            false ),
+#endif
 		INIT_CONFIG_OPTION2( resolution,        640, 480 ),
 		INIT_CONFIG_OPTION(  fullscreen,        false ),
 		INIT_CONFIG_OPTION(  scanlines,         false ),

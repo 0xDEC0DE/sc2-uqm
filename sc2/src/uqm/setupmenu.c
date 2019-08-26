@@ -1119,7 +1119,11 @@ GetGlobalOptions (GLOBALOPTS *opts)
 
 	/* Work out resolution.  On the way, try to guess a good default
 	 * for config.alwaysgl, then overwrite it if it was set previously. */
+#ifdef __APPLE__
+	opts->driver = OPTVAL_ALWAYS_GL;
+#else
 	opts->driver = OPTVAL_PURE_IF_POSSIBLE;
+#endif
 	switch (ScreenWidthActual)
 	{
 	case 320:
