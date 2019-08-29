@@ -39,6 +39,39 @@ GenerateUtwig (BYTE control)
 			else
 				GenerateRandomIP (INIT_NPCS);
 			break;
+		case GENERATE_MOONS:
+			if (CurStarDescPtr->Index == UTWIG_DEFINED &&
+					pSolarSysState->pBaseDesc == &pSolarSysState->PlanetDesc[0])
+			{
+				COUNT angle;
+
+				// Setup moons, then add a starbase as the last moon
+				pSolarSysState->PlanetDesc[0].NumPlanets = 1;
+				GenerateRandomIP (GENERATE_MOONS);
+				pSolarSysState->PlanetDesc[0].NumPlanets = 2;
+
+				pSolarSysState->MoonDesc[1].data_index =
+						(ActivateStarShip (UTWIG_SHIP, SPHERE_TRACKING)) ?
+						UTWIG_STARBASE : DESTROYED_STARBASE;
+				angle = HALF_CIRCLE - OCTANT;
+				pSolarSysState->MoonDesc[1].radius = MIN_MOON_RADIUS;
+				pSolarSysState->MoonDesc[1].location.x =
+						COSINE (angle, pSolarSysState->MoonDesc[1].radius);
+				pSolarSysState->MoonDesc[1].location.y =
+						SINE (angle, pSolarSysState->MoonDesc[1].radius);
+
+				// adjust the position of the other moons outward
+				pSolarSysState->MoonDesc[0].radius += MOON_DELTA;
+				angle = ARCTAN (pSolarSysState->MoonDesc[0].location.x,
+						pSolarSysState->MoonDesc[0].location.y);
+				pSolarSysState->MoonDesc[0].location.x =
+						COSINE (angle, pSolarSysState->MoonDesc[0].radius);
+				pSolarSysState->MoonDesc[0].location.y =
+						SINE (angle, pSolarSysState->MoonDesc[0].radius);
+				break;
+			}
+			GenerateRandomIP (GENERATE_MOONS);
+			break;
 		case GENERATE_PLANETS:
 		{
 			COUNT angle;
@@ -135,6 +168,12 @@ GenerateUtwig (BYTE control)
 			break;
 		}
 		case GENERATE_ORBITAL:
+			if ((CurStarDescPtr->Index == UTWIG_DEFINED) &&
+					(pSolarSysState->pOrbitalDesc == &pSolarSysState->MoonDesc[1]) &&
+					(pSolarSysState->pOrbitalDesc->pPrevDesc == &pSolarSysState->PlanetDesc[0]))
+				if (VisitHomeWorldStarBase (ActivateStarShip (UTWIG_SHIP, SPHERE_TRACKING)))
+					break;
+
 			if ((CurStarDescPtr->Index == UTWIG_DEFINED
 					&& pSolarSysState->pOrbitalDesc == &pSolarSysState->PlanetDesc[0])
 					|| (CurStarDescPtr->Index == BOMB_DEFINED
