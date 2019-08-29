@@ -19,6 +19,9 @@
 #include "../ship.h"
 #include "resinst.h"
 
+// to satisfy OBJECT_CLOAKED ()
+#include "uqm/colors.h"
+
 #include "uqm/globdata.h"
 
 #include <stdlib.h>
@@ -201,6 +204,7 @@ fighter_preprocess (ELEMENT *ElementPtr)
 		COUNT orig_facing, facing;
 		SIZE delta_x, delta_y;
 		ELEMENT *eptr;
+		HELEMENT hObject, hNextObject;
 
 		Enroute = TRUE;
 
@@ -242,14 +246,27 @@ fighter_preprocess (ELEMENT *ElementPtr)
 		if (ElementPtr->thrust_wait > 0)
 			--ElementPtr->thrust_wait;
 
-		if (ElementPtr->hTarget)
+		// just for fun: instead of only shooting at the
+		// enemy ship, shoot at anything within range
+		for (hObject = GetTailElement (); hObject; hObject = hNextObject)
 		{
-			LockElement (ElementPtr->hTarget, &eptr);
+			LockElement (hObject, &eptr);
+			hNextObject = GetPredElement (eptr);
 			delta_x = eptr->current.location.x
 					- ElementPtr->current.location.x;
 			delta_y = eptr->current.location.y
 					- ElementPtr->current.location.y;
-			UnlockElement (ElementPtr->hTarget);
+			UnlockElement (hObject);
+
+			// the list of things not to shoot at
+			// includes: yourself, the mothership, other
+			// fighters, non-collidable objects and
+			// cloaked ships
+			if (eptr == ElementPtr || eptr == ElementPtr->pParent ||
+					ElementPtr->pParent == eptr->pParent ||
+					! CollidingElement (eptr) || OBJECT_CLOAKED (eptr))
+				continue;
+
 			delta_x = WRAP_DELTA_X (delta_x);
 			delta_y = WRAP_DELTA_Y (delta_y);
 
@@ -264,29 +281,39 @@ fighter_preprocess (ELEMENT *ElementPtr)
 						ANGLE_TO_FACING (ARCTAN (delta_x, delta_y))
 						);
 				ElementPtr->postprocess_func = fighter_postprocess;
+				break;
 			}
+		}
 
-			if (Enroute)
+		if (ElementPtr->hTarget && Enroute)
+		{
+			LockElement (ElementPtr->hTarget, &eptr);
+			delta_x = eptr->current.location.x
+					- ElementPtr->current.location.x;
+			delta_y = eptr->current.location.y
+					- ElementPtr->current.location.y;
+			UnlockElement (ElementPtr->hTarget);
+			delta_x = WRAP_DELTA_X (delta_x);
+			delta_y = WRAP_DELTA_Y (delta_y);
+
+			facing = GetFrameIndex (eptr->current.image.frame);
+			if (ElementPtr->turn_wait & LEFT)
 			{
-				facing = GetFrameIndex (eptr->current.image.frame);
-				if (ElementPtr->turn_wait & LEFT)
-				{
-					delta_x += COSINE (FACING_TO_ANGLE (facing - 4),
-							DISPLAY_TO_WORLD (30));
-					delta_y += SINE (FACING_TO_ANGLE (facing - 4),
-							DISPLAY_TO_WORLD (30));
-				}
-				else
-				{
-					delta_x += COSINE (FACING_TO_ANGLE (facing + 4),
-							DISPLAY_TO_WORLD (30));
-					delta_y += SINE (FACING_TO_ANGLE (facing + 4),
-							DISPLAY_TO_WORLD (30));
-				}
-				facing = NORMALIZE_FACING (
-						ANGLE_TO_FACING (ARCTAN (delta_x, delta_y))
-						);
+				delta_x += COSINE (FACING_TO_ANGLE (facing - 4),
+						DISPLAY_TO_WORLD (30));
+				delta_y += SINE (FACING_TO_ANGLE (facing - 4),
+						DISPLAY_TO_WORLD (30));
 			}
+			else
+			{
+				delta_x += COSINE (FACING_TO_ANGLE (facing + 4),
+						DISPLAY_TO_WORLD (30));
+				delta_y += SINE (FACING_TO_ANGLE (facing + 4),
+						DISPLAY_TO_WORLD (30));
+			}
+			facing = NORMALIZE_FACING (
+					ANGLE_TO_FACING (ARCTAN (delta_x, delta_y))
+					);
 		}
 		ElementPtr->state_flags |= CHANGING;
 
