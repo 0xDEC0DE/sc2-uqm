@@ -20,7 +20,7 @@
 #define _SCAN_H
 
 #include "libs/gfxlib.h"
-
+#include "../menustat.h"
 
 typedef struct
 {
@@ -44,6 +44,7 @@ typedef struct
 
 extern void RepairBackRect (RECT *pRect);
 extern void GeneratePlanetSide (void);
+extern BOOLEAN DoScan (MENU_STATE *pMS);
 
 #endif /* _SCAN_H */
 

@@ -60,6 +60,7 @@ RotatePlanet (int x, int dx, int dy, COUNT scale_amt, UBYTE zoom_from,
 	CONTEXT OldContext;
 	PLANET_ORBIT *Orbit = &pSolarSysState->Orbit;
 	int base = GSCALE_IDENTITY;
+	extern FRAME coarse_scan;
 
 	num_frames = 1;
 	pFrame[0] = Orbit->PlanetFrameArray;
@@ -107,6 +108,13 @@ RotatePlanet (int x, int dx, int dy, COUNT scale_amt, UBYTE zoom_from,
 		}
 		SetGraphicScale (old_scale);
 		SetGraphicScaleMode (old_mode);
+		// If the player is scanning the planet, print the coarse scan.
+		if (pMenuState && pMenuState->InputFunc == DoScan)
+		{
+			s.origin.x = s.origin.y = 0;
+			s.frame = coarse_scan;
+			DrawStamp (&s);
+		}
 		UnbatchGraphics ();
 		SetContext (OldContext);
 	}

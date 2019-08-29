@@ -19,6 +19,7 @@
 #include "lander.h"
 #include "lifeform.h"
 #include "../build.h"
+#include "../colors.h"
 #include "../cons_res.h"
 #include "../controls.h"
 #include "../encount.h"
@@ -37,6 +38,8 @@
 #include "libs/inplib.h"
 #include "libs/mathlib.h"
 
+CONTEXT coarse_scan_context;
+FRAME coarse_scan;
 extern FRAME SpaceJunkFrame;
 
 // define SPIN_ON_SCAN to allow the planet to spin 
@@ -101,15 +104,12 @@ static void
 PrintScanTitlePC (TEXT *t, RECT *r, const char *txt, int xpos)
 {
 	t->baseline.x = xpos;
-	SetContextForeGroundColor (
-			BUILD_COLOR (MAKE_RGB15 (0x00, 0x00, 0x15), 0x3B));
 	t->pStr = txt;
 	t->CharCount = (COUNT)~0;
-	font_DrawText (t);
+	font_DrawTracedText (t,
+			BUILD_COLOR (MAKE_RGB15 (0x00, 0x00, 0x15), 0x3B), BLACK_COLOR);
 	TextRect (t, r, NULL);
 	t->baseline.x += r->extent.width;
-	SetContextForeGroundColor (
-			BUILD_COLOR (MAKE_RGB15 (0x0F, 0x00, 0x19), 0x3B));
 }
 
 static void
@@ -164,7 +164,6 @@ PrintCoarseScanPC (void)
 	GetPlanetTitle (buf, sizeof (buf));
 
 	LockMutex (GraphicsLock);
-	SetContext (SpaceContext);
 
 	t.align = ALIGN_CENTER;
 	t.baseline.x = SIS_SCREEN_WIDTH >> 1;
@@ -172,11 +171,9 @@ PrintCoarseScanPC (void)
 	t.pStr = buf;
 	t.CharCount = (COUNT)~0;
 
-	SetContextForeGroundColor (
-			BUILD_COLOR (MAKE_RGB15 (0x00, 0x00, 0x15), 0x3B));
 	SetContextFont (MicroFont);
-	font_DrawText (&t);
-
+	font_DrawTracedText (&t,
+			BUILD_COLOR (MAKE_RGB15 (0x00, 0x00, 0x15), 0x3B), BLACK_COLOR);
 	SetContextFont (TinyFont);
 	UnlockMutex (GraphicsLock);
 
@@ -196,7 +193,8 @@ PrintCoarseScanPC (void)
 			GAME_STRING (ORBITSCAN_STRING_BASE + 1)); // " a.u."
 	t.pStr = buf;
 	t.CharCount = (COUNT)~0;
-	font_DrawText (&t);
+	font_DrawTracedText (&t,
+			BUILD_COLOR (MAKE_RGB15 (0xF, 0x00, 0x19), 0x3B), BLACK_COLOR);
 	t.baseline.y += SCAN_LEADING_PC;
 	UnlockMutex (GraphicsLock);
 
@@ -218,7 +216,8 @@ PrintCoarseScanPC (void)
 	}
 	t.pStr = buf;
 	t.CharCount = (COUNT)~0;
-	font_DrawText (&t);
+	font_DrawTracedText (&t,
+			BUILD_COLOR (MAKE_RGB15 (0xF, 0x00, 0x19), 0x3B), BLACK_COLOR);
 	t.baseline.y += SCAN_LEADING_PC;
 	UnlockMutex (GraphicsLock);
 
@@ -229,7 +228,8 @@ PrintCoarseScanPC (void)
 			pSolarSysState->SysInfo.PlanetInfo.SurfaceTemperature);
 	t.pStr = buf;
 	t.CharCount = (COUNT)~0;
-	font_DrawText (&t);
+	font_DrawTracedText (&t,
+			BUILD_COLOR (MAKE_RGB15 (0xF, 0x00, 0x19), 0x3B), BLACK_COLOR);
 	t.baseline.y += SCAN_LEADING_PC;
 	UnlockMutex (GraphicsLock);
 
@@ -246,7 +246,8 @@ PrintCoarseScanPC (void)
 		t.pStr = buf;
 	}
 	t.CharCount = (COUNT)~0;
-	font_DrawText (&t);
+	font_DrawTracedText (&t,
+			BUILD_COLOR (MAKE_RGB15 (0xF, 0x00, 0x19), 0x3B), BLACK_COLOR);
 	t.baseline.y += SCAN_LEADING_PC;
 	UnlockMutex (GraphicsLock);
 
@@ -264,7 +265,8 @@ PrintCoarseScanPC (void)
 		t.pStr = buf;
 	}
 	t.CharCount = (COUNT)~0;
-	font_DrawText (&t);
+	font_DrawTracedText (&t,
+			BUILD_COLOR (MAKE_RGB15 (0xF, 0x00, 0x19), 0x3B), BLACK_COLOR);
 	UnlockMutex (GraphicsLock);
 
 	t.baseline.y = SCAN_BASELINE_Y_PC;
@@ -282,7 +284,8 @@ PrintCoarseScanPC (void)
 			GAME_STRING (ORBITSCAN_STRING_BASE + 12)); // " e.s."
 	t.pStr = buf;
 	t.CharCount = (COUNT)~0;
-	font_DrawText (&t);
+	font_DrawTracedText (&t,
+			BUILD_COLOR (MAKE_RGB15 (0xF, 0x00, 0x19), 0x3B), BLACK_COLOR);
 	t.baseline.y += SCAN_LEADING_PC;
 	UnlockMutex (GraphicsLock);
 
@@ -294,7 +297,8 @@ PrintCoarseScanPC (void)
 			GAME_STRING (ORBITSCAN_STRING_BASE + 12)); // " e.s."
 	t.pStr = buf;
 	t.CharCount = (COUNT)~0;
-	font_DrawText (&t);
+	font_DrawTracedText (&t,
+			BUILD_COLOR (MAKE_RGB15 (0xF, 0x00, 0x19), 0x3B), BLACK_COLOR);
 	t.baseline.y += SCAN_LEADING_PC;
 	UnlockMutex (GraphicsLock);
 
@@ -308,7 +312,8 @@ PrintCoarseScanPC (void)
 			GAME_STRING (ORBITSCAN_STRING_BASE + 15)); // " g."
 	t.pStr = buf;
 	t.CharCount = (COUNT)~0;
-	font_DrawText (&t);
+	font_DrawTracedText (&t,
+			BUILD_COLOR (MAKE_RGB15 (0xF, 0x00, 0x19), 0x3B), BLACK_COLOR);
 	t.baseline.y += SCAN_LEADING_PC;
 	UnlockMutex (GraphicsLock);
 
@@ -321,7 +326,8 @@ PrintCoarseScanPC (void)
 			GAME_STRING (ORBITSCAN_STRING_BASE + 17)); // " days"
 	t.pStr = buf;
 	t.CharCount = (COUNT)~0;
-	font_DrawText (&t);
+	font_DrawTracedText (&t,
+			BUILD_COLOR (MAKE_RGB15 (0xF, 0x00, 0x19), 0x3B), BLACK_COLOR);
 	t.baseline.y += SCAN_LEADING_PC;
 	UnlockMutex (GraphicsLock);
 
@@ -334,7 +340,8 @@ PrintCoarseScanPC (void)
 	t.pStr = buf;
 	sprintf (buf, "%d" STR_DEGREE_SIGN, val);
 	t.CharCount = (COUNT)~0;
-	font_DrawText (&t);
+	font_DrawTracedText (&t,
+			BUILD_COLOR (MAKE_RGB15 (0xF, 0x00, 0x19), 0x3B), BLACK_COLOR);
 	UnlockMutex (GraphicsLock);
 }
 
@@ -350,7 +357,6 @@ PrintCoarseScan3DO (void)
 	GetPlanetTitle (buf, sizeof (buf));
 
 	LockMutex (GraphicsLock);
-	SetContext (SpaceContext);
 
 	t.align = ALIGN_CENTER;
 	t.baseline.x = SIS_SCREEN_WIDTH >> 1;
@@ -358,10 +364,9 @@ PrintCoarseScan3DO (void)
 	t.pStr = buf;
 	t.CharCount = (COUNT)~0;
 
-	SetContextForeGroundColor (
-			BUILD_COLOR (MAKE_RGB15 (0x0F, 0x00, 0x19), 0x3B));
 	SetContextFont (MicroFont);
-	font_DrawText (&t);
+	font_DrawTracedText (&t,
+			BUILD_COLOR (MAKE_RGB15 (0xF, 0x00, 0x19), 0x3B), BLACK_COLOR);
 
 	s.origin.x = s.origin.y = 0;
 	s.origin.x = 16 - SAFE_X;
@@ -384,7 +389,8 @@ PrintCoarseScan3DO (void)
 			+ (EARTH_RADIUS >> 1)) / EARTH_RADIUS);
 	MakeScanValue (buf, val, STR_EARTH_SIGN);
 	t.CharCount = (COUNT)~0;
-	font_DrawText (&t);
+	font_DrawTracedText (&t,
+			BUILD_COLOR (MAKE_RGB15 (0xF, 0x00, 0x19), 0x3B), BLACK_COLOR);
 	t.baseline.y += SCAN_LEADING;
 	UnlockMutex (GraphicsLock);
 
@@ -399,7 +405,8 @@ PrintCoarseScan3DO (void)
 		MakeScanValue (buf, val, STR_EARTH_SIGN);
 	}
 	t.CharCount = (COUNT)~0;
-	font_DrawText (&t);
+	font_DrawTracedText (&t,
+			BUILD_COLOR (MAKE_RGB15 (0xF, 0x00, 0x19), 0x3B), BLACK_COLOR);
 	t.baseline.y += SCAN_LEADING;
 	UnlockMutex (GraphicsLock);
 
@@ -408,7 +415,8 @@ PrintCoarseScan3DO (void)
 	sprintf (buf, "%d" STR_DEGREE_SIGN,
 			pSolarSysState->SysInfo.PlanetInfo.SurfaceTemperature);
 	t.CharCount = (COUNT)~0;
-	font_DrawText (&t);
+	font_DrawTracedText (&t,
+			BUILD_COLOR (MAKE_RGB15 (0xF, 0x00, 0x19), 0x3B), BLACK_COLOR);
 	t.baseline.y += SCAN_LEADING;
 	UnlockMutex (GraphicsLock);
 
@@ -417,7 +425,8 @@ PrintCoarseScan3DO (void)
 	sprintf (buf, "<%u>", pSolarSysState->SysInfo.PlanetInfo.AtmoDensity == 0
 			? 0 : (pSolarSysState->SysInfo.PlanetInfo.Weather + 1));
 	t.CharCount = (COUNT)~0;
-	font_DrawText (&t);
+	font_DrawTracedText (&t,
+			BUILD_COLOR (MAKE_RGB15 (0xF, 0x00, 0x19), 0x3B), BLACK_COLOR);
 	t.baseline.y += SCAN_LEADING;
 	UnlockMutex (GraphicsLock);
 
@@ -429,7 +438,8 @@ PrintCoarseScan3DO (void)
 			) == GAS_GIANT
 			? 0 : (pSolarSysState->SysInfo.PlanetInfo.Tectonics + 1));
 	t.CharCount = (COUNT)~0;
-	font_DrawText (&t);
+	font_DrawTracedText (&t,
+			BUILD_COLOR (MAKE_RGB15 (0xF, 0x00, 0x19), 0x3B), BLACK_COLOR);
 	UnlockMutex (GraphicsLock);
 
 	t.baseline.x = RIGHT_SIDE_BASELINE_X;
@@ -446,7 +456,8 @@ PrintCoarseScan3DO (void)
 		val = 1;
 	MakeScanValue (buf, val, STR_EARTH_SIGN);
 	t.CharCount = (COUNT)~0;
-	font_DrawText (&t);
+	font_DrawTracedText (&t,
+			BUILD_COLOR (MAKE_RGB15 (0xF, 0x00, 0x19), 0x3B), BLACK_COLOR);
 	t.baseline.y += SCAN_LEADING;
 	UnlockMutex (GraphicsLock);
 
@@ -456,7 +467,8 @@ PrintCoarseScan3DO (void)
 	MakeScanValue (buf, val, STR_EARTH_SIGN);
 
 	t.CharCount = (COUNT)~0;
-	font_DrawText (&t);
+	font_DrawTracedText (&t,
+			BUILD_COLOR (MAKE_RGB15 (0xF, 0x00, 0x19), 0x3B), BLACK_COLOR);
 	t.baseline.y += SCAN_LEADING;
 	UnlockMutex (GraphicsLock);
 
@@ -467,7 +479,8 @@ PrintCoarseScan3DO (void)
 		val = 1;
 	MakeScanValue (buf, val, STR_EARTH_SIGN);
 	t.CharCount = (COUNT)~0;
-	font_DrawText (&t);
+	font_DrawTracedText (&t,
+			BUILD_COLOR (MAKE_RGB15 (0xF, 0x00, 0x19), 0x3B), BLACK_COLOR);
 	t.baseline.y += SCAN_LEADING;
 	UnlockMutex (GraphicsLock);
 
@@ -478,7 +491,8 @@ PrintCoarseScan3DO (void)
 		val = -val;
 	sprintf (buf, "%d" STR_DEGREE_SIGN, val);
 	t.CharCount = (COUNT)~0;
-	font_DrawText (&t);
+	font_DrawTracedText (&t,
+			BUILD_COLOR (MAKE_RGB15 (0xF, 0x00, 0x19), 0x3B), BLACK_COLOR);
 	t.baseline.y += SCAN_LEADING;
 	UnlockMutex (GraphicsLock);
 
@@ -488,7 +502,8 @@ PrintCoarseScan3DO (void)
 			* 10 / 24;
 	MakeScanValue (buf, val, STR_EARTH_SIGN);
 	t.CharCount = (COUNT)~0;
-	font_DrawText (&t);
+	font_DrawTracedText (&t,
+			BUILD_COLOR (MAKE_RGB15 (0xF, 0x00, 0x19), 0x3B), BLACK_COLOR);
 	UnlockMutex (GraphicsLock);
 }
 
@@ -580,7 +595,7 @@ flash_planet_loc_func(void *data)
 	return(0);
 }
 
-static BOOLEAN DoScan (MENU_STATE *pMS);
+BOOLEAN DoScan (MENU_STATE *pMS);
 
 static BOOLEAN
 PickPlanetSide (MENU_STATE *pMS)
@@ -711,11 +726,6 @@ PickPlanetSide (MENU_STATE *pMS)
 				SaveFlagshipState ();
 				return (FALSE);
 			}
-
-			if (optWhichCoarseScan == OPT_PC)
-				PrintCoarseScanPC ();
-			else
-				PrintCoarseScan3DO ();
 		}
 
 		DrawMenuStateStrings (PM_MIN_SCAN, DISPATCH_SHUTTLE);
@@ -770,8 +780,8 @@ ExitPlanetSide:
 			SetPlanetLoc (new_pt);
 		}
 
-		SleepThreadUntil (TimeIn + ONE_SECOND / 40);
-	}
+			SleepThreadUntil (TimeIn + ONE_SECOND / 40);
+		}
 
 	return (TRUE);
 }
@@ -866,7 +876,7 @@ DrawScannedStuff (COUNT y, BYTE CurState)
 	SetContextForeGroundColor (OldColor);
 }
 
-static BOOLEAN
+BOOLEAN
 DoScan (MENU_STATE *pMS)
 {
 	DWORD TimeIn, WaitTime;
@@ -1169,11 +1179,6 @@ ScanSystem (void)
 
 	DrawMenuStateStrings (PM_MIN_SCAN, MenuState.CurState);
 
-	if (optWhichCoarseScan == OPT_PC)
-		PrintCoarseScanPC ();
-	else
-		PrintCoarseScan3DO ();
-
 	pMenuState = &MenuState;
 	SetMenuSounds (MENU_SOUND_ARROWS, MENU_SOUND_SELECT);
 	DoInput (&MenuState, FALSE);
@@ -1328,4 +1333,35 @@ GeneratePlanetSide (void)
 	}
 }
 
+void
+init_coarse_scan (void)
+{
+	COLOR bg;
+	CONTEXT old_context;
 
+	coarse_scan_context = CreateContext ();
+	coarse_scan = CaptureDrawable (
+			CreateDrawable (WANT_PIXMAP, SIS_SCREEN_WIDTH,
+			SIS_SCREEN_HEIGHT, 1));
+	old_context = SetContext (coarse_scan_context);
+	SetContextFGFrame (coarse_scan);
+	bg = BUILD_COLOR (MAKE_RGB15 (0x00, 0x00, 0x10), 0x00);
+	// Color key for the background.
+	SetContextBackGroundColor (bg);
+	ClearDrawable ();
+	SetFrameTransparentColor (coarse_scan, bg);
+
+	if (optWhichCoarseScan == OPT_PC)
+		PrintCoarseScanPC ();
+	else
+		PrintCoarseScan3DO ();
+
+	SetContext (old_context);
+}
+
+void
+uninit_coarse_scan (void)
+{
+	DestroyContext (coarse_scan_context);
+	DestroyDrawable (ReleaseDrawable (coarse_scan));
+}

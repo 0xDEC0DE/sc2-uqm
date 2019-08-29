@@ -1297,6 +1297,209 @@ MakeGasGiant (COUNT num_bands, SBYTE *DepthArray, RECT *pRect, SIZE
 	DitherMap (DepthArray);
 }
 
+/* CreateRingMask
+ * This creates the rings around gas giants.
+ *
+ * How it works:
+ * -------------
+ * Two ellipses are drawn, an "inner" ellipse, which is transparent, and
+ * an "outer" ellipse, which is opaque.  The "back" of the outer
+ * ellipse is also made transparent to simulate the planet obscuring
+ * its view. (i.e., if it's where the planet should be, and it's in
+ * the "upper" half of the ring, set to invisible) The ellipses are
+ * rotated according to the AxialTilt parameter for the planet,
+ * and the ring colours are variations on a base colour pulled from
+ * the planet's colourmap.
+ *
+ * Geometry For Dummies:
+ * ---------------------
+ * the equation for an ellipse is:
+ *
+ *    x^2   y^2
+ *    --- + --- = 1
+ *    a^2   b^2
+ *
+ * the equation for the rotation of a point (x,y) is:
+ *
+ *    x' = x*cos(theta) - y*sin(theta)
+ *    y' = x*sin(theta) + y*cos(theta)
+ *
+ * combining these gives the equation for a rotated ellipse:
+ *
+ *    (x*cos(theta) - y*sin(theta))^2   (x*sin(theta) + y*cos(theta))^2
+ *    ------------------------------- + ------------------------------- = 1
+ *                 a^2                               b^2
+ *
+ */
+#define RING_OUTER_SEMIMAJOR 64
+#define RING_OUTER_MAJOR ((RING_OUTER_SEMIMAJOR << 1) + 1)
+#define RING_OUTER_SEMIMINOR 10
+#define RING_OUTER_SEMIMAJOR_2 (RING_OUTER_SEMIMAJOR * RING_OUTER_SEMIMAJOR)
+#define RING_OUTER_SEMIMINOR_2 (RING_OUTER_SEMIMINOR * RING_OUTER_SEMIMINOR)
+
+#define RING_INNER_SEMIMAJOR (RADIUS + 6)
+#define RING_INNER_SEMIMINOR (RING_OUTER_SEMIMINOR - 2)
+#define RING_INNER_SEMIMAJOR_2 (RING_INNER_SEMIMAJOR * RING_INNER_SEMIMAJOR)
+#define RING_INNER_SEMIMINOR_2 (RING_INNER_SEMIMINOR * RING_INNER_SEMIMINOR)
+#define RING_INNER_OFF_X 0
+#define RING_INNER_OFF_Y -2
+
+static FRAME
+CreateRingMask (void)
+{
+	DWORD rad2, clear, *rgba, *p_rgba, p;
+	float is_outer, is_inner, theta, ctheta, stheta;
+	float o_semimajor;
+	UBYTE max, r, g, b;
+	int x, y, origin_y;
+	FRAME RingFrame;
+	BYTE *cbase;
+
+	/* Use the first colour in planet's colourmp as the "base
+	 * colour" for the rings (yes, the rings are monochromatic).
+	 * According to strtab.txt, The RGB values in the colourmap
+	 * are 6 bits wide; padding them to 8 bits makes them look
+	 * too "bright", so they're only padded to 7 bits wide here.
+	 */
+	cbase = GetColorMapAddress (pSolarSysState->OrbitalCMap) + 2;
+	r = cbase[0] << 1;
+	g = cbase[1] << 1;
+	b = cbase[2] << 1;
+
+	/* at a 45-degree angle, the ellipse can be ~30% larger and
+	 * still fit inside the bounding box.  let's take advantge
+	 * of that, and set the width of the ellipse to the distance
+	 * between the two edges of the bounding box at that angle
+	 */
+	if ((pSolarSysState->SysInfo.PlanetInfo.AxialTilt % 90) > 45)
+		o_semimajor = RING_OUTER_SEMIMAJOR /
+				sin((pSolarSysState->SysInfo.PlanetInfo.AxialTilt % 90) *
+				M_DEG2RAD);
+	else
+		o_semimajor = RING_OUTER_SEMIMAJOR /
+				cos((pSolarSysState->SysInfo.PlanetInfo.AxialTilt % 90) *
+				M_DEG2RAD);
+
+	theta = pSolarSysState->SysInfo.PlanetInfo.AxialTilt * M_DEG2RAD;
+	ctheta = cos(theta);
+	stheta = sin(theta);
+	RingFrame = CaptureDrawable (
+            CreateDrawable (WANT_PIXMAP | WANT_ALPHA,
+                RING_OUTER_MAJOR, RING_OUTER_MAJOR, 1));
+	rgba = pSolarSysState->Orbit.ScratchArray;
+	p_rgba = rgba;
+	
+	max = 0xFF;
+	clear = frame_mapRGBA (RingFrame, 0, 0, 0, 0);
+
+	for (y = -RING_OUTER_SEMIMAJOR; y <= RING_OUTER_SEMIMAJOR; y++)
+	{
+		float o_yctheta, o_ystheta, i_yctheta, i_ystheta;
+		o_yctheta = y * ctheta;
+		o_ystheta = y * stheta;
+		i_yctheta = (y - RING_INNER_OFF_Y) * ctheta;
+		i_ystheta = (y - RING_INNER_OFF_Y) * stheta;
+
+		for (x = -RING_OUTER_SEMIMAJOR; x <= RING_OUTER_SEMIMAJOR; x++)
+		{
+			float o_xctheta, o_xstheta, i_xctheta, i_xstheta;
+			o_xctheta = x * ctheta;
+			o_xstheta = x * stheta;
+			i_xctheta = (x - RING_INNER_OFF_X) * ctheta;
+			i_xstheta = (x - RING_INNER_OFF_X) * stheta;
+
+			is_outer = (((o_xctheta - o_ystheta) * (o_xctheta - o_ystheta)) /
+					// RING_OUTER_SEMIMAJOR_2) +
+					(o_semimajor * o_semimajor)) +
+					(((o_xstheta + o_yctheta) * (o_xstheta + o_yctheta)) /
+					RING_OUTER_SEMIMINOR_2);
+			is_inner = (((i_xctheta - i_ystheta) * (i_xctheta - i_ystheta)) /
+					RING_INNER_SEMIMAJOR_2) +
+					(((i_xstheta + i_yctheta) * (i_xstheta + i_yctheta)) /
+					RING_INNER_SEMIMINOR_2);
+
+			origin_y = (int)(o_xstheta + o_yctheta);
+			rad2 = (x * x) + (y * y);
+
+			if (is_inner < 1.0)
+			{
+				if ((origin_y < 0) && (rad2 <= RADIUS_2))
+					p = clear;
+				else
+				{
+					if (is_inner < 0.9)
+						p = clear;
+					else
+					{
+						UBYTE r2, g2, b2, value;
+						float level;
+						level = (is_inner - 0.9) * 10;
+						r2 = (UBYTE) (r * level);
+						g2 = (UBYTE) (g * level);
+						b2 = (UBYTE) (b * level);
+						value = (UBYTE) (max * level);
+						/* alpha-channel blending only seems to work over the
+						 * actual planet surface, any pixel drawn over the
+						 * clipping frame gets "promoted" to full
+						 * opacity.  Whether bug or feature, for now it needs
+						 * working around.
+						 */
+						if (rad2 > RADIUS_2)
+							p = frame_mapRGBA (RingFrame, r2, g2, b2, max);
+						else
+							p = frame_mapRGBA (RingFrame, r, g, b, value);
+					}
+				}
+			}
+			else if (is_outer < 1.0)
+			{
+				if ((origin_y < 0) && (rad2 <= RADIUS_2))
+					p = clear;
+				else
+				{
+					UBYTE r2, g2, b2, value;
+
+					if (is_outer < 0.9)
+					{
+						if ((int)(is_outer * 10) % 2) {
+							r2 = r * (1 - is_outer);
+							g2 = g * (1 - is_outer);
+							b2 = b * (1 - is_outer);
+						}
+						else {
+							r2 = r * is_outer;
+							g2 = g * is_outer;
+							b2 = b * is_outer;
+						}
+						p = frame_mapRGBA (RingFrame, r2, g2, b2, max);
+					}
+					else
+					{
+						float level;
+						level = (1 - ((is_outer - 0.9) * 10));
+						r2 = (UBYTE) (r * level);
+						g2 = (UBYTE) (g * level);
+						b2 = (UBYTE) (b * level);
+						value = (UBYTE) (max * level);
+						if (rad2 > RADIUS_2)
+							p = frame_mapRGBA (RingFrame, r2, g2, b2, max);
+						else
+							p = frame_mapRGBA (RingFrame, r, g, b, value);
+					}
+				}
+			}
+			else
+				p = clear;
+
+			*p_rgba++ = p;
+		}
+	}
+	process_rgb_bmp (RingFrame, rgba, RING_OUTER_MAJOR, RING_OUTER_MAJOR);
+	SetFrameHot (RingFrame, MAKE_HOT_SPOT (RING_OUTER_SEMIMAJOR + 1, RING_OUTER_SEMIMAJOR + 1));
+
+	return RingFrame;
+}
+
 static void
 ValidateMap (SBYTE *DepthArray)
 {
@@ -1371,7 +1574,7 @@ planet_orbit_init ()
 			* (MAP_HEIGHT * (MAP_WIDTH + SPHERE_SPAN_X)));
 	// always allocate the scratch array to largest needed size
 	Orbit->ScratchArray = HMalloc (sizeof (DWORD)
-			* (SHIELD_DIAM) * (SHIELD_DIAM));
+			* (RING_OUTER_MAJOR) * (RING_OUTER_MAJOR));
 }
 
 static unsigned
@@ -1943,6 +2146,29 @@ GeneratePlanetMask (PLANET_DESC *pPlanetDesc, FRAME SurfDefFrame)
 					pSolarSysState->XlatRef, 1);
 		}
 		pSolarSysState->XlatPtr = GetStringAddress (pSolarSysState->XlatRef);
+
+		if (pSolarSysState->SysInfo.PlanetInfo.AtmoDensity ==
+				GAS_GIANT_ATMOSPHERE)
+		{
+			/* Skip ringmask if the axial tilt is too small --
+			 * the idea is that you would be viewing the rings
+			 * "end-on" and wouldn't see them
+			 */
+			if (abs (pSolarSysState->SysInfo.PlanetInfo.AxialTilt) > 5)
+				switch (pSolarSysState->pOrbitalDesc->data_index)
+				{
+					/* Also skip rings if the planet is a certain
+					 * colour.  These were arbitrarily chosen.
+					 */
+					case GRY_GAS_GIANT:
+					case CYA_GAS_GIANT:
+					case YEL_GAS_GIANT:
+						break;
+					default:
+						Orbit->ObjectFrame = CreateRingMask ();
+				}
+		}
+
 		RenderTopography (FALSE);
 	}
 
