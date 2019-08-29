@@ -586,6 +586,7 @@ DoModifyShips (MENU_STATE *pMS)
 	{
 		SBYTE dx = 0;
 		SBYTE dy = 0;
+		SBYTE do_loop = 0;
 		BYTE NewState;
 
 		if (!(pMS->delta_item & MODIFY_CREW_FLAG))
@@ -597,6 +598,8 @@ DoModifyShips (MENU_STATE *pMS)
 		if (PulsedInputState.menu[KEY_MENU_LEFT]) dx = -1;
 		if (PulsedInputState.menu[KEY_MENU_UP]) dy = -1;
 		if (PulsedInputState.menu[KEY_MENU_DOWN]) dy = 1;
+		if (PulsedInputState.menu[KEY_MENU_PAGE_UP]) do_loop = dx = 1;
+		if (PulsedInputState.menu[KEY_MENU_PAGE_DOWN]) do_loop = dx = -1;
 		NewState = pMS->CurState;
 		if (pMS->delta_item & MODIFY_CREW_FLAG)
 		{
@@ -883,6 +886,7 @@ DoModifyShips (MENU_STATE *pMS)
 				else if (pMS->delta_item & MODIFY_CREW_FLAG)
 				{
 					SIZE crew_delta, crew_bought;
+					int loop;
 
 					if (hStarShip)
 						StarShipPtr = LockShipFrag (&GLOBAL (built_ship_q),
@@ -890,10 +894,13 @@ DoModifyShips (MENU_STATE *pMS)
 					else
 						StarShipPtr = NULL;  // Keeping compiler quiet.
 
-					SetMenuSounds (MENU_SOUND_UP | MENU_SOUND_DOWN,
+					SetMenuSounds (MENU_SOUND_UP | MENU_SOUND_DOWN | MENU_SOUND_PAGEUP | MENU_SOUND_PAGEDOWN,
 							MENU_SOUND_SELECT | MENU_SOUND_CANCEL);
 					crew_delta = 0;
-					if (dy < 0)
+
+					for (loop = 0; loop < (do_loop ? 10 : 1); loop++)
+					{
+					if (dy < 0 || dx > 0)
 					{
 						if (hStarShip == 0)
 						{
@@ -903,7 +910,7 @@ DoModifyShips (MENU_STATE *pMS)
 							{
 								DrawPoint (&r.corner);
 								DeltaSISGauges (1, 0, -GLOBAL (CrewCost));
-								crew_delta = 1;
+								crew_delta += 1;
 
 								SetContext (StatusContext);
 								GetGaugeRect (&r, TRUE);
@@ -912,6 +919,7 @@ DoModifyShips (MENU_STATE *pMS)
 							}
 							else
 							{	// at capacity or not enough RUs
+								if (loop) break;
 								PlayMenuSound (MENU_SOUND_FAILURE);
 							}
 						}
@@ -938,7 +946,7 @@ DoModifyShips (MENU_STATE *pMS)
 									DeltaSISGauges (0, 0, -(COUNT)ShipCost[
 											StarShipPtr->race_id]);
 								++StarShipPtr->crew_level;
-								crew_delta = 1;
+								crew_delta += 1;
 								ShowShipCrew (StarShipPtr, &pMS->flash_rect0);
 								r.corner.x = pMS->flash_rect0.corner.x;
 								r.corner.y = pMS->flash_rect0.corner.y
@@ -950,13 +958,19 @@ DoModifyShips (MENU_STATE *pMS)
 							}
 							else
 							{	// at capacity or not enough RUs
+								if (loop)
+								{
+									UnlockFleetInfo (&GLOBAL (avail_race_q),
+											hTemplate);
+									break;
+								}
 								PlayMenuSound (MENU_SOUND_FAILURE);
 							}
 							UnlockFleetInfo (&GLOBAL (avail_race_q),
 									hTemplate);
 						}
 					}
-					else if (dy > 0)
+					else if (dy > 0 || dx < 0)
 					{
 						crew_bought = (SIZE)MAKE_WORD (
 								GET_GAME_STATE (CREW_PURCHASED0),
@@ -968,7 +982,7 @@ DoModifyShips (MENU_STATE *pMS)
 								DeltaSISGauges (-1, 0, GLOBAL (CrewCost)
 										- (crew_bought ==
 										CREW_EXPENSE_THRESHOLD ? 2 : 0));
-								crew_delta = -1;
+								crew_delta -= 1;
 
 								GetCPodCapacity (&r.corner);
 								SetContextForeGroundColor (BLACK_COLOR);
@@ -981,6 +995,7 @@ DoModifyShips (MENU_STATE *pMS)
 							}
 							else
 							{	// no crew to dismiss
+								if (loop) break;
 								PlayMenuSound (MENU_SOUND_FAILURE);
 							}
 						}
@@ -995,11 +1010,24 @@ DoModifyShips (MENU_STATE *pMS)
 								else
 									DeltaSISGauges (0, 0, (COUNT)ShipCost[
 											StarShipPtr->race_id]);
-								crew_delta = -1;
+								crew_delta -= 1;
 								--StarShipPtr->crew_level;
 							}
 							else
 							{	// no crew to dismiss
+								if (loop)
+								{
+									ShowShipCrew (StarShipPtr,
+										&pMS->flash_rect0);
+									r.corner.x = pMS->flash_rect0.corner.x;
+									r.corner.y = pMS->flash_rect0.corner.y
+										+ pMS->flash_rect0.extent.height - 6;
+									r.extent.width = SHIP_WIN_WIDTH;
+									r.extent.height = 5;
+									SetContext (SpaceContext);
+									SetFlashRect (&r);
+									break;
+								}
 								PlayMenuSound (MENU_SOUND_FAILURE);
 							}
 							ShowShipCrew (StarShipPtr, &pMS->flash_rect0);
@@ -1011,6 +1039,7 @@ DoModifyShips (MENU_STATE *pMS)
 							SetContext (SpaceContext);
 							SetFlashRect (&r);
 						}
+					}
 					}
 
 					if (hStarShip)

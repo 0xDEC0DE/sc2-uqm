@@ -110,6 +110,17 @@ DeltaSupportCrew (SIZE crew_delta)
 			StarShipPtr->race_id);
 	TemplatePtr = LockFleetInfo (&GLOBAL (avail_race_q), hTemplate);
 
+	if (crew_delta > 0)
+	{
+		while (crew_delta && (StarShipPtr->crew_level + crew_delta) >
+				StarShipPtr->max_crew)
+			crew_delta--;
+	}
+	else if (crew_delta < 0)
+	{
+		while (crew_delta && (StarShipPtr->crew_level + crew_delta) < 1)
+			crew_delta++;
+	}
 	StarShipPtr->crew_level += crew_delta;
 
 	if (StarShipPtr->crew_level == 0)
@@ -190,7 +201,7 @@ DoModifyRoster (MENU_STATE *pMS)
 	RECT r;
 	STAMP s;
 	SHIP_FRAGMENT *StarShipPtr;
-	BOOLEAN select, cancel, up, down, horiz;
+	BOOLEAN select, cancel, up, down, pgup, pgdn, horiz;
 
 	if (GLOBAL (CurrentActivity) & CHECK_ABORT)
 	{
@@ -208,15 +219,18 @@ DoModifyRoster (MENU_STATE *pMS)
 	down = PulsedInputState.menu[KEY_MENU_DOWN];
 	horiz = PulsedInputState.menu[KEY_MENU_LEFT] ||
 			PulsedInputState.menu[KEY_MENU_RIGHT];
+	pgup = PulsedInputState.menu[KEY_MENU_PAGE_UP];
+	pgdn = PulsedInputState.menu[KEY_MENU_PAGE_DOWN];
 
 	if (pMS->Initialized && (pMS->CurState & SHIP_TOGGLE))
 	{
-		SetMenuSounds (MENU_SOUND_UP | MENU_SOUND_DOWN,
-				MENU_SOUND_SELECT | MENU_SOUND_CANCEL);
+		SetMenuSounds (MENU_SOUND_UP | MENU_SOUND_DOWN | MENU_SOUND_PAGEUP |
+				MENU_SOUND_PAGEDOWN, MENU_SOUND_SELECT | MENU_SOUND_CANCEL);
 	}
 	else
 	{
-		SetMenuSounds (MENU_SOUND_ARROWS, MENU_SOUND_SELECT);
+		SetMenuSounds (MENU_SOUND_ARROWS | MENU_SOUND_PAGEUP |
+				MENU_SOUND_PAGEDOWN, MENU_SOUND_SELECT);
 	}
 
 	if (!pMS->Initialized)
@@ -263,20 +277,17 @@ DoModifyRoster (MENU_STATE *pMS)
 	{
 		SIZE delta = 0;
 		BOOLEAN failed = FALSE;
-
-		if (up)
+		if (up || pgup)
 		{
-			sy = -1;
 			if (GLOBAL_SIS (CrewEnlisted))
-				delta = 1;
+				delta = pgup ? 10 : 1;
 			else
 				failed = TRUE;
 		}
-		else if (down)
+		else if (down || pgdn)
 		{
-			sy = 1;
 			if (GLOBAL_SIS (CrewEnlisted) < GetCPodCapacity (NULL))
-				delta = -1;
+				delta = pgdn ? -10 : -1;
 			else
 				failed = TRUE;
 		}
