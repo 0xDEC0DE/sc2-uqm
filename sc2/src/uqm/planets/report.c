@@ -87,7 +87,7 @@ MakeReport (SOUND ReadOutSounds, UNICODE *pStr, COUNT StrLen)
 	BYTE ButtonState;
 	int end_page_len;
 	UNICODE end_page_buf[200];
-	wchar_t last_c;
+	wchar_t last_c = 0;
 	COUNT row_cells;
 	BOOLEAN Sleepy;
 	RECT r;
@@ -171,12 +171,20 @@ MakeReport (SOUND ReadOutSounds, UNICODE *pStr, COUNT StrLen)
 						PlaySound (ReadOutSounds, NotPositional (), NULL,
 								GAME_SOUND_PRIORITY);
 
-						if (c == ',')
-							TimeOut += ONE_SECOND / 4;
-						if (c == '.' || c == '!' || c == '?')
-							TimeOut += ONE_SECOND / 2;
+						if (last_c && last_c != ' ' && last_c != ',' &&
+								last_c != '.' && last_c != '!' && last_c != '?')
+						{
+							if (c == ',')
+								TimeOut += ONE_SECOND / 4;
+							if (c == '.' || c == '!' || c == '?')
+								TimeOut += ONE_SECOND / 2;
+							else
+								TimeOut += ONE_SECOND / 20;
+						}
 						else
 							TimeOut += ONE_SECOND / 20;
+						last_c = c;
+
 						if (word_chars == 0)
 							TimeOut += ONE_SECOND / 20;
 
