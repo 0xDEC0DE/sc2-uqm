@@ -105,6 +105,7 @@ GenerateIP (BYTE Index)
 			break;
 		case ZOQFOT_DEFINED:
 		case ZOQ_SCOUT_DEFINED:
+		case ZOQ_COLONY_DEFINED:
 			GenFunc = GenerateZoqFotPik;
 			break;
 		case YEHAT_DEFINED:
