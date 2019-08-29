@@ -95,6 +95,29 @@ GenerateVUX (BYTE control)
 			}
 			pSolarSysState->CurNode = 0;
 			break;
+		case GENERATE_MOONS:
+			if (CurStarDescPtr->Index == VUX_DEFINED &&
+					pSolarSysState->pBaseDesc == &pSolarSysState->PlanetDesc[0])
+			{
+				// Setup moons, then add a starbase as the last moon
+				pSolarSysState->PlanetDesc[0].NumPlanets = 1;
+				GenerateRandomIP (GENERATE_MOONS);
+				pSolarSysState->PlanetDesc[0].NumPlanets = 2;
+
+				pSolarSysState->MoonDesc[1].data_index =
+						(ActivateStarShip (VUX_SHIP, SPHERE_TRACKING)) ?
+						HIERARCHY_STARBASE : DESTROYED_STARBASE;
+				pSolarSysState->MoonDesc[1].radius = MIN_MOON_RADIUS;
+				pSolarSysState->MoonDesc[1].location.x =
+						COSINE (HALF_CIRCLE - OCTANT,
+						pSolarSysState->MoonDesc[1].radius);
+				pSolarSysState->MoonDesc[1].location.y =
+						SINE (HALF_CIRCLE - OCTANT,
+						pSolarSysState->MoonDesc[1].radius);
+				break;
+			}
+			GenerateRandomIP (GENERATE_MOONS);
+			break;
 		case GENERATE_PLANETS:
 		{
 			COUNT angle;
@@ -150,6 +173,12 @@ GenerateVUX (BYTE control)
 		}
 		case GENERATE_ORBITAL:
 		{
+			if ((CurStarDescPtr->Index == VUX_DEFINED) && 
+					(pSolarSysState->pOrbitalDesc == &pSolarSysState->MoonDesc[1]) &&
+					(pSolarSysState->pOrbitalDesc->pPrevDesc == &pSolarSysState->PlanetDesc[0]))
+				if (VisitHomeWorldStarBase (ActivateStarShip (VUX_SHIP, SPHERE_TRACKING)))
+					break;
+
 			if ((pSolarSysState->pOrbitalDesc == &pSolarSysState->PlanetDesc[0]
 					&& (CurStarDescPtr->Index == VUX_DEFINED
 					|| (CurStarDescPtr->Index == MAIDENS_DEFINED
