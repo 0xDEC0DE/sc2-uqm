@@ -80,6 +80,31 @@ GeneratePkunk (BYTE control)
 			}
 			pSolarSysState->CurNode = 0;
 			break;
+		case GENERATE_MOONS:
+			if (CurStarDescPtr->Index == PKUNK_DEFINED &&
+					pSolarSysState->pBaseDesc == &pSolarSysState->PlanetDesc[0])
+			{
+				// Insert a starbase as the first moon
+				pSolarSysState->PlanetDesc[0].NumPlanets = 1;
+				GenerateRandomIP (GENERATE_MOONS);
+				memmove (&pSolarSysState->MoonDesc[1],
+						&pSolarSysState->MoonDesc[0],
+						sizeof (pSolarSysState->MoonDesc[0])
+						* pSolarSysState->PlanetDesc[0].NumPlanets);
+				pSolarSysState->PlanetDesc[0].NumPlanets = 2;
+
+				pSolarSysState->MoonDesc[0].data_index =
+						(ActivateStarShip (PKUNK_SHIP, SPHERE_TRACKING)) ?
+						PKUNK_STARBASE : DESTROYED_STARBASE;
+				pSolarSysState->MoonDesc[0].radius = MIN_MOON_RADIUS;
+				pSolarSysState->MoonDesc[0].location.x =
+						COSINE (QUADRANT, pSolarSysState->MoonDesc[0].radius);
+				pSolarSysState->MoonDesc[0].location.y =
+						SINE (QUADRANT, pSolarSysState->MoonDesc[0].radius);
+				break;
+			}
+			GenerateRandomIP (GENERATE_MOONS);
+			break;
 		case GENERATE_PLANETS:
 		{
 			COUNT angle;
@@ -99,6 +124,11 @@ GeneratePkunk (BYTE control)
 			break;
 		}
 		case GENERATE_ORBITAL:
+			if ((pSolarSysState->pOrbitalDesc == &pSolarSysState->MoonDesc[0]) &&
+					(pSolarSysState->pOrbitalDesc->pPrevDesc == &pSolarSysState->PlanetDesc[0]))
+				if (VisitHomeWorldStarBase (ActivateStarShip (PKUNK_SHIP, SPHERE_TRACKING)))
+					break;
+
 			if (pSolarSysState->pOrbitalDesc == &pSolarSysState->PlanetDesc[0])
 			{
 				if (ActivateStarShip (PKUNK_SHIP, SPHERE_TRACKING))
