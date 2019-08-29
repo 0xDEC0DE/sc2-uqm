@@ -143,6 +143,21 @@ GenerateTalkingPet (BYTE control)
 			}
 			pSolarSysState->CurNode = 0;
 			break;
+		case GENERATE_MOONS:
+			GenerateRandomIP (GENERATE_MOONS); 
+			if (CurStarDescPtr->Index == UMGAH_DEFINED &&
+					pSolarSysState->pBaseDesc == &pSolarSysState->PlanetDesc[0])
+			{
+				pSolarSysState->MoonDesc[0].data_index =
+						(ActivateStarShip (UMGAH_SHIP, SPHERE_TRACKING)) ?
+						HIERARCHY_STARBASE : DESTROYED_STARBASE;
+				pSolarSysState->MoonDesc[0].radius = MIN_MOON_RADIUS;
+				pSolarSysState->MoonDesc[0].location.x =
+						COSINE (OCTANT >> 1, pSolarSysState->MoonDesc[0].radius);
+				pSolarSysState->MoonDesc[0].location.y =
+						SINE (OCTANT >> 1, pSolarSysState->MoonDesc[0].radius);
+			}
+			break;
 		case GENERATE_PLANETS:
 		{
 			COUNT angle;
@@ -150,6 +165,7 @@ GenerateTalkingPet (BYTE control)
 			GenerateRandomIP (GENERATE_PLANETS);
 			pSolarSysState->PlanetDesc[0].data_index = TELLURIC_WORLD;
 			pSolarSysState->PlanetDesc[0].radius = EARTH_RADIUS * 204L / 100;
+			pSolarSysState->PlanetDesc[0].NumPlanets = 1;
 			angle = ARCTAN (
 					pSolarSysState->PlanetDesc[0].location.x,
 					pSolarSysState->PlanetDesc[0].location.y
@@ -161,6 +177,12 @@ GenerateTalkingPet (BYTE control)
 			break;
 		}
 		case GENERATE_ORBITAL:
+			if ((CurStarDescPtr->Index == UMGAH_DEFINED) &&
+					(pSolarSysState->pOrbitalDesc == &pSolarSysState->MoonDesc[0]) &&
+					(pSolarSysState->pOrbitalDesc->pPrevDesc == &pSolarSysState->PlanetDesc[0]))
+				if (VisitHomeWorldStarBase (ActivateStarShip (UMGAH_SHIP, SPHERE_TRACKING)))
+					break;
+
 			if (pSolarSysState->pOrbitalDesc == &pSolarSysState->PlanetDesc[0]
 					&& (GET_GAME_STATE (UMGAH_ZOMBIE_BLOBBIES)
 					|| !GET_GAME_STATE (TALKING_PET)
