@@ -234,6 +234,7 @@ extern void ExploreSolarSys (void);
 extern void DrawStarBackGround (BOOLEAN ForPlanet);
 extern void XFormIPLoc (POINT *pIn, POINT *pOut, BOOLEAN ToDisplay);
 extern void GenerateRandomIP (BYTE control);
+extern BOOLEAN VisitHomeWorldStarBase (COUNT which_ship);
 extern PLAN_GEN_FUNC GenerateIP (BYTE Index);
 extern void DrawSystem (SIZE radius, BOOLEAN IsInnerSystem);
 extern void DrawOval (RECT *pRect, BYTE num_off_pixels);

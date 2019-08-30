@@ -199,6 +199,53 @@ GenerateMoons (void)
 	TFB_SeedRandom (old_seed);
 }
 
+BOOLEAN
+VisitHomeWorldStarBase (COUNT race_active)
+{
+	// If you go to the homeworld's starbase, move the ship to
+	// the planet post-comms
+	if (race_active)
+	{
+		pSolarSysState->pOrbitalDesc = &pSolarSysState->PlanetDesc[0];
+		GLOBAL (ShipStamp.origin.x) = SIS_SCREEN_WIDTH >> 1;
+		GLOBAL (ShipStamp.origin.y) = SIS_SCREEN_HEIGHT >> 1;
+		return FALSE;
+	}
+	// ...unless they're all dead.  Show the report instead
+	RECT r;
+	LockMutex (GraphicsLock);
+
+	LoadStdLanderFont (&pSolarSysState->SysInfo.PlanetInfo);
+	pSolarSysState->SysInfo.PlanetInfo.DiscoveryString =
+            SetRelStringTableIndex (
+					CaptureStringTable (
+							LoadStringTable (RUINS_STRTAB)), 1);
+
+	ScanContext = CreateContext ();
+	SetContext (ScanContext);
+	SetContextFGFrame (Screen);
+	r.corner.x = (SIS_ORG_X + SIS_SCREEN_WIDTH) - MAP_WIDTH;
+	r.corner.y = (SIS_ORG_Y + SIS_SCREEN_HEIGHT) - MAP_HEIGHT;
+	r.extent.width = MAP_WIDTH;
+	r.extent.height = MAP_HEIGHT;
+	SetContextClipRect (&r);
+
+	DoDiscoveryReport (MenuSounds);
+
+	SetContext (SpaceContext);
+	DestroyContext (ScanContext);
+	ScanContext = 0;
+
+	DestroyStringTable (
+		ReleaseStringTable (
+				pSolarSysState->SysInfo.PlanetInfo.DiscoveryString));
+	pSolarSysState->SysInfo.PlanetInfo.DiscoveryString = 0;
+	FreeLanderFont (&pSolarSysState->SysInfo.PlanetInfo);
+
+	UnlockMutex (GraphicsLock);
+	return TRUE;
+}
+
 void
 FreeIPData (void)
 {
