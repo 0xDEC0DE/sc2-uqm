@@ -32,6 +32,8 @@
 
 
 static bool GenerateThraddash_generatePlanets (SOLARSYS_STATE *solarSys);
+static bool GenerateThraddash_generateMoons (SOLARSYS_STATE *solarSys,
+		PLANET_DESC *planet);
 static bool GenerateThraddash_generateOrbital (SOLARSYS_STATE *solarSys,
 		PLANET_DESC *world);
 static COUNT GenerateThraddash_generateEnergy (const SOLARSYS_STATE *,
@@ -45,7 +47,7 @@ const GenerateFunctions generateThraddashFunctions = {
 	/* .reinitNpcs       = */ GenerateDefault_reinitNpcs,
 	/* .uninitNpcs       = */ GenerateDefault_uninitNpcs,
 	/* .generatePlanets  = */ GenerateThraddash_generatePlanets,
-	/* .generateMoons    = */ GenerateDefault_generateMoons,
+	/* .generateMoons    = */ GenerateThraddash_generateMoons,
 	/* .generateName     = */ GenerateDefault_generateName,
 	/* .generateOrbital  = */ GenerateThraddash_generateOrbital,
 	/* .generateMinerals = */ GenerateDefault_generateMinerals,
@@ -78,7 +80,7 @@ GenerateThraddash_generatePlanets (SOLARSYS_STATE *solarSys)
 	else  /* CurStarDescPtr->Index == THRADD_DEFINED */
 	{
 		solarSys->PlanetDesc[0].data_index = WATER_WORLD;
-		solarSys->PlanetDesc[0].NumPlanets = 0;
+		solarSys->PlanetDesc[0].NumPlanets = 1;
 		solarSys->PlanetDesc[0].radius = EARTH_RADIUS * 98L / 100;
 		angle = ARCTAN (solarSys->PlanetDesc[0].location.x,
 				solarSys->PlanetDesc[0].location.y);
@@ -91,9 +93,39 @@ GenerateThraddash_generatePlanets (SOLARSYS_STATE *solarSys)
 }
 
 static bool
+GenerateThraddash_generateMoons (SOLARSYS_STATE *solarSys, PLANET_DESC *planet)
+{
+	if (CurStarDescPtr->Index == THRADD_DEFINED && planet == &solarSys->PlanetDesc[0])
+	{
+		GenerateDefault_generateMoons (solarSys, planet);
+		solarSys->MoonDesc[0].data_index =
+				(StartSphereTracking (THRADDASH_SHIP)) ?
+				HIERARCHY_STARBASE : DESTROYED_STARBASE;
+		solarSys->MoonDesc[0].radius = MIN_MOON_RADIUS;
+		solarSys->MoonDesc[0].location.x =
+				COSINE (HALF_CIRCLE + OCTANT,
+				solarSys->MoonDesc[0].radius);
+		solarSys->MoonDesc[0].location.y =
+				SINE (HALF_CIRCLE + OCTANT,
+				solarSys->MoonDesc[0].radius);
+		return true;
+	}
+
+	return GenerateDefault_generateMoons (solarSys, planet);
+}
+
+static bool
 GenerateThraddash_generateOrbital (SOLARSYS_STATE *solarSys,
 		PLANET_DESC *world)
 {
+	if (CurStarDescPtr->Index == THRADD_DEFINED
+			&& matchWorld (solarSys, world, 0, 0))
+	{
+		if (VisitHomeWorldStarBase (StartSphereTracking (THRADDASH_SHIP)))
+			return true;
+		world = &solarSys->PlanetDesc[0];
+	}
+
 	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
 		if (StartSphereTracking (THRADDASH_SHIP)
