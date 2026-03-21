@@ -46,6 +46,7 @@ extern GenerateFunctions generateSyreenFunctions;
 extern GenerateFunctions generateTalkingPetFunctions;
 extern GenerateFunctions generateThraddashFunctions;
 extern GenerateFunctions generateTrapFunctions;
+extern GenerateFunctions generateUrQuanFunctions;
 extern GenerateFunctions generateUtwigFunctions;
 extern GenerateFunctions generateVaultFunctions;
 extern GenerateFunctions generateVuxFunctions;
@@ -140,6 +141,9 @@ getGenerateFunctions (BYTE Index)
 			return &generateRainbowWorldFunctions;
 		case ILWRATH_DEFINED:
 			return &generateIlwrathFunctions;
+		case URQUAN_DEFINED:
+		case KOHRAH_DEFINED:
+			return &generateUrQuanFunctions;
 		default:
 			return &generateDefaultFunctions;
 	}
