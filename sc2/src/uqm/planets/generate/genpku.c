@@ -29,6 +29,8 @@
 
 
 static bool GeneratePkunk_generatePlanets (SOLARSYS_STATE *solarSys);
+static bool GeneratePkunk_generateMoons (SOLARSYS_STATE *solarSys,
+		PLANET_DESC *planet);
 static bool GeneratePkunk_generateOrbital (SOLARSYS_STATE *solarSys,
 		PLANET_DESC *world);
 static COUNT GeneratePkunk_generateEnergy (const SOLARSYS_STATE *,
@@ -42,7 +44,7 @@ const GenerateFunctions generatePkunkFunctions = {
 	/* .reinitNpcs       = */ GenerateDefault_reinitNpcs,
 	/* .uninitNpcs       = */ GenerateDefault_uninitNpcs,
 	/* .generatePlanets  = */ GeneratePkunk_generatePlanets,
-	/* .generateMoons    = */ GenerateDefault_generateMoons,
+	/* .generateMoons    = */ GeneratePkunk_generateMoons,
 	/* .generateName     = */ GenerateDefault_generateName,
 	/* .generateOrbital  = */ GeneratePkunk_generateOrbital,
 	/* .generateMinerals = */ GenerateDefault_generateMinerals,
@@ -62,7 +64,7 @@ GeneratePkunk_generatePlanets (SOLARSYS_STATE *solarSys)
 	GenerateDefault_generatePlanets (solarSys);
 
 	solarSys->PlanetDesc[0].data_index = WATER_WORLD;
-	solarSys->PlanetDesc[0].NumPlanets = 1;
+	solarSys->PlanetDesc[0].NumPlanets = 2;
 	solarSys->PlanetDesc[0].radius = EARTH_RADIUS * 104L / 100;
 	angle = ARCTAN (solarSys->PlanetDesc[0].location.x,
 			solarSys->PlanetDesc[0].location.y);
@@ -75,8 +77,43 @@ GeneratePkunk_generatePlanets (SOLARSYS_STATE *solarSys)
 }
 
 static bool
+GeneratePkunk_generateMoons (SOLARSYS_STATE *solarSys, PLANET_DESC *planet)
+{
+	if (planet == &solarSys->PlanetDesc[0])
+	{
+		// Insert a starbase as the first moon
+		solarSys->PlanetDesc[0].NumPlanets = 1;
+		GenerateDefault_generateMoons (solarSys, planet);
+		memmove (&solarSys->MoonDesc[1],
+				&solarSys->MoonDesc[0],
+				sizeof (solarSys->MoonDesc[0])
+				* solarSys->PlanetDesc[0].NumPlanets);
+		solarSys->PlanetDesc[0].NumPlanets = 2;
+
+		solarSys->MoonDesc[0].data_index =
+				(StartSphereTracking (PKUNK_SHIP)) ?
+				PKUNK_STARBASE : DESTROYED_STARBASE;
+		solarSys->MoonDesc[0].radius = MIN_MOON_RADIUS;
+		solarSys->MoonDesc[0].location.x =
+				COSINE (QUADRANT, solarSys->MoonDesc[0].radius);
+		solarSys->MoonDesc[0].location.y =
+				SINE (QUADRANT, solarSys->MoonDesc[0].radius);
+		return true;
+	}
+
+	return GenerateDefault_generateMoons (solarSys, planet);
+}
+
+static bool
 GeneratePkunk_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 {
+	if (matchWorld (solarSys, world, 0, 0))
+	{
+		if (VisitHomeWorldStarBase (StartSphereTracking (PKUNK_SHIP)))
+			return true;
+		world = &solarSys->PlanetDesc[0];
+	}
+
 	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
 		if (StartSphereTracking (PKUNK_SHIP))
