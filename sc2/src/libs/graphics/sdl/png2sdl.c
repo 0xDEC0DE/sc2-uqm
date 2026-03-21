@@ -34,7 +34,11 @@
  */
 
 #include "png2sdl.h"
+#ifdef PNG_DIR
+#include <png/png.h>
+#else
 #include <png.h>
+#endif
 
 /* Link function between SDL_RWops and PNG's data source */
 static void

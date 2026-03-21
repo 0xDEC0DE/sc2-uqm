@@ -155,18 +155,18 @@ prepareContentDir (const char *contentDirName, const char* addonDirName, const c
 		 * by looking relative to the location of the uqm executable. */
 		if (loc == NULL)
 		{
-			char *tempDir = (char *) HMalloc (PATH_MAX);
 			char *execFileDup;
+			char appDirBuf[PATH_MAX];
+			char *appDir = appDirBuf;
 
 			/* dirname can modify its argument, so we need a local
 			 * mutable copy of it. */
 			execFileDup = (char *) HMalloc (strlen (execFile) + 1);
 			strcpy (execFileDup, execFile);
-			snprintf (tempDir, PATH_MAX, "%s/../Resources/content",
+			snprintf (appDir, PATH_MAX, "%s/../Resources/content",
 					dirname (execFileDup));
-			loc = findFileInDirs ((const char **) &tempDir, 1, testFile);
+			loc = findFileInDirs ((const char **) &appDir, 1, testFile);
 			HFree (execFileDup);
-			HFree (tempDir);
 		}
 #endif
 	}

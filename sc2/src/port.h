@@ -489,7 +489,11 @@ typedef unsigned int wint_t;
 
 // Use SDL_INCLUDE to portably include the SDL files from the right location.
 // The SDL_DIR definition is provided by the build configuration.
+#ifdef SDL_DIR
+#define SDL_INCLUDE(file) <SDL_DIR/file>
+#else
 #define SDL_INCLUDE(file) #file
+#endif /* SDL_DIR */
 
 // Mark a function as using printf-style function arguments, so that
 // extra consistency checks can be made by the compiler.
