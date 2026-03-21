@@ -145,6 +145,7 @@ EventHandler (BYTE selector)
 				if (SpathiPtr->actual_strength)
 				{
 					SetRaceAllied (SPATHI_SHIP, FALSE);
+					RemoveEscortShips (SPATHI_SHIP);
 					SET_GAME_STATE (SPATHI_SHIELDED_SELVES, 1);
 					SpathiPtr->actual_strength = 0;
 				}
