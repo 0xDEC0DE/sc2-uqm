@@ -28,6 +28,8 @@
 
 
 static bool GenerateYehat_generatePlanets (SOLARSYS_STATE *solarSys);
+static bool GenerateYehat_generateMoons (SOLARSYS_STATE *solarSys,
+		PLANET_DESC *planet);
 static bool GenerateYehat_generateOrbital (SOLARSYS_STATE *solarSys,
 		PLANET_DESC *world);
 static COUNT GenerateYehat_generateEnergy (const SOLARSYS_STATE *,
@@ -41,7 +43,7 @@ const GenerateFunctions generateYehatFunctions = {
 	/* .reinitNpcs       = */ GenerateDefault_reinitNpcs,
 	/* .uninitNpcs       = */ GenerateDefault_uninitNpcs,
 	/* .generatePlanets  = */ GenerateYehat_generatePlanets,
-	/* .generateMoons    = */ GenerateDefault_generateMoons,
+	/* .generateMoons    = */ GenerateYehat_generateMoons,
 	/* .generateName     = */ GenerateDefault_generateName,
 	/* .generateOrbital  = */ GenerateYehat_generateOrbital,
 	/* .generateMinerals = */ GenerateDefault_generateMinerals,
@@ -73,8 +75,37 @@ GenerateYehat_generatePlanets (SOLARSYS_STATE *solarSys)
 }
 
 static bool
+GenerateYehat_generateMoons (SOLARSYS_STATE *solarSys, PLANET_DESC *planet)
+{
+	if (planet == &solarSys->PlanetDesc[0])
+	{
+		GenerateDefault_generateMoons (solarSys, planet);
+		solarSys->MoonDesc[0].data_index =
+				(StartSphereTracking (YEHAT_SHIP)) ?
+				HIERARCHY_STARBASE : DESTROYED_STARBASE;
+		solarSys->MoonDesc[0].radius = MIN_MOON_RADIUS;
+		solarSys->MoonDesc[0].location.x =
+				COSINE (FULL_CIRCLE - (OCTANT >> 1),
+						solarSys->MoonDesc[0].radius);
+		solarSys->MoonDesc[0].location.y =
+				SINE (FULL_CIRCLE - (OCTANT >> 1),
+						solarSys->MoonDesc[0].radius);
+		return true;
+	}
+
+	return GenerateDefault_generateMoons (solarSys, planet);
+}
+
+static bool
 GenerateYehat_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 {
+	if (matchWorld (solarSys, world, 0, 0))
+	{
+		if (VisitHomeWorldStarBase (StartSphereTracking (YEHAT_SHIP)))
+			return true;
+		world = &solarSys->PlanetDesc[0];
+	}
+
 	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
 		if (StartSphereTracking (YEHAT_SHIP))
