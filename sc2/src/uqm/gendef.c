@@ -34,6 +34,7 @@ extern GenerateFunctions generateMyconFunctions;
 extern GenerateFunctions generateNeglectedStarbaseFunctions;
 extern GenerateFunctions generateOrzFunctions;
 extern GenerateFunctions generatePkunkFunctions;
+extern GenerateFunctions generatePrecursorStarbaseFunctions;
 extern GenerateFunctions generateRainbowWorldFunctions;
 extern GenerateFunctions generateSaMatraFunctions;
 extern GenerateFunctions generateShofixtiFunctions;
@@ -68,7 +69,7 @@ getGenerateFunctions (BYTE Index)
 		case SPATHI_DEFINED:
 			return &generateSpathiFunctions;
 		case MELNORME0_DEFINED:
-		case MELNORME1_DEFINED:
+		// MELNORME1_DEFINED is special, see below
 		case MELNORME2_DEFINED:
 		case MELNORME3_DEFINED:
 		case MELNORME4_DEFINED:
@@ -77,6 +78,8 @@ getGenerateFunctions (BYTE Index)
 		case MELNORME7_DEFINED:
 		case MELNORME8_DEFINED:
 			return &generateMelnormeFunctions;
+		case MELNORME1_DEFINED:
+			return &generatePrecursorStarbaseFunctions;
 		case TALKING_PET_DEFINED:
 			return &generateTalkingPetFunctions;
 		case CHMMR_DEFINED:
