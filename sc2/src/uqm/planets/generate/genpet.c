@@ -31,6 +31,8 @@
 
 
 static bool GenerateTalkingPet_generatePlanets (SOLARSYS_STATE *solarSys);
+static bool GenerateTalkingPet_generateMoons (SOLARSYS_STATE *solarSys,
+		PLANET_DESC *planet);
 static bool GenerateTalkingPet_generateOrbital (SOLARSYS_STATE *solarSys,
 		PLANET_DESC *world);
 static COUNT GenerateTalkingPet_generateEnergy (const SOLARSYS_STATE *,
@@ -46,7 +48,7 @@ const GenerateFunctions generateTalkingPetFunctions = {
 	/* .reinitNpcs       = */ GenerateDefault_reinitNpcs,
 	/* .uninitNpcs       = */ GenerateDefault_uninitNpcs,
 	/* .generatePlanets  = */ GenerateTalkingPet_generatePlanets,
-	/* .generateMoons    = */ GenerateDefault_generateMoons,
+	/* .generateMoons    = */ GenerateTalkingPet_generateMoons,
 	/* .generateName     = */ GenerateDefault_generateName,
 	/* .generateOrbital  = */ GenerateTalkingPet_generateOrbital,
 	/* .generateMinerals = */ GenerateDefault_generateMinerals,
@@ -67,6 +69,7 @@ GenerateTalkingPet_generatePlanets (SOLARSYS_STATE *solarSys)
 
 	solarSys->PlanetDesc[0].data_index = TELLURIC_WORLD;
 	solarSys->PlanetDesc[0].radius = EARTH_RADIUS * 204L / 100;
+	solarSys->PlanetDesc[0].NumPlanets = 1;
 	angle = ARCTAN (solarSys->PlanetDesc[0].location.x,
 			solarSys->PlanetDesc[0].location.y);
 	solarSys->PlanetDesc[0].location.x =
@@ -78,8 +81,35 @@ GenerateTalkingPet_generatePlanets (SOLARSYS_STATE *solarSys)
 }
 
 static bool
+GenerateTalkingPet_generateMoons (SOLARSYS_STATE *solarSys, PLANET_DESC *planet)
+{
+	if (planet == &solarSys->PlanetDesc[0])
+	{
+		GenerateDefault_generateMoons (solarSys, planet);
+		solarSys->MoonDesc[0].data_index =
+				(StartSphereTracking (UMGAH_SHIP)) ?
+				HIERARCHY_STARBASE : DESTROYED_STARBASE;
+		solarSys->MoonDesc[0].radius = MIN_MOON_RADIUS;
+		solarSys->MoonDesc[0].location.x =
+				COSINE (OCTANT >> 1, solarSys->MoonDesc[0].radius);
+		solarSys->MoonDesc[0].location.y =
+				SINE (OCTANT >> 1, solarSys->MoonDesc[0].radius);
+		return true;
+	}
+
+	return GenerateDefault_generateMoons (solarSys, planet);
+}
+
+static bool
 GenerateTalkingPet_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 {
+	if (matchWorld (solarSys, world, 0, 0))
+	{
+		if (VisitHomeWorldStarBase (StartSphereTracking (UMGAH_SHIP)))
+			return true;
+		world = &solarSys->PlanetDesc[0];
+	}
+
 	if (matchWorld (solarSys, world, 0, MATCH_PLANET)
 			&& (GET_GAME_STATE (UMGAH_ZOMBIE_BLOBBIES)
 			|| !GET_GAME_STATE (TALKING_PET)
@@ -254,4 +284,3 @@ ZapToUrquanEncounter (void)
 		UnlockEncounter (hEncounter);
 	}
 }
-
