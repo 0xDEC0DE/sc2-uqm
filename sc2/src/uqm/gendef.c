@@ -29,6 +29,7 @@ extern GenerateFunctions generateColonyFunctions;
 extern GenerateFunctions generateDruugeFunctions;
 extern GenerateFunctions generateIlwrathFunctions;
 extern GenerateFunctions generateMelnormeFunctions;
+extern GenerateFunctions generateMotherArkFunctions;
 extern GenerateFunctions generateMyconFunctions;
 extern GenerateFunctions generateOrzFunctions;
 extern GenerateFunctions generatePkunkFunctions;
@@ -83,6 +84,8 @@ getGenerateFunctions (BYTE Index)
 			return &generateSyreenFunctions;
 		case MYCON_TRAP_DEFINED:
 			return &generateTrapFunctions;
+		case MOTHER_ARK_DEFINED:
+			return &generateMotherArkFunctions;
 		case BURVIXESE_DEFINED:
 			return &generateBurvixeseFunctions;
 		case SLYLANDRO_DEFINED:
