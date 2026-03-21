@@ -1595,6 +1595,30 @@ DrawInnerPlanets (PLANET_DESC *planet)
 	}
 	DrawStamp (&s);
 
+	/* UGLY HACK: scribble the orbital for the Spathi starbase on the screen.
+	 * Can't do this in GenerateSpathi_generateMoons() because it fires before the
+	 * ExtraScreen has been setup.  Yuck.
+	 *
+	 * This is not my best work ever.  Apologies.  A proper fix appears to involve
+	 * more heavy lifting than I'm amenable to right now...
+	 */
+	if (CurStarDescPtr->Index == SPATHI_DEFINED
+		&& planet == &pSolarSysState->PlanetDesc[0]
+		&& !GET_GAME_STATE (SPATHI_SHIELDED_SELVES))
+	{
+		RECT r;
+
+		r.extent.width = 45;
+		r.extent.height = r.extent.width >> 1;
+		r.corner.x = (SIS_SCREEN_WIDTH >> 1) - (r.extent.width >> 1)
+					 + pSolarSysState->MoonDesc[0].location.x;
+		r.corner.y = (SIS_SCREEN_HEIGHT >> 1) - (r.extent.height >> 1)
+					 + (pSolarSysState->MoonDesc[0].location.y >> 1);
+
+		SetContextForeGroundColor (pSolarSysState->MoonDesc[0].temp_color);
+		DrawOval (&r, 1);
+	}
+
 	// Draw the moon images
 	for (i = planet->NumPlanets, moon = pSolarSysState->MoonDesc;
 			i; --i, ++moon)

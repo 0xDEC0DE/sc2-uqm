@@ -80,7 +80,12 @@ GenerateSpathi_generatePlanets (SOLARSYS_STATE *solarSys)
 	pMinPlanet->data_index = WATER_WORLD;
 	if (GET_GAME_STATE (SPATHI_SHIELDED_SELVES))
 		pMinPlanet->data_index |= PLANET_SHIELDED;
-	pMinPlanet->NumPlanets = 1;
+
+	/* "Ur-Quan slave law requires that we maintain an orbital
+	 *  space platform to assist Hierarchy vessels which are in
+	 *  need of repairs or fuel"
+	 */
+	pMinPlanet->NumPlanets = GET_GAME_STATE (SPATHI_SHIELDED_SELVES) ? 1 : 2;
 
 	return true;
 }
@@ -88,7 +93,16 @@ GenerateSpathi_generatePlanets (SOLARSYS_STATE *solarSys)
 static bool
 GenerateSpathi_generateMoons (SOLARSYS_STATE *solarSys, PLANET_DESC *planet)
 {
-	COUNT angle;
+	/*
+	 * HACK: Futzing with the number of moons changes the pRNG state.  This
+	 * is mostly harmless in the context of this system's generation (almost
+	 * everything is overridden for th sake of gameplay/story elements), but it
+	 * DOES cause the orbital position of Spathiwa's moon to change when they
+	 * shield themselves, which is inconvenient; lock the angle to a fixed,
+	 * known position (i.e., the angle the pRNG normally gives you when there
+	 * is only one moon) rather than trying to refcount calls into the pRNG.
+	 */
+	COUNT angle = 58;
 
 	GenerateDefault_generateMoons (solarSys, planet);
 
@@ -102,11 +116,20 @@ GenerateSpathi_generateMoons (SOLARSYS_STATE *solarSys, PLANET_DESC *planet)
 
 		solarSys->MoonDesc[0].data_index = PELLUCID_WORLD;
 		solarSys->MoonDesc[0].radius = MIN_MOON_RADIUS + MOON_DELTA;
-		angle = NORMALIZE_ANGLE (LOWORD (RandomContext_Random (SysGenRNG)));
 		solarSys->MoonDesc[0].location.x =
 				COSINE (angle, solarSys->MoonDesc[0].radius);
 		solarSys->MoonDesc[0].location.y =
 				SINE (angle, solarSys->MoonDesc[0].radius);
+
+		if (!GET_GAME_STATE (SPATHI_SHIELDED_SELVES))
+		{
+			solarSys->MoonDesc[1].data_index = HIERARCHY_STARBASE;
+			solarSys->MoonDesc[1].radius = solarSys->MoonDesc[0].radius;
+			solarSys->MoonDesc[1].location.x =
+				COSINE (angle - (OCTANT >> 1), solarSys->MoonDesc[1].radius);
+			solarSys->MoonDesc[1].location.y =
+				SINE (angle - (OCTANT >> 1), solarSys->MoonDesc[1].radius);
+		}
 	}
 
 	return true;
@@ -116,6 +139,22 @@ static bool
 GenerateSpathi_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 {
 	DWORD rand_val;
+
+	if (matchWorld (solarSys, world, 0, 1))
+	{
+		if (VisitHomeWorldStarBase (StartSphereTracking (SPATHI_SHIP)))
+			return true;
+
+		/* If you go to the starbase, move the ship to the moon instead */
+		solarSys->pOrbitalDesc = &solarSys->MoonDesc[0];
+		GLOBAL (ShipStamp.origin.x) = (SIS_SCREEN_WIDTH >> 1) +
+				solarSys->MoonDesc[0].location.x;
+		GLOBAL (ShipStamp.origin.y) = (SIS_SCREEN_HEIGHT >> 1) +
+				(solarSys->MoonDesc[0].location.y >> 1);
+
+		/* continue on to Spathiwa's moon */
+		world = &solarSys->MoonDesc[0];
+	}
 
 	if (matchWorld (solarSys, world, 0, 0))
 	{
