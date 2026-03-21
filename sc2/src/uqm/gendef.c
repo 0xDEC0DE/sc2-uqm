@@ -31,6 +31,7 @@ extern GenerateFunctions generateIlwrathFunctions;
 extern GenerateFunctions generateMelnormeFunctions;
 extern GenerateFunctions generateMotherArkFunctions;
 extern GenerateFunctions generateMyconFunctions;
+extern GenerateFunctions generateNeglectedStarbaseFunctions;
 extern GenerateFunctions generateOrzFunctions;
 extern GenerateFunctions generatePkunkFunctions;
 extern GenerateFunctions generateRainbowWorldFunctions;
@@ -86,6 +87,8 @@ getGenerateFunctions (BYTE Index)
 			return &generateTrapFunctions;
 		case MOTHER_ARK_DEFINED:
 			return &generateMotherArkFunctions;
+		case NEGLECTED_STARBASE_DEFINED:
+			return &generateNeglectedStarbaseFunctions;
 		case BURVIXESE_DEFINED:
 			return &generateBurvixeseFunctions;
 		case SLYLANDRO_DEFINED:
@@ -137,4 +140,3 @@ getGenerateFunctions (BYTE Index)
 			return &generateDefaultFunctions;
 	}
 }
-
