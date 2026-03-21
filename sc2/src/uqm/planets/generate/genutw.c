@@ -33,6 +33,8 @@
 
 static bool GenerateUtwig_initNpcs (SOLARSYS_STATE *solarSys);
 static bool GenerateUtwig_generatePlanets (SOLARSYS_STATE *solarSys);
+static bool GenerateUtwig_generateMoons (SOLARSYS_STATE *solarSys,
+		PLANET_DESC *planet);
 static bool GenerateUtwig_generateOrbital (SOLARSYS_STATE *solarSys,
 		PLANET_DESC *world);
 static COUNT GenerateUtwig_generateEnergy (const SOLARSYS_STATE *,
@@ -46,7 +48,7 @@ const GenerateFunctions generateUtwigFunctions = {
 	/* .reinitNpcs       = */ GenerateDefault_reinitNpcs,
 	/* .uninitNpcs       = */ GenerateDefault_uninitNpcs,
 	/* .generatePlanets  = */ GenerateUtwig_generatePlanets,
-	/* .generateMoons    = */ GenerateDefault_generateMoons,
+	/* .generateMoons    = */ GenerateUtwig_generateMoons,
 	/* .generateName     = */ GenerateDefault_generateName,
 	/* .generateOrbital  = */ GenerateUtwig_generateOrbital,
 	/* .generateMinerals = */ GenerateDefault_generateMinerals,
@@ -85,7 +87,7 @@ GenerateUtwig_generatePlanets (SOLARSYS_STATE *solarSys)
 	if (CurStarDescPtr->Index == UTWIG_DEFINED)
 	{
 		solarSys->PlanetDesc[0].data_index = WATER_WORLD;
-		solarSys->PlanetDesc[0].NumPlanets = 1;
+		solarSys->PlanetDesc[0].NumPlanets = 2;
 		solarSys->PlanetDesc[0].radius = EARTH_RADIUS * 174L / 100;
 		angle = ARCTAN (solarSys->PlanetDesc[0].location.x,
 				solarSys->PlanetDesc[0].location.y);
@@ -99,8 +101,55 @@ GenerateUtwig_generatePlanets (SOLARSYS_STATE *solarSys)
 }
 
 static bool
+GenerateUtwig_generateMoons (SOLARSYS_STATE *solarSys, PLANET_DESC *planet)
+{
+	if (CurStarDescPtr->Index == UTWIG_DEFINED
+			&& matchWorld (solarSys, planet, 0, MATCH_PLANET))
+	{
+		COUNT angle;
+
+		// Setup moons, then add a starbase as the last moon
+		planet->NumPlanets = 1;
+		GenerateDefault_generateMoons (solarSys, planet);
+		planet->NumPlanets = 2;
+
+		solarSys->MoonDesc[1].data_index =
+				(StartSphereTracking(UTWIG_SHIP)) ?
+				UTWIG_STARBASE : DESTROYED_STARBASE;
+		angle = HALF_CIRCLE - OCTANT;
+		solarSys->MoonDesc[1].radius = MIN_MOON_RADIUS;
+		solarSys->MoonDesc[1].location.x =
+				COSINE (angle, solarSys->MoonDesc[1].radius);
+		solarSys->MoonDesc[1].location.y =
+				SINE (angle, solarSys->MoonDesc[1].radius);
+
+		// adjust the position of the other moons outward
+		solarSys->MoonDesc[0].radius += MOON_DELTA;
+		angle = ARCTAN (solarSys->MoonDesc[0].location.x,
+				solarSys->MoonDesc[0].location.y);
+		solarSys->MoonDesc[0].location.x =
+				COSINE (angle, solarSys->MoonDesc[0].radius);
+		solarSys->MoonDesc[0].location.y =
+				SINE (angle, solarSys->MoonDesc[0].radius);
+
+		return true;
+	}
+
+	return GenerateDefault_generateMoons (solarSys, planet);
+}
+
+static bool
 GenerateUtwig_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 {
+	if (CurStarDescPtr->Index == UTWIG_DEFINED
+			&& matchWorld (solarSys, world, 0, 1))
+	{
+		if (VisitHomeWorldStarBase (StartSphereTracking (UTWIG_SHIP)))
+			return true;
+
+		world = &solarSys->PlanetDesc[0];
+	}
+
 	if ((CurStarDescPtr->Index == UTWIG_DEFINED
 			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
 			|| (CurStarDescPtr->Index == BOMB_DEFINED
