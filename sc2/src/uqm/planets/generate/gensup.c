@@ -29,6 +29,8 @@
 
 
 static bool GenerateSupox_generatePlanets (SOLARSYS_STATE *solarSys);
+static bool GenerateSupox_generateMoons (SOLARSYS_STATE *solarSys,
+		PLANET_DESC *planet);
 static bool GenerateSupox_generateOrbital (SOLARSYS_STATE *solarSys,
 		PLANET_DESC *world);
 static COUNT GenerateSupox_generateEnergy (const SOLARSYS_STATE *,
@@ -42,7 +44,7 @@ const GenerateFunctions generateSupoxFunctions = {
 	/* .reinitNpcs       = */ GenerateDefault_reinitNpcs,
 	/* .uninitNpcs       = */ GenerateDefault_uninitNpcs,
 	/* .generatePlanets  = */ GenerateSupox_generatePlanets,
-	/* .generateMoons    = */ GenerateDefault_generateMoons,
+	/* .generateMoons    = */ GenerateSupox_generateMoons,
 	/* .generateName     = */ GenerateDefault_generateName,
 	/* .generateOrbital  = */ GenerateSupox_generateOrbital,
 	/* .generateMinerals = */ GenerateDefault_generateMinerals,
@@ -62,7 +64,7 @@ GenerateSupox_generatePlanets (SOLARSYS_STATE *solarSys)
 	GenerateDefault_generatePlanets (solarSys);
 
 	solarSys->PlanetDesc[0].data_index = WATER_WORLD;
-	solarSys->PlanetDesc[0].NumPlanets = 2;
+	solarSys->PlanetDesc[0].NumPlanets = 3;
 	solarSys->PlanetDesc[0].radius = EARTH_RADIUS * 152L / 100;
 	angle = ARCTAN (solarSys->PlanetDesc[0].location.x,
 			solarSys->PlanetDesc[0].location.y);
@@ -75,8 +77,60 @@ GenerateSupox_generatePlanets (SOLARSYS_STATE *solarSys)
 }
 
 static bool
+GenerateSupox_generateMoons (SOLARSYS_STATE *solarSys, PLANET_DESC *planet)
+{
+	if (matchWorld (solarSys, planet, 0, MATCH_PLANET))
+	{
+		COUNT angle;
+
+		// Setup moons, then add a starbase as the last moon
+		planet->NumPlanets = 2;
+		GenerateDefault_generateMoons (solarSys, planet);
+		planet->NumPlanets = 3;
+
+		solarSys->MoonDesc[2].data_index =
+				(StartSphereTracking(SUPOX_SHIP)) ?
+				SUPOX_STARBASE : DESTROYED_STARBASE;
+		angle = HALF_CIRCLE + OCTANT;
+		solarSys->MoonDesc[2].radius = MIN_MOON_RADIUS;
+		solarSys->MoonDesc[2].location.x =
+				COSINE (angle, solarSys->MoonDesc[2].radius);
+		solarSys->MoonDesc[2].location.y =
+				SINE (angle, solarSys->MoonDesc[2].radius);
+
+		// adjust the positions of the other moons outward
+		solarSys->MoonDesc[0].radius += MOON_DELTA;
+		angle = ARCTAN (solarSys->MoonDesc[0].location.x,
+				solarSys->MoonDesc[0].location.y);
+		solarSys->MoonDesc[0].location.x =
+				COSINE (angle, solarSys->MoonDesc[0].radius);
+		solarSys->MoonDesc[0].location.y =
+				SINE (angle, solarSys->MoonDesc[0].radius);
+		solarSys->MoonDesc[1].radius += MOON_DELTA;
+		angle = ARCTAN (solarSys->MoonDesc[1].location.x,
+				solarSys->MoonDesc[1].location.y);
+		solarSys->MoonDesc[1].location.x =
+				COSINE (angle, solarSys->MoonDesc[1].radius);
+		solarSys->MoonDesc[1].location.y =
+				SINE (angle, solarSys->MoonDesc[1].radius);
+
+		return true;
+	}
+
+	return GenerateDefault_generateMoons (solarSys, planet);
+}
+
+static bool
 GenerateSupox_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 {
+	if (matchWorld (solarSys, world, 0, 2))
+	{
+		if (VisitHomeWorldStarBase (StartSphereTracking (SUPOX_SHIP)))
+			return true;
+
+		world = &solarSys->PlanetDesc[0];
+	}
+
 	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
 		if (StartSphereTracking (SUPOX_SHIP))
@@ -156,4 +210,3 @@ GenerateSupox_generateEnergy (const SOLARSYS_STATE *solarSys,
 
 	return 0;
 }
-
