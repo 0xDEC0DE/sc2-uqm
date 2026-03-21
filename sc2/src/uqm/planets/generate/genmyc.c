@@ -33,6 +33,8 @@
 
 
 static bool GenerateMycon_generatePlanets (SOLARSYS_STATE *solarSys);
+static bool GenerateMycon_generateMoons (SOLARSYS_STATE *solarSys,
+		PLANET_DESC *planet);
 static bool GenerateMycon_generateOrbital (SOLARSYS_STATE *solarSys,
 		PLANET_DESC *world);
 static COUNT GenerateMycon_generateEnergy (const SOLARSYS_STATE *,
@@ -48,7 +50,7 @@ const GenerateFunctions generateMyconFunctions = {
 	/* .reinitNpcs       = */ GenerateDefault_reinitNpcs,
 	/* .uninitNpcs       = */ GenerateDefault_uninitNpcs,
 	/* .generatePlanets  = */ GenerateMycon_generatePlanets,
-	/* .generateMoons    = */ GenerateDefault_generateMoons,
+	/* .generateMoons    = */ GenerateMycon_generateMoons,
 	/* .generateName     = */ GenerateDefault_generateName,
 	/* .generateOrbital  = */ GenerateMycon_generateOrbital,
 	/* .generateMinerals = */ GenerateDefault_generateMinerals,
@@ -69,7 +71,9 @@ GenerateMycon_generatePlanets (SOLARSYS_STATE *solarSys)
 
 	solarSys->PlanetDesc[0].data_index = SHATTERED_WORLD;
 	solarSys->PlanetDesc[0].radius = EARTH_RADIUS * 80L / 100;
-	if (solarSys->PlanetDesc[0].NumPlanets > 2)
+	if (CurStarDescPtr->Index == MYCON_DEFINED)
+		solarSys->PlanetDesc[0].NumPlanets = 3;
+	else if (solarSys->PlanetDesc[0].NumPlanets > 2)
 		solarSys->PlanetDesc[0].NumPlanets = 2;
 	angle = ARCTAN (
 			solarSys->PlanetDesc[0].location.x,
@@ -83,8 +87,59 @@ GenerateMycon_generatePlanets (SOLARSYS_STATE *solarSys)
 }
 
 static bool
+GenerateMycon_generateMoons (SOLARSYS_STATE *solarSys, PLANET_DESC *planet)
+{
+	if (CurStarDescPtr->Index == MYCON_DEFINED && planet == &solarSys->PlanetDesc[0])
+	{
+		COUNT angle;
+
+		// Setup moons, then add a starbase as the last moon
+		solarSys->PlanetDesc[0].NumPlanets = 2;
+		GenerateDefault_generateMoons (solarSys, planet);
+		solarSys->PlanetDesc[0].NumPlanets = 3;
+
+		solarSys->MoonDesc[2].data_index =
+				(StartSphereTracking (MYCON_SHIP)) ?
+				HIERARCHY_STARBASE : DESTROYED_STARBASE;
+		angle = FULL_CIRCLE - OCTANT;
+		solarSys->MoonDesc[2].radius = MIN_MOON_RADIUS;
+		solarSys->MoonDesc[2].location.x =
+				COSINE (angle, solarSys->MoonDesc[0].radius);
+		solarSys->MoonDesc[2].location.y =
+				SINE (angle, solarSys->MoonDesc[0].radius);
+
+		// adjust the positions of the other moons outward
+		solarSys->MoonDesc[0].radius += MOON_DELTA;
+		angle = ARCTAN (solarSys->MoonDesc[0].location.x,
+				solarSys->MoonDesc[0].location.y);
+		solarSys->MoonDesc[0].location.x =
+				COSINE (angle, solarSys->MoonDesc[0].radius);
+		solarSys->MoonDesc[0].location.y =
+				SINE (angle, solarSys->MoonDesc[0].radius);
+		solarSys->MoonDesc[1].radius += MOON_DELTA;
+		angle = ARCTAN (solarSys->MoonDesc[1].location.x,
+				solarSys->MoonDesc[1].location.y);
+		solarSys->MoonDesc[1].location.x =
+				COSINE (angle, solarSys->MoonDesc[1].radius);
+		solarSys->MoonDesc[1].location.y =
+				SINE (angle, solarSys->MoonDesc[1].radius);
+		return true;
+	}
+
+	return GenerateDefault_generateMoons (solarSys, planet);
+}
+
+static bool
 GenerateMycon_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 {
+	if (CurStarDescPtr->Index == MYCON_DEFINED
+			&& matchWorld (solarSys, world, 0, 2))
+	{
+		if (VisitHomeWorldStarBase (StartSphereTracking (MYCON_SHIP)))
+			return true;
+		world = &solarSys->PlanetDesc[0];
+	}
+
 	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
 		if ((CurStarDescPtr->Index == MYCON_DEFINED
@@ -283,4 +338,3 @@ GenerateMycon_generateLife (const SOLARSYS_STATE *solarSys,
 	(void) info;
 	return 0;
 }
-
