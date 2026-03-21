@@ -34,6 +34,8 @@
 
 
 static bool GenerateVux_generatePlanets (SOLARSYS_STATE *solarSys);
+static bool GenerateVux_generateMoons (SOLARSYS_STATE *solarSys,
+		PLANET_DESC *planet);
 static bool GenerateVux_generateOrbital (SOLARSYS_STATE *solarSys,
 		PLANET_DESC *world);
 static COUNT GenerateVux_generateEnergy (const SOLARSYS_STATE *,
@@ -51,7 +53,7 @@ const GenerateFunctions generateVuxFunctions = {
 	/* .reinitNpcs       = */ GenerateDefault_reinitNpcs,
 	/* .uninitNpcs       = */ GenerateDefault_uninitNpcs,
 	/* .generatePlanets  = */ GenerateVux_generatePlanets,
-	/* .generateMoons    = */ GenerateDefault_generateMoons,
+	/* .generateMoons    = */ GenerateVux_generateMoons,
 	/* .generateName     = */ GenerateDefault_generateName,
 	/* .generateOrbital  = */ GenerateVux_generateOrbital,
 	/* .generateMinerals = */ GenerateDefault_generateMinerals,
@@ -90,7 +92,7 @@ GenerateVux_generatePlanets (SOLARSYS_STATE *solarSys)
 		if (CurStarDescPtr->Index == VUX_DEFINED)
 		{
 			solarSys->PlanetDesc[0].data_index = REDUX_WORLD;
-			solarSys->PlanetDesc[0].NumPlanets = 1;
+			solarSys->PlanetDesc[0].NumPlanets = 2;
 			solarSys->PlanetDesc[0].radius = EARTH_RADIUS * 42L / 100;
 			angle = HALF_CIRCLE + OCTANT;
 		}
@@ -119,8 +121,42 @@ GenerateVux_generatePlanets (SOLARSYS_STATE *solarSys)
 }
 
 static bool
+GenerateVux_generateMoons (SOLARSYS_STATE *solarSys, PLANET_DESC *planet)
+{
+	if (CurStarDescPtr->Index == VUX_DEFINED && planet == &solarSys->PlanetDesc[0])
+	{
+		// Setup moons, then add a starbase as the last moon
+		solarSys->PlanetDesc[0].NumPlanets = 1;
+		GenerateDefault_generateMoons (solarSys, planet);
+		solarSys->PlanetDesc[0].NumPlanets = 2;
+
+		solarSys->MoonDesc[1].data_index =
+				(StartSphereTracking (VUX_SHIP)) ?
+				HIERARCHY_STARBASE : DESTROYED_STARBASE;
+		solarSys->MoonDesc[1].radius = MIN_MOON_RADIUS;
+		solarSys->MoonDesc[1].location.x =
+				COSINE (HALF_CIRCLE - OCTANT,
+				solarSys->MoonDesc[1].radius);
+		solarSys->MoonDesc[1].location.y =
+				SINE (HALF_CIRCLE - OCTANT,
+				solarSys->MoonDesc[1].radius);
+		return true;
+	}
+
+	return GenerateDefault_generateMoons (solarSys, planet);
+}
+
+static bool
 GenerateVux_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 {
+	if (CurStarDescPtr->Index == VUX_DEFINED
+			&& matchWorld (solarSys, world, 0, 1))
+	{
+		if (VisitHomeWorldStarBase (StartSphereTracking (VUX_SHIP)))
+			return true;
+		world = &solarSys->PlanetDesc[0];
+	}
+
 	if ((matchWorld (solarSys, world, 0, MATCH_PLANET)
 			&& (CurStarDescPtr->Index == VUX_DEFINED
 			|| (CurStarDescPtr->Index == MAIDENS_DEFINED
