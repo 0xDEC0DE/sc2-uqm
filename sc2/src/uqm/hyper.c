@@ -40,6 +40,7 @@
 #include "sounds.h"
 #include "options.h"
 #include "libs/graphics/gfx_common.h"
+#include "libs/graphics/drawable.h"
 #include "libs/mathlib.h"
 
 
@@ -63,6 +64,110 @@ enum HyperMenuItems
 	NAVIGATION,
 };
 
+
+/*
+ * draws the melee icon for the battle group inside the black holes,
+ * so you can see who's chasing you.
+ */
+static void
+decorate_vortex (ELEMENT * ElementPtr)
+{
+	HENCOUNTER hEncounter, hNextEncounter;
+	FRAME f = NULL;
+	static FRAME vortex_ships[NUM_AVAILABLE_RACES];
+
+	// The element is still spawning, nothing to do yet
+	if (ElementPtr->death_func)
+		return;
+
+	// The element doesn't know what kind of ship it is, that
+	// info is stored in the encounter queue.  I'm guessing this
+	// needs refactoring
+	for (hEncounter = GetHeadEncounter ();
+			hEncounter != 0; hEncounter = hNextEncounter)
+	{
+		ENCOUNTER *EncounterPtr;
+
+		LockEncounter (hEncounter, &EncounterPtr);
+		hNextEncounter = GetSuccEncounter (EncounterPtr);
+		if (EncounterPtr->hElement)
+		{
+			ELEMENT *EncounterElementPtr;
+
+			LockElement (EncounterPtr->hElement, &EncounterElementPtr);
+			if (EncounterElementPtr == ElementPtr)
+			{
+				HFLEETINFO hFleet;
+				FLEET_INFO *FleetPtr;
+
+				if (vortex_ships[EncounterPtr->race_id])
+				{
+					if (ElementPtr->next.image.frame != vortex_ships[EncounterPtr->race_id])
+						ElementPtr->next.image.frame = vortex_ships[EncounterPtr->race_id];
+				}
+				else
+				{
+					hFleet = GetStarShipFromIndex (&GLOBAL (avail_race_q),
+							EncounterPtr->race_id);
+					if (hFleet)
+					{
+						FleetPtr = LockFleetInfo (&GLOBAL (avail_race_q),
+								hFleet);
+						f = SetAbsFrameIndex (FleetPtr->melee_icon, 1);
+						UnlockFleetInfo (&GLOBAL (avail_race_q), hFleet);
+					}
+
+					// now make a frame, and use a context to scribble
+					// into it with DrawStamp().  uses a static array to
+					// reuse generated frames for the life of the game
+					// (or multiple games) as a dodge around figuring out
+					// a sensible memory management strategy  ;)
+					if (f)
+					{
+						CONTEXT tmp, old;
+						Color trans;
+						STAMP s;
+
+						vortex_ships[EncounterPtr->race_id] = CaptureDrawable (
+								CreateDrawable (WANT_PIXMAP | WANT_ALPHA,
+								GetFrameWidth (ElementPtr->next.image.frame),
+								GetFrameHeight (ElementPtr->next.image.frame), 1));
+						tmp = CreateContext ("VortexContext");
+						old = SetContext (tmp);
+						SetContextFGFrame (vortex_ships[EncounterPtr->race_id]);
+						trans = BUILD_COLOR (MAKE_RGB15 (0x10, 0x00, 0x10), 0x00);
+						SetContextBackGroundColor (trans);
+						ClearDrawable ();
+						SetFrameTransparentColor (vortex_ships[EncounterPtr->race_id], trans);
+
+						// the original element
+						s.frame = ElementPtr->current.image.frame;
+						s.origin = GetFrameHot (s.frame);
+						DrawStamp (&s);
+
+						// the overlaid gfx
+						s.frame = f;
+						DrawStamp (&s);
+
+						// important to make sure the
+						// collision animation looks correct
+						SetFrameHot (vortex_ships[EncounterPtr->race_id],
+								s.origin);
+
+						// cleanup
+						SetContext (old);
+						DestroyContext (tmp);
+						vortex_ships[EncounterPtr->race_id]->parent =
+								ElementPtr->current.image.frame->parent;
+						ElementPtr->next.image.frame = vortex_ships[EncounterPtr->race_id];
+					}
+				}
+			}
+			UnlockElement (EncounterPtr->hElement);
+		}
+		UnlockEncounter (hEncounter);
+	}
+}
 
 void
 MoveSIS (SIZE *pdx, SIZE *pdy)
@@ -1076,7 +1181,7 @@ AddEncounterElement (ENCOUNTER *EncounterPtr, POINT *puniverse)
 
 		ElementPtr->turn_wait = VORTEX_WAIT;
 		ElementPtr->preprocess_func = NULL;
-		ElementPtr->postprocess_func = NULL;
+		ElementPtr->postprocess_func = decorate_vortex;
 		ElementPtr->collision_func = encounter_collision;
 
 		SetUpElement (ElementPtr);
