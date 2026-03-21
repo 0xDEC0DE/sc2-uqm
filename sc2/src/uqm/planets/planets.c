@@ -273,6 +273,8 @@ LoadPlanet (FRAME SurfDefFrame)
 	if (!PLRPlaying ((MUSIC_REF)~0))
 		PlayMusic (LanderMusic, TRUE, 1);
 
+	init_coarse_scan ();
+
 	if (WaitMode)
 	{
 		ZoomInPlanetSphere ();
@@ -303,6 +305,7 @@ FreePlanet (void)
 
 //    FreeLanderData ();
 
+	uninit_coarse_scan ();
 	DestroyStringTable (ReleaseStringTable (pSolarSysState->XlatRef));
 	pSolarSysState->XlatRef = 0;
 	DestroyDrawable (ReleaseDrawable (pSolarSysState->TopoFrame));

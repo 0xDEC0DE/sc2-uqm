@@ -315,6 +315,11 @@ extern void GetPlanetOrMoonName (UNICODE *buf, COUNT bufsize);
 extern void PlanetOrbitMenu (void);
 extern void SaveSolarSysLocation (void);
 
+extern BOOLEAN VisitHomeWorldStarBase (COUNT race_active);
+
+extern FRAME CreateRingMask (const PLANET_INFO *PlanetInfo, POINT loc,
+		double viewing_tilt);
+
 #if defined(__cplusplus)
 }
 #endif

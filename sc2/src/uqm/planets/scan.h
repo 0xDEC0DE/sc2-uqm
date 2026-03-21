@@ -48,6 +48,11 @@ struct scan_block
 
 extern void ScanSystem (void);
 
+extern void init_coarse_scan (void);
+extern void uninit_coarse_scan (void);
+extern FRAME coarse_scan;
+extern BOOLEAN show_coarse_scan;
+
 extern void RepairBackRect (RECT *pRect);
 extern void GeneratePlanetSide (void);
 extern COUNT callGenerateForScanType (const SOLARSYS_STATE *,
