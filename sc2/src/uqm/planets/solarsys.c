@@ -787,6 +787,10 @@ ValidateOrbit (PLANET_DESC *planet, int sizeNumer, int dyNumer, int denom)
 	{
 		planet->image.frame = SetAbsFrameIndex (SpaceJunkFrame, 25);
 	}
+	else if (planet->data_index == DRUUGE_STARBASE)
+	{
+		planet->image.frame = SetAbsFrameIndex (SpaceJunkFrame, 26);
+	}
 }
 
 static void

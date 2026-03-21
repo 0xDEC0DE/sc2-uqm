@@ -31,6 +31,8 @@
 
 
 static bool GenerateDruuge_generatePlanets (SOLARSYS_STATE *solarSys);
+static bool GenerateDruuge_generateMoons (SOLARSYS_STATE *solarSys,
+		PLANET_DESC *planet);
 static bool GenerateDruuge_generateOrbital (SOLARSYS_STATE *solarSys,
 		PLANET_DESC *world);
 static COUNT GenerateDruuge_generateEnergy (const SOLARSYS_STATE *,
@@ -44,7 +46,7 @@ const GenerateFunctions generateDruugeFunctions = {
 	/* .reinitNpcs       = */ GenerateDefault_reinitNpcs,
 	/* .uninitNpcs       = */ GenerateDefault_uninitNpcs,
 	/* .generatePlanets  = */ GenerateDruuge_generatePlanets,
-	/* .generateMoons    = */ GenerateDefault_generateMoons,
+	/* .generateMoons    = */ GenerateDruuge_generateMoons,
 	/* .generateName     = */ GenerateDefault_generateName,
 	/* .generateOrbital  = */ GenerateDruuge_generateOrbital,
 	/* .generateMinerals = */ GenerateDefault_generateMinerals,
@@ -70,7 +72,7 @@ GenerateDruuge_generatePlanets (SOLARSYS_STATE *solarSys)
 
 	solarSys->PlanetDesc[0].data_index = DUST_WORLD;
 	solarSys->PlanetDesc[0].radius = EARTH_RADIUS * 50L / 100;
-	solarSys->PlanetDesc[0].NumPlanets = 0;
+	solarSys->PlanetDesc[0].NumPlanets = 1;
 	angle = HALF_CIRCLE - OCTANT;
 	solarSys->PlanetDesc[0].location.x =
 			COSINE (angle, solarSys->PlanetDesc[0].radius);
@@ -84,8 +86,35 @@ GenerateDruuge_generatePlanets (SOLARSYS_STATE *solarSys)
 }
 
 static bool
+GenerateMoons (SOLARSYS_STATE *solarSys, PLANET_DESC *planet)
+{
+	if (planet == &solarSys->PlanetDesc[0])
+	{
+		GenerateDefault_generateMoons (solarSys, planet);
+		solarSys->MoonDesc[0].data_index =
+				(StartSphereTracking (DRUUGE_SHIP)) ?
+				DRUUGE_STARBASE : DESTROYED_STARBASE;
+		solarSys->MoonDesc[0].radius = MIN_MOON_RADIUS;
+		solarSys->MoonDesc[0].location.x =
+				COSINE (HALF_CIRCLE, solarSys->MoonDesc[0].radius);
+		solarSys->MoonDesc[0].location.y =
+				SINE (HALF_CIRCLE, solarSys->MoonDesc[0].radius);
+		return true;
+	}
+
+	return GenerateDefault_generateMoons (solarSys, planet);
+}
+
+static bool
 GenerateDruuge_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 {
+	if (matchWorld (solarSys, world, 0, 0))
+	{
+		if (VisitHomeWorldStarBase (StartSphereTracking (DRUUGE_SHIP)))
+			return true;
+		world = &solarSys->PlanetDesc[0];
+	}
+
 	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
 		if (StartSphereTracking (DRUUGE_SHIP))
@@ -167,3 +196,22 @@ GenerateDruuge_generateEnergy (const SOLARSYS_STATE *solarSys,
 	return 0;
 }
 
+static bool
+GenerateDruuge_generateMoons (SOLARSYS_STATE *solarSys, PLANET_DESC *planet)
+{
+	if (planet == &solarSys->PlanetDesc[0])
+	{
+		GenerateDefault_generateMoons (solarSys, planet);
+		solarSys->MoonDesc[0].data_index =
+				(StartSphereTracking (DRUUGE_SHIP)) ?
+				DRUUGE_STARBASE : DESTROYED_STARBASE;
+		solarSys->MoonDesc[0].radius = MIN_MOON_RADIUS;
+		solarSys->MoonDesc[0].location.x =
+				COSINE (HALF_CIRCLE, solarSys->MoonDesc[0].radius);
+		solarSys->MoonDesc[0].location.y =
+				SINE (HALF_CIRCLE, solarSys->MoonDesc[0].radius);
+		return true;
+	}
+
+	return GenerateDefault_generateMoons (solarSys, planet);
+}
