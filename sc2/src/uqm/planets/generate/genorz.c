@@ -32,6 +32,8 @@
 
 
 static bool GenerateOrz_generatePlanets (SOLARSYS_STATE *solarSys);
+static bool GenerateOrz_generateMoons (SOLARSYS_STATE *solarSys,
+		PLANET_DESC *planet);
 static bool GenerateOrz_generateOrbital (SOLARSYS_STATE *solarSys,
 		PLANET_DESC *world);
 static COUNT GenerateOrz_generateEnergy (const SOLARSYS_STATE *,
@@ -45,7 +47,7 @@ const GenerateFunctions generateOrzFunctions = {
 	/* .reinitNpcs       = */ GenerateDefault_reinitNpcs,
 	/* .uninitNpcs       = */ GenerateDefault_uninitNpcs,
 	/* .generatePlanets  = */ GenerateOrz_generatePlanets,
-	/* .generateMoons    = */ GenerateDefault_generateMoons,
+	/* .generateMoons    = */ GenerateOrz_generateMoons,
 	/* .generateName     = */ GenerateDefault_generateName,
 	/* .generateOrbital  = */ GenerateOrz_generateOrbital,
 	/* .generateMinerals = */ GenerateDefault_generateMinerals,
@@ -68,7 +70,7 @@ GenerateOrz_generatePlanets (SOLARSYS_STATE *solarSys)
 	{
 		solarSys->PlanetDesc[0].data_index = WATER_WORLD;
 		solarSys->PlanetDesc[0].radius = EARTH_RADIUS * 156L / 100;
-		solarSys->PlanetDesc[0].NumPlanets = 0;
+		solarSys->PlanetDesc[0].NumPlanets = 1;
 		angle = ARCTAN (solarSys->PlanetDesc[0].location.x,
 				solarSys->PlanetDesc[0].location.y);
 		solarSys->PlanetDesc[0].location.x =
@@ -81,8 +83,41 @@ GenerateOrz_generatePlanets (SOLARSYS_STATE *solarSys)
 }
 
 static bool
+GenerateOrz_generateMoons (SOLARSYS_STATE *solarSys, PLANET_DESC *planet)
+{
+	if (CurStarDescPtr->Index == ORZ_DEFINED
+			&& matchWorld (solarSys, planet, 0, MATCH_PLANET))
+	{
+		// Add a starbase as the only moon
+		GenerateDefault_generateMoons (solarSys, planet);
+
+		solarSys->MoonDesc[0].data_index =
+				(StartSphereTracking (ORZ_SHIP)) ?
+				ORZ_STARBASE : DESTROYED_STARBASE;
+		solarSys->MoonDesc[0].radius = MIN_MOON_RADIUS;
+		solarSys->MoonDesc[0].location.x =
+				COSINE (FULL_CIRCLE, solarSys->MoonDesc[0].radius);
+		solarSys->MoonDesc[0].location.y =
+				SINE (FULL_CIRCLE, solarSys->MoonDesc[0].radius);
+
+		return true;
+	}
+
+	return GenerateDefault_generateMoons (solarSys, planet);
+}
+
+static bool
 GenerateOrz_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 {
+	if (CurStarDescPtr->Index == ORZ_DEFINED
+			&& matchWorld (solarSys, world, 0, 0))
+	{
+		if (VisitHomeWorldStarBase (StartSphereTracking (ORZ_SHIP)))
+			return true;
+
+		world = &solarSys->PlanetDesc[0];
+	}
+
 	if ((CurStarDescPtr->Index == ORZ_DEFINED
 			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
 			|| (CurStarDescPtr->Index == TAALO_PROTECTOR_DEFINED
