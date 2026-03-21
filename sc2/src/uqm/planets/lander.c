@@ -556,36 +556,41 @@ pickupMineralNode (PLANETSIDE_DESC *pPSD, COUNT NumRetrieved,
 	sprintf (pPSD->AmountBuf, "%u", NumRetrieved);
 	pStr = GAME_STRING (EType + ELEMENTS_STRING_BASE);
 
-	pPSD->MineralText[0].baseline.x = (SURFACE_WIDTH >> 1)
+	pPSD->ElementText[0].baseline.x = (SURFACE_WIDTH >> 1)
 			+ (ElementControl->EndPoint.x - LanderControl->EndPoint.x);
-	pPSD->MineralText[0].baseline.y = (SURFACE_HEIGHT >> 1)
+	pPSD->ElementText[0].baseline.y = (SURFACE_HEIGHT >> 1)
 			+ (ElementControl->EndPoint.y - LanderControl->EndPoint.y);
-	pPSD->MineralText[0].CharCount = (COUNT)~0;
-	pPSD->MineralText[1].pStr = pStr;
+	pPSD->ElementText[0].CharCount = (COUNT)~0;
+	pPSD->ElementText[1].pStr = pStr;
 
 	while ((ch = *pStr++) && ch != ' ')
 		;
 	if (ch == '\0')
 	{
-		pPSD->MineralText[1].CharCount = (COUNT)~0;
-		pPSD->MineralText[2].CharCount = 0;
+		pPSD->ElementText[1].CharCount = (COUNT)~0;
+		pPSD->ElementText[2].CharCount = 0;
 	}
 	else  /* ch == ' ' */
 	{
 		// Name contains a space. Print over
 		// two lines.
-		pPSD->MineralText[1].CharCount = utf8StringCountN(
-				pPSD->MineralText[1].pStr, pStr - 1);
-		pPSD->MineralText[2].pStr = pStr;
-		pPSD->MineralText[2].CharCount = (COUNT)~0;
+		pPSD->ElementText[1].CharCount = utf8StringCountN(
+				pPSD->ElementText[1].pStr, pStr - 1);
+		pPSD->ElementText[2].pStr = pStr;
+		pPSD->ElementText[2].CharCount = (COUNT)~0;
 	}
 
 	return true;
 }
 
 static bool
-pickupBioNode (PLANETSIDE_DESC *pPSD, COUNT NumRetrieved)
+pickupBioNode (PLANETSIDE_DESC *pPSD, COUNT NumRetrieved, BYTE EType,
+		const INTERSECT_CONTROL *LanderControl,
+		const INTERSECT_CONTROL *ElementControl)
 {
+	UNICODE ch;
+	UNICODE *pStr;
+
 	if (pPSD->BiologicalLevel >= MAX_SCROUNGED)
 	{
 		// Lander is full.
@@ -601,6 +606,32 @@ pickupBioNode (PLANETSIDE_DESC *pPSD, COUNT NumRetrieved)
 	}
 
 	FillLanderHold (pPSD, BIOLOGICAL_SCAN, NumRetrieved);
+
+	pPSD->NumFrames = NUM_TEXT_FRAMES;
+	sprintf (pPSD->AmountBuf, "%u", NumRetrieved);
+	pStr = GAME_STRING (EType + BIOLOGICAL_STRING_BASE);
+
+	pPSD->ElementText[0].baseline.x = (SURFACE_WIDTH >> 1)
+			+ (ElementControl->EndPoint.x - LanderControl->EndPoint.x);
+	pPSD->ElementText[0].baseline.y = (SURFACE_HEIGHT >> 1)
+			+ (ElementControl->EndPoint.y - LanderControl->EndPoint.y);
+	pPSD->ElementText[0].CharCount = (COUNT)~0;
+	pPSD->ElementText[1].pStr = pStr;
+
+	while ((ch = *pStr++) && ch != ' ')
+		;
+	if (ch == '\0')
+	{
+		pPSD->ElementText[1].CharCount = (COUNT)~0;
+		pPSD->ElementText[2].CharCount = 0;
+	}
+	else
+	{
+		pPSD->ElementText[1].CharCount = utf8StringCountN(
+				pPSD->ElementText[1].pStr, pStr - 1);
+		pPSD->ElementText[2].pStr = pStr;
+		pPSD->ElementText[2].CharCount = (COUNT)~0;
+	}
 
 	return true;
 }
@@ -618,6 +649,9 @@ shotCreature (ELEMENT *ElementPtr, BYTE value,
 	--ElementPtr->hit_points;
 	if (ElementPtr->hit_points == 0)
 	{
+		// Stash the type of creature in the thrust_wait field.
+		// It seems to be unused by the game for anything at this point
+		ElementPtr->thrust_wait = ElementPtr->mass_points & ~CREATURE_AWARE;
 		// Can creature.
 		ElementPtr->mass_points = value;
 		DisplayArray[ElementPtr->PrimIndex].Object.Stamp.frame =
@@ -838,7 +872,9 @@ CheckObjectCollision (COUNT index)
 								continue;
 							break;
 						case BIOLOGICAL_SCAN:
-							if (!pickupBioNode (pPSD, NumRetrieved))
+							if (!pickupBioNode (pPSD, NumRetrieved,
+									ElementPtr->thrust_wait,
+									&LanderControl, &ElementControl))
 								continue;
 							break;
 					}
@@ -1256,19 +1292,19 @@ ScrollPlanetSide (SIZE dx, SIZE dy, int landingOffset)
 			--pPSD->NumFrames;
 			SetContextForeGroundColor (pPSD->ColorCycle[pPSD->NumFrames >> 1]);
 
-			pPSD->MineralText[0].baseline.x -= dx;
-			pPSD->MineralText[0].baseline.y -= dy;
-			font_DrawText (&pPSD->MineralText[0]);
-			pPSD->MineralText[1].baseline.x =
-					pPSD->MineralText[0].baseline.x;
-			pPSD->MineralText[1].baseline.y =
-					pPSD->MineralText[0].baseline.y + 7;
-			font_DrawText (&pPSD->MineralText[1]);
-			pPSD->MineralText[2].baseline.x =
-					pPSD->MineralText[1].baseline.x;
-			pPSD->MineralText[2].baseline.y =
-					pPSD->MineralText[1].baseline.y + 7;
-			font_DrawText (&pPSD->MineralText[2]);
+			pPSD->ElementText[0].baseline.x -= dx;
+			pPSD->ElementText[0].baseline.y -= dy;
+			font_DrawText (&pPSD->ElementText[0]);
+			pPSD->ElementText[1].baseline.x =
+					pPSD->ElementText[0].baseline.x;
+			pPSD->ElementText[1].baseline.y =
+					pPSD->ElementText[0].baseline.y + 7;
+			font_DrawText (&pPSD->ElementText[1]);
+			pPSD->ElementText[2].baseline.x =
+					pPSD->ElementText[1].baseline.x;
+			pPSD->ElementText[2].baseline.y =
+					pPSD->ElementText[1].baseline.y + 7;
+			font_DrawText (&pPSD->ElementText[2]);
 		}
 	}
 
@@ -1926,10 +1962,10 @@ PlanetSide (POINT planetLoc)
 		PSD.MaxElementLevel = PSD.ElementLevel;
 	PSD.ElementLevel = 0;
 
-	PSD.MineralText[0].align = ALIGN_CENTER;
-	PSD.MineralText[0].pStr = PSD.AmountBuf;
-	PSD.MineralText[1] = PSD.MineralText[0];
-	PSD.MineralText[2] = PSD.MineralText[1];
+	PSD.ElementText[0].align = ALIGN_CENTER;
+	PSD.ElementText[0].pStr = PSD.AmountBuf;
+	PSD.ElementText[1] = PSD.ElementText[0];
+	PSD.ElementText[2] = PSD.ElementText[1];
 
 	PSD.ColorCycle[0] = BUILD_COLOR (MAKE_RGB15 (0x1F, 0x03, 0x00), 0x7F);
 	PSD.ColorCycle[1] = BUILD_COLOR (MAKE_RGB15 (0x1F, 0x0A, 0x00), 0x7D);
