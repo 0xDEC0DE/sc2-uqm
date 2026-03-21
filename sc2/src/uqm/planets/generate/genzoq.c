@@ -23,6 +23,8 @@
 #include "../../globdata.h"
 #include "../../nameref.h"
 #include "../../state.h"
+#include "../../starmap.h"
+#include "../../gendef.h"
 #include "libs/mathlib.h"
 
 
@@ -31,7 +33,7 @@ static bool GenerateZoqFotPik_generatePlanets (SOLARSYS_STATE *solarSys);
 static bool GenerateZoqFotPik_generateOrbital (SOLARSYS_STATE *solarSys,
 		PLANET_DESC *world);
 static COUNT GenerateZoqFotPik_generateEnergy (const SOLARSYS_STATE *,
-		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *);
+		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *info);
 static bool GenerateZoqFotPik_pickupEnergy (SOLARSYS_STATE *solarSys,
 		PLANET_DESC *world, COUNT whichNode);
 
@@ -56,7 +58,8 @@ const GenerateFunctions generateZoqFotPikFunctions = {
 static bool
 GenerateZoqFotPik_initNpcs (SOLARSYS_STATE *solarSys)
 {
-	if (GET_GAME_STATE (ZOQFOT_DISTRESS) != 1)
+	if (CurStarDescPtr->Index == ZOQFOT_DEFINED
+			&& GET_GAME_STATE (ZOQFOT_DISTRESS) != 1)
 		GenerateDefault_initNpcs (solarSys);
 
 	return true;
@@ -69,15 +72,18 @@ GenerateZoqFotPik_generatePlanets (SOLARSYS_STATE *solarSys)
 
 	GenerateDefault_generatePlanets (solarSys);
 
-	solarSys->PlanetDesc[0].data_index = REDUX_WORLD;
-	solarSys->PlanetDesc[0].NumPlanets = 1;
-	solarSys->PlanetDesc[0].radius = EARTH_RADIUS * 138L / 100;
-	angle = ARCTAN (solarSys->PlanetDesc[0].location.x,
-			solarSys->PlanetDesc[0].location.y);
-	solarSys->PlanetDesc[0].location.x =
-			COSINE (angle, solarSys->PlanetDesc[0].radius);
-	solarSys->PlanetDesc[0].location.y =
-			SINE (angle, solarSys->PlanetDesc[0].radius);
+	if (CurStarDescPtr->Index == ZOQFOT_DEFINED)
+	{
+		solarSys->PlanetDesc[0].data_index = REDUX_WORLD;
+		solarSys->PlanetDesc[0].NumPlanets = 1;
+		solarSys->PlanetDesc[0].radius = EARTH_RADIUS * 138L / 100;
+		angle = ARCTAN (solarSys->PlanetDesc[0].location.x,
+				solarSys->PlanetDesc[0].location.y);
+		solarSys->PlanetDesc[0].location.x =
+				COSINE (angle, solarSys->PlanetDesc[0].radius);
+		solarSys->PlanetDesc[0].location.y =
+				SINE (angle, solarSys->PlanetDesc[0].radius);
+	}
 
 	return true;
 }
@@ -85,7 +91,8 @@ GenerateZoqFotPik_generatePlanets (SOLARSYS_STATE *solarSys)
 static bool
 GenerateZoqFotPik_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 {
-	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
+	if (CurStarDescPtr->Index == ZOQFOT_DEFINED
+			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
 		if (StartSphereTracking (ZOQFOTPIK_SHIP))
 		{
@@ -137,6 +144,16 @@ GenerateZoqFotPik_generateOrbital (SOLARSYS_STATE *solarSys, PLANET_DESC *world)
 		solarSys->SysInfo.PlanetInfo.DiscoveryString =
 				CaptureStringTable (LoadStringTable (RUINS_STRTAB));
 	}
+	else if (CurStarDescPtr->Index == ZOQ_COLONY_DEFINED
+			&& (matchWorld (solarSys, world, 0, MATCH_PLANET)
+			|| matchWorld (solarSys, world, 0, 1)))
+	{
+		LoadStdLanderFont (&solarSys->SysInfo.PlanetInfo);
+		solarSys->PlanetSideFrame[1] =
+				CaptureDrawable (LoadGraphic (RUINS_MASK_PMAP_ANIM));
+		solarSys->SysInfo.PlanetInfo.DiscoveryString =
+				CaptureStringTable (LoadStringTable (ZFPRUINS_STRTAB));
+	}
 
 	GenerateDefault_generateOrbital (solarSys, world);
 	return true;
@@ -146,9 +163,17 @@ static COUNT
 GenerateZoqFotPik_generateEnergy (const SOLARSYS_STATE *solarSys,
 		const PLANET_DESC *world, COUNT whichNode, NODE_INFO *info)
 {
-	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
+	if (CurStarDescPtr->Index == ZOQFOT_DEFINED
+			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
 		return GenerateDefault_generateRuins (solarSys, whichNode, info);
+	}
+	else if (CurStarDescPtr->Index == ZOQ_COLONY_DEFINED
+			&& (matchWorld (solarSys, world, 0, MATCH_PLANET)
+			|| matchWorld (solarSys, world, 0, 1)))
+	{
+		return GenerateRandomNodes (&solarSys->SysInfo, ENERGY_SCAN, 4,
+				0, whichNode, info);
 	}
 
 	return 0;
@@ -158,9 +183,17 @@ static bool
 GenerateZoqFotPik_pickupEnergy (SOLARSYS_STATE *solarSys, PLANET_DESC *world,
 		COUNT whichNode)
 {
-	if (matchWorld (solarSys, world, 0, MATCH_PLANET))
+	if (CurStarDescPtr->Index == ZOQFOT_DEFINED
+			&& matchWorld (solarSys, world, 0, MATCH_PLANET))
 	{
 		// Standard ruins report
+		GenerateDefault_landerReportCycle (solarSys);
+		return false;
+	}
+	else if (CurStarDescPtr->Index == ZOQ_COLONY_DEFINED
+			&& (matchWorld (solarSys, world, 0, MATCH_PLANET)
+			|| matchWorld (solarSys, world, 0, 1)))
+	{
 		GenerateDefault_landerReportCycle (solarSys);
 		return false;
 	}

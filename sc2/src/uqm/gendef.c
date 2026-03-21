@@ -126,6 +126,7 @@ getGenerateFunctions (BYTE Index)
 		case SAMATRA_DEFINED:
 			return &generateSaMatraFunctions;
 		case ZOQFOT_DEFINED:
+		case ZOQ_COLONY_DEFINED:
 			return &generateZoqFotPikFunctions;
 		case ZOQ_SCOUT_DEFINED:
 			return &generateZoqFotPikScoutFunctions;
