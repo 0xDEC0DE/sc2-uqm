@@ -779,6 +779,10 @@ ValidateOrbit (PLANET_DESC *planet, int sizeNumer, int dyNumer, int denom)
 	{
 		planet->image.frame = SetAbsFrameIndex (SpaceJunkFrame, 23);
 	}
+	else if (planet->data_index == ZOQFOTPIK_STARBASE)
+	{
+		planet->image.frame = SetAbsFrameIndex (SpaceJunkFrame, 24);
+	}
 }
 
 static void
