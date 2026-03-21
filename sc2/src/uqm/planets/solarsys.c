@@ -16,6 +16,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include "scan.h"
 #include "solarsys.h"
 #include "lander.h"
 #include "../colors.h"
@@ -236,6 +237,44 @@ GenerateMoons (SOLARSYS_STATE *system, PLANET_DESC *planet)
 		
 		pMoonDesc->temp_color = planet->temp_color;
 	}
+}
+
+BOOLEAN
+VisitHomeWorldStarBase (COUNT race_active)
+{
+	// If you go to the homeworld's starbase, move the ship to
+	// the planet post-comms
+	if (race_active)
+	{
+		pSolarSysState->pOrbitalDesc = &pSolarSysState->PlanetDesc[0];
+		GLOBAL (ShipStamp.origin.x) = SIS_SCREEN_WIDTH >> 1;
+		GLOBAL (ShipStamp.origin.y) = SIS_SCREEN_HEIGHT >> 1;
+		return FALSE;
+	}
+	// ...unless they're all dead.  Show the report instead
+	BatchGraphics();
+
+	LoadStdLanderFont (&pSolarSysState->SysInfo.PlanetInfo);
+	pSolarSysState->SysInfo.PlanetInfo.DiscoveryString =
+            SetRelStringTableIndex (
+					CaptureStringTable (
+							LoadStringTable (RUINS_STRTAB)), 1);
+
+	CONTEXT oldContext = SetContext (GetScanContext (NULL));
+
+	DoDiscoveryReport (MenuSounds);
+
+	SetContext (oldContext);
+	DestroyScanContext ();
+
+	DestroyStringTable (
+		ReleaseStringTable (
+				pSolarSysState->SysInfo.PlanetInfo.DiscoveryString));
+	pSolarSysState->SysInfo.PlanetInfo.DiscoveryString = 0;
+	FreeLanderFont (&pSolarSysState->SysInfo.PlanetInfo);
+
+	UnbatchGraphics();
+	return TRUE;
 }
 
 void
